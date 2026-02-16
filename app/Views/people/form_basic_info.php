@@ -30,31 +30,6 @@
 </div>
 
 <div class="form-group form-group-sm">
-    <?= form_label(lang('Common.gender'), 'gender', !empty($basic_version) ? ['class' => 'required control-label col-xs-3'] : ['class' => 'control-label col-xs-3']) ?>
-    <div class="col-xs-4">
-        <label class="radio-inline">
-            <?= form_radio([
-                'name'    => 'gender',
-                'type'    => 'radio',
-                'id'      => 'gender',
-                'value'   => 1,
-                'checked' => $person_info->gender === '1'
-            ]) ?> <?= lang('Common.gender_male') ?>
-        </label>
-        <label class="radio-inline">
-            <?= form_radio([
-                'name'    => 'gender',
-                'type'    => 'radio',
-                'id'      => 'gender',
-                'value'   => 0,
-                'checked' => $person_info->gender === '0'
-            ]) ?> <?= lang('Common.gender_female') ?>
-        </label>
-
-    </div>
-</div>
-
-<div class="form-group form-group-sm">
     <?= form_label(lang('Common.email'), 'email', ['class' => 'control-label col-xs-3']) ?>
     <div class="col-xs-8">
         <div class="input-group">
@@ -97,18 +72,6 @@
 </div>
 
 <div class="form-group form-group-sm">
-    <?= form_label(lang('Common.address_2'), 'address_2', ['class' => 'control-label col-xs-3']) ?>
-    <div class="col-xs-8">
-        <?= form_input([
-            'name'  => 'address_2',
-            'id'    => 'address_2',
-            'class' => 'form-control input-sm',
-            'value' => $person_info->address_2
-        ]) ?>
-    </div>
-</div>
-
-<div class="form-group form-group-sm">
     <?= form_label(lang('Common.city'), 'city', ['class' => 'control-label col-xs-3']) ?>
     <div class="col-xs-8">
         <?= form_input([
@@ -132,6 +95,7 @@
     </div>
 </div>
 
+<?php if (!isset($controller_name) || $controller_name !== 'customers'): ?>
 <div class="form-group form-group-sm">
     <?= form_label(lang('Common.zip'), 'zip', ['class' => 'control-label col-xs-3']) ?>
     <div class="col-xs-8">
@@ -143,6 +107,7 @@
         ]) ?>
     </div>
 </div>
+<?php endif; ?>
 
 <div class="form-group form-group-sm">
     <?= form_label(lang('Common.country'), 'country', ['class' => 'control-label col-xs-3']) ?>

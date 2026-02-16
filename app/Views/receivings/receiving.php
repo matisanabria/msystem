@@ -108,12 +108,10 @@ if (isset($success)) {
             <tr>
                 <th style="width: 5%;"><?= lang('Common.delete') ?></th>
                 <th style="width: 15%;"><?= lang('Sales.item_number') ?></th>
-                <th style="width: 23%;"><?= lang(ucfirst($controller_name) . '.item_name') ?></th>
-                <th style="width: 10%;"><?= lang(ucfirst($controller_name) . '.cost') ?></th>
-                <th style="width: 8%;"><?= lang(ucfirst($controller_name) . '.quantity') ?></th>
-                <th style="width: 10%;"><?= lang(ucfirst($controller_name) . '.ship_pack') ?></th>
-                <th style="width: 14%;"><?= lang(ucfirst($controller_name) . '.discount') ?></th>
-                <th style="width: 10%;"><?= lang(ucfirst($controller_name) . '.total') ?></th>
+                <th style="width: 33%;"><?= lang(ucfirst($controller_name) . '.item_name') ?></th>
+                <th style="width: 15%;"><?= lang(ucfirst($controller_name) . '.cost') ?></th>
+                <th style="width: 12%;"><?= lang(ucfirst($controller_name) . '.quantity') ?></th>
+                <th style="width: 15%;"><?= lang(ucfirst($controller_name) . '.total') ?></th>
                 <th style="width: 5%;"><?= lang(ucfirst($controller_name) . '.update') ?></th>
             </tr>
         </thead>
@@ -121,7 +119,7 @@ if (isset($success)) {
         <tbody id="cart_contents">
             <?php if (count($cart) == 0) { ?>
                 <tr>
-                    <td colspan="9">
+                    <td colspan="7">
                         <div class="alert alert-dismissible alert-info"><?= lang('Sales.no_items_in_cart') ?></div>
                     </td>
                 </tr>
@@ -159,40 +157,10 @@ if (isset($success)) {
 
                         <td>
                             <?= form_input(['name' => 'quantity', 'class' => 'form-control input-sm', 'value' => to_quantity_decimals($item['quantity']), 'onClick' => 'this.select();']) ?>
-                        </td>
-                        <td>
-                            <?= form_dropdown(
-                                'receiving_quantity',
-                                $item['receiving_quantity_choices'],
-                                $item['receiving_quantity'],
-                                ['class' => 'form-control input-sm']
-                            ) ?>
+                            <?= form_hidden('receiving_quantity', (string)$item['receiving_quantity']) ?>
                         </td>
 
-                        <?php if ($items_module_allowed && $mode != 'requisition') { ?>
-                            <td>
-                                <div class="input-group">
-                                    <?= form_input(['name' => 'discount', 'class' => 'form-control input-sm', 'value' => $item['discount_type'] ? to_currency_no_money($item['discount']) : to_decimals($item['discount']), 'onClick' => 'this.select();']) ?>
-                                    <span class="input-group-btn">
-                                        <?= form_checkbox([
-                                            'id'           => 'discount_toggle',
-                                            'name'         => 'discount_toggle',
-                                            'value'        => 1,
-                                            'data-toggle'  => "toggle",
-                                            'data-size'    => 'small',
-                                            'data-onstyle' => 'success',
-                                            'data-on'      => '<b>' . $config['currency_symbol'] . '</b>',
-                                            'data-off'     => '<b>%</b>',
-                                            'data-line'    => $line,
-                                            'checked'      => $item['discount_type'] == 1
-                                        ]) ?>
-                                    </span>
-                                </div>
-                            </td>
-                        <?php } else { ?>
-                            <td><?= $item['discount'] ?></td>
-                            <?= form_hidden('discount', (string)$item['discount']) ?>
-                        <?php } ?>
+                        <?= form_hidden('discount', '0') ?>
                         <td>
                             <?= to_currency(($item['discount_type'] == PERCENT) ? $item['price'] * $item['quantity'] * $item['receiving_quantity'] - $item['price'] * $item['quantity'] * $item['receiving_quantity'] * $item['discount'] / 100 : $item['price'] * $item['quantity'] * $item['receiving_quantity'] - $item['discount']) ?>
                         </td>
@@ -226,7 +194,7 @@ if (isset($success)) {
                             }
                             ?>
                         </td>
-                        <td colspan="7"></td>
+                        <td colspan="5"></td>
                     </tr>
 
                     <?= form_close() ?>

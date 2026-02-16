@@ -10,10 +10,8 @@ use App\Models\Inventory;
 use App\Models\Item;
 use App\Models\Item_kit;
 use App\Models\Item_quantity;
-use App\Models\Item_taxes;
 use App\Models\Stock_location;
 use App\Models\Supplier;
-use App\Models\Tax_category;
 
 use CodeIgniter\Images\Handlers\BaseHandler;
 use CodeIgniter\HTTP\DownloadResponse;
@@ -34,10 +32,8 @@ class Items extends Secure_Controller
     private Item $item;
     private Item_kit $item_kit;
     private Item_quantity $item_quantity;
-    private Item_taxes $item_taxes;
     private Stock_location $stock_location;
     private Supplier $supplier;
-    private Tax_category $tax_category;
     private array $config;
 
 
@@ -57,10 +53,8 @@ class Items extends Secure_Controller
         $this->item = model(Item::class);
         $this->item_kit = model(Item_kit::class);
         $this->item_quantity = model(Item_quantity::class);
-        $this->item_taxes = model(Item_taxes::class);
         $this->stock_location = model(Stock_location::class);
         $this->supplier = model(Supplier::class);
-        $this->tax_category = model(Tax_category::class);
         $this->config = config(OSPOS::class)->settings;
     }
 
@@ -272,9 +266,6 @@ class Items extends Secure_Controller
         }
 
         $data['allow_temp_item'] = $this->session->get('allow_temp_items'); // allow_temp_items is set in the index function of items.php or sales.php
-        $data['item_tax_info'] = $this->item_taxes->get_info($item_id);
-        $data['default_tax_1_rate'] = '';
-        $data['default_tax_2_rate'] = '';
         $data['item_kit_disabled'] = !$this->employee->has_grant('item_kits', $this->employee->get_logged_in_employee_info()->person_id);
         $data['definition_values'] = $this->attribute->get_attributes_by_item($item_id);
         $data['definition_names'] = $this->attribute->get_definition_names();
@@ -287,7 +278,6 @@ class Items extends Secure_Controller
 
         $data['allow_temp_item'] = ($data['allow_temp_item'] === 1 && $item_id !== NEW_ENTRY && $item_info->item_type != ITEM_TEMP) ? 0 : 1;
 
-        $use_destination_based_tax = (bool)$this->config['use_destination_based_tax'];
         $data['include_hsn'] = $this->config['include_hsn'] === '1';
         $data['category_dropdown'] = $this->config['category_dropdown'];
 
@@ -301,9 +291,6 @@ class Items extends Secure_Controller
         }
 
         if ($item_id === NEW_ENTRY) {
-            $data['default_tax_1_rate'] = $this->config['default_tax_1_rate'];
-            $data['default_tax_2_rate'] = $this->config['default_tax_2_rate'];
-
             $item_info->receiving_quantity = 1;
             $item_info->reorder_level = 1;
             $item_info->item_type = ITEM;    // Standard
@@ -312,10 +299,6 @@ class Items extends Secure_Controller
             $item_info->tax_category_id = null;
             $item_info->qty_per_pack = 1;
             $item_info->pack_name = lang('Items.default_pack_name');
-
-            if ($use_destination_based_tax) {
-                $item_info->tax_category_id = $this->config['default_tax_category'];
-            }
         }
 
         $data['standard_item_locked'] = (
@@ -340,29 +323,7 @@ class Items extends Secure_Controller
             ? $item_info->hsn_code
             : '';
 
-        if ($use_destination_based_tax) {
-            $data['use_destination_based_tax'] = true;
-            $tax_categories = [];
-
-            foreach ($this->tax_category->get_all()->getResultArray() as $row) {
-                $tax_categories[$row['tax_category_id']] = $row['tax_category'];
-            }
-
-            $tax_category = '';
-
-            if ($item_info->tax_category_id !== null) {
-                $tax_category_info = $this->tax_category->get_info($item_info->tax_category_id);
-                $tax_category = $tax_category_info->tax_category;
-            }
-
-            $data['tax_categories'] = $tax_categories;
-            $data['tax_category'] = $tax_category;
-            $data['tax_category_id'] = $item_info->tax_category_id;
-        } else {
-            $data['use_destination_based_tax'] = false;
-            $data['tax_categories'] = [];
-            $data['tax_category'] = '';
-        }
+        $data['use_destination_based_tax'] = false;
 
         $data['logo_exists'] = $item_info->pic_filename !== null;
         if ($item_info->pic_filename != null) {
@@ -636,13 +597,7 @@ class Items extends Secure_Controller
             $item_data['reorder_level'] = 0;
         }
 
-        $tax_category_id = $this->request->getPost('tax_category_id');
-
-        if (!isset($tax_category_id)) {
-            $item_data['tax_category_id'] = null;
-        } else {
-            $item_data['tax_category_id'] = empty($this->request->getPost('tax_category_id')) ? null : intval($this->request->getPost('tax_category_id'));
-        }
+        $item_data['tax_category_id'] = null;
 
         if (!empty($upload_data['orig_name']) && $upload_data['raw_name']) {
             $item_data['pic_filename'] = $upload_data['raw_name'] . '.' . $upload_data['file_ext'];
@@ -657,27 +612,6 @@ class Items extends Secure_Controller
             if ($item_id === NEW_ENTRY) {
                 $item_id = $item_data['item_id'];
                 $new_item = true;
-            }
-
-            $use_destination_based_tax = (bool)$this->config['use_destination_based_tax'];
-
-            if (!$use_destination_based_tax) {
-                $items_taxes_data = [];
-                $tax_names = $this->request->getPost('tax_names');
-                $tax_percents = $this->request->getPost('tax_percents');
-
-                $tax_name_index = 0;
-
-                foreach ($tax_percents as $tax_percent) {
-                    $tax_percentage = parse_tax($tax_percent);
-
-                    if (is_numeric($tax_percentage)) {
-                        $items_taxes_data[] = ['name' => $tax_names[$tax_name_index], 'percent' => $tax_percentage];
-                    }
-
-                    $tax_name_index++;
-                }
-                $success &= $this->item_taxes->save_value($items_taxes_data, $item_id);
             }
 
             // Save item quantity
@@ -868,29 +802,12 @@ class Items extends Secure_Controller
             // This field is nullable, so treat it differently
             if ($key === 'supplier_id' && $value !== '') {
                 $item_data[$key] = $value;
-            } elseif ($value !== '' && !(in_array($key, ['item_ids', 'tax_names', 'tax_percents']))) {
+            } elseif ($value !== '' && $key !== 'item_ids') {
                 $item_data[$key] = $value;
             }
         }
 
-        // Item data could be empty if tax information is being updated
         if (empty($item_data) || $this->item->update_multiple($item_data, $items_to_update)) {
-            $items_taxes_data = [];
-            $tax_names = $this->request->getPost('tax_names');
-            $tax_percents = $this->request->getPost('tax_percents');
-            $tax_updated = false;
-
-            foreach ($tax_percents as $tax_percent) {
-                if (!empty($tax_names[$tax_percent]) && is_numeric($tax_percents[$tax_percent])) {
-                    $tax_updated = true;
-                    $items_taxes_data[] = ['name' => $tax_names[$tax_percent], 'percent' => $tax_percents[$tax_percent]];
-                }
-            }
-
-            if ($tax_updated) {
-                $this->item_taxes->save_multiple($items_taxes_data, $items_to_update);
-            }
-
             echo json_encode(['success' => true, 'message' => lang('Items.successful_bulk_edit'), 'id' => $items_to_update]);
         } else {
             echo json_encode(['success' => false, 'message' => lang('Items.error_updating_multiple')]);
@@ -1016,7 +933,6 @@ class Items extends Secure_Controller
                         });
 
                         if (!$is_failed_row && $this->item->save_value($item_data, $item_id)) {
-                            $this->save_tax_data($row, $item_data);
                             $this->save_inventory_quantities($row, $item_data, $allowed_stock_locations, $employee_id);
                             $is_failed_row = $this->save_attribute_data($row, $item_data, $attribute_data);    // TODO: $is_failed_row never gets used after this.
 
@@ -1242,29 +1158,6 @@ class Items extends Secure_Controller
                 $csv_data['trans_inventory'] = 0;
                 $this->inventory->insert($csv_data, false);
             }
-        }
-    }
-
-    /**
-     * Saves the tax data found in the line of the CSV items import file
-     *
-     * @param array $row
-     * @param array $item_data
-     */
-    private function save_tax_data(array $row, array $item_data): void
-    {
-        $items_taxes_data = [];
-
-        if (is_numeric($row['Tax 1 Percent']) && $row['Tax 1 Name'] !== '') {
-            $items_taxes_data[] = ['name' => $row['Tax 1 Name'], 'percent' => $row['Tax 1 Percent']];
-        }
-
-        if (is_numeric($row['Tax 2 Percent']) && $row['Tax 2 Name'] !== '') {
-            $items_taxes_data[] = ['name' => $row['Tax 2 Name'], 'percent' => $row['Tax 2 Percent']];
-        }
-
-        if (isset($items_taxes_data)) {
-            $this->item_taxes->save_value($items_taxes_data, $item_data['item_id']);
         }
     }
 

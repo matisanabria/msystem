@@ -16,6 +16,7 @@
 
 <?= form_open("$controller_name/save/$person_info->person_id", ['id' => 'customer_form', 'class' => 'form-horizontal']) ?>
 
+    <?php if (!empty($stats) || (!empty($mailchimp_info) && !empty($mailchimp_activity))): ?>
     <ul class="nav nav-tabs nav-justified" data-tabs="tabs">
         <li class="active" role="presentation">
             <a data-toggle="tab" href="#customer_basic_info"><?= lang('Customers.basic_information') ?></a>
@@ -31,93 +32,14 @@
             </li>
         <?php } ?>
     </ul>
+    <?php endif; ?>
 
     <div class="tab-content">
         <div class="tab-pane fade in active" id="customer_basic_info">
             <fieldset>
-                <div class="form-group form-group-sm">
-                    <?= form_label(lang('Customers.consent'), 'consent', ['class' => 'required control-label col-xs-3']) ?>
-                    <div class="col-xs-1">
-                        <?= form_checkbox('consent', 1, $person_info->consent == '' ? !$config['enforce_privacy'] : (bool)$person_info->consent) ?>
-                    </div>
-                </div>
+                <?= form_hidden('consent', '1') ?>
 
                 <?= view('people/form_basic_info') ?>
-
-                <div class="form-group form-group-sm">
-                    <?= form_label(lang('Customers.discount_type'), 'discount_type', ['class' => 'control-label col-xs-3']) ?>
-                    <div class="col-xs-8">
-                        <label class="radio-inline">
-                            <?= form_radio([
-                                'name'    => 'discount_type',
-                                'type'    => 'radio',
-                                'id'      => 'discount_type',
-                                'value'   => 0,
-                                'checked' => $person_info->discount_type == PERCENT
-                            ]) ?> <?= lang('Customers.discount_percent') ?>
-                        </label>
-                        <label class="radio-inline">
-                            <?= form_radio([
-                                'name'    => 'discount_type',
-                                'type'    => 'radio',
-                                'id'      => 'discount_type',
-                                'value'   => 1,
-                                'checked' => $person_info->discount_type == FIXED
-                            ]) ?> <?= lang('Customers.discount_fixed') ?>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="form-group form-group-sm">
-                    <?= form_label(lang('Customers.discount'), 'discount', ['class' => 'control-label col-xs-3']) ?>
-                    <div class="col-xs-3">
-                        <div class="input-group input-group-sm">
-                            <?= form_input([
-                                'name'    => 'discount',
-                                'id'      => 'discount',
-                                'class'   => 'form-control input-sm',
-                                'onClick' => 'this.select();',
-                                'value'   => $person_info->discount_type === FIXED ? to_currency_no_money($person_info->discount) : to_decimals($person_info->discount)
-                            ]) ?>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group form-group-sm">
-                    <?= form_label(lang('Customers.company_name'), 'customer_company_name', ['class' => 'control-label col-xs-3']) ?>
-                    <div class="col-xs-8">
-                        <?= form_input([
-                            'name'  => 'company_name',
-                            'id'    => 'customer_company_name',
-                            'class' => 'form-control input-sm',
-                            'value' => $person_info->company_name
-                        ]) ?>
-                    </div>
-                </div>
-
-                <div class="form-group form-group-sm">
-                    <?= form_label(lang('Customers.account_number'), 'account_number', ['class' => 'control-label col-xs-3']) ?>
-                    <div class="col-xs-4">
-                        <?= form_input([
-                            'name'  => 'account_number',
-                            'id'    => 'account_number',
-                            'class' => 'form-control input-sm',
-                            'value' => $person_info->account_number
-                        ]) ?>
-                    </div>
-                </div>
-
-                <div class="form-group form-group-sm">
-                    <?= form_label(lang('Customers.tax_id'), 'tax_id', ['class' => 'control-label col-xs-3']) ?>
-                    <div class="col-xs-4">
-                        <?= form_input([
-                            'name'  => 'tax_id',
-                            'id'    => 'tax_id',
-                            'class' => 'form-control input-sm',
-                            'value' => $person_info->tax_id
-                        ]) ?>
-                    </div>
-                </div>
 
                 <?php if ($config['customer_reward_enable']): ?>
                     <div class="form-group form-group-sm">
@@ -145,31 +67,6 @@
                         </div>
                     </div>
                 <?php endif; ?>
-
-                <div class="form-group form-group-sm">
-                    <?= form_label(lang('Customers.taxable'), 'taxable', ['class' => 'control-label col-xs-3']) ?>
-                    <div class="col-xs-1">
-                        <?= form_checkbox('taxable', 1, $person_info->taxable == 1) ?>
-                    </div>
-                </div>
-
-                <?php if ($use_destination_based_tax) { ?>
-                    <div class="form-group form-group-sm">
-                        <?= form_label(lang('Customers.tax_code'), 'sales_tax_code_name', ['class' => 'control-label col-xs-3']) ?>
-                        <div class="col-xs-8">
-                            <div class="input-group input-group-sm">
-                                <?= form_input([
-                                    'name'  => 'sales_tax_code_name',
-                                    'id'    => 'sales_tax_code_name',
-                                    'class' => 'form-control input-sm',
-                                    'size'  => '50',
-                                    'value' => $sales_tax_code_label
-                                ]) ?>
-                                <?= form_hidden('sales_tax_code_id', $person_info->sales_tax_code_id) ?>
-                            </div>
-                        </div>
-                    </div>
-                <?php } ?>
 
                 <div class="form-group form-group-sm">
                     <?= form_label(lang('Customers.date'), 'date', ['class' => 'control-label col-xs-3']) ?>
@@ -447,28 +344,6 @@
 <script type="text/javascript">
     // Validation and submit handling
     $(document).ready(function() {
-        $("input[name='sales_tax_code_name']").change(function() {
-            if (!$("input[name='sales_tax_code_name']").val()) {
-                $("input[name='sales_tax_code_id']").val('');
-            }
-        });
-
-        var fill_value = function(event, ui) {
-            event.preventDefault();
-            $("input[name='sales_tax_code_id']").val(ui.item.value);
-            $("input[name='sales_tax_code_name']").val(ui.item.label);
-        };
-
-        $('#sales_tax_code_name').autocomplete({
-            source: "<?= esc('taxes/suggestTaxCodes') ?>",
-            minChars: 0,
-            delay: 15,
-            cacheLength: 1,
-            appendTo: '.modal-content',
-            select: fill_value,
-            focus: fill_value
-        });
-
         $('#customer_form').validate($.extend({
             submitHandler: function(form) {
                 $(form).ajaxSubmit({
@@ -485,7 +360,6 @@
             rules: {
                 first_name: 'required',
                 last_name: 'required',
-                consent: 'required',
                 email: {
                     remote: {
                         url: "<?= "$controller_name/checkEmail" ?>",
@@ -495,25 +369,13 @@
                             // Email is posted by default
                         }
                     }
-                },
-                account_number: {
-                    remote: {
-                        url: "<?= "$controller_name/checkAccountNumber" ?>",
-                        type: 'POST',
-                        data: {
-                            'person_id': "<?= $person_info->person_id ?>"
-                            // Account_number is posted by default
-                        }
-                    }
                 }
             },
 
             messages: {
                 first_name: "<?= lang('Common.first_name_required') ?>",
                 last_name: "<?= lang('Common.last_name_required') ?>",
-                consent: "<?= lang('Customers.consent_required') ?>",
-                email: "<?= lang('Customers.email_duplicate') ?>",
-                account_number: "<?= lang('Customers.account_number_duplicate') ?>"
+                email: "<?= lang('Customers.email_duplicate') ?>"
             }
         }, form_support.error));
     });

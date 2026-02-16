@@ -85,52 +85,6 @@
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.tax_1'), 'tax_percent_1', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-4">
-                <?= form_input([
-                    'name'  => 'tax_names[]',
-                    'id'    => 'tax_name_1',
-                    'class' => 'form-control input-sm',
-                    'value' => $config['default_tax_1_name']
-                ]) ?>
-            </div>
-            <div class="col-xs-4">
-                <div class="input-group input-group-sm">
-                    <?= form_input([
-                        'name'  => 'tax_percents[]',
-                        'id'    => 'tax_percent_name_1',
-                        'class' => 'form-control input-sm',
-                        'value' => to_tax_decimals($config['default_tax_1_rate'])
-                    ]) ?>
-                    <span class="input-group input-group-addon"><b>%</b></span>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.tax_2'), 'tax_percent_2', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-4">
-                <?= form_input([
-                    'name'  => 'tax_names[]',
-                    'id'    => 'tax_name_2',
-                    'class' => 'form-control input-sm',
-                    'value' => $config['default_tax_2_name']
-                ]) ?>
-            </div>
-            <div class="col-xs-4">
-                <div class="input-group input-group-sm">
-                    <?= form_input([
-                        'name'  => 'tax_percents[]',
-                        'id'    => 'tax_percent_name_2',
-                        'class' => 'form-control input-sm',
-                        'value' => to_tax_decimals($config['default_tax_2_rate'])
-                    ]) ?>
-                    <span class="input-group input-group-addon"><b>%</b></span>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group form-group-sm">
             <?= form_label(lang('Items.reorder_level'), 'reorder_level', ['class' => 'control-label col-xs-3']) ?>
             <div class="col-xs-4">
                 <?= form_input([
@@ -178,17 +132,9 @@
             delay: 10
         });
 
-        var confirm_message = false;
-        $('#tax_percent_name_2, #tax_name_2').prop('disabled', true),
-            $('#tax_percent_name_1, #tax_name_1').blur(function() {
-                var disabled = !($('#tax_percent_name_1').val() + $('#tax_name_1').val());
-                $('#tax_percent_name_2, #tax_name_2').prop('disabled', disabled);
-                confirm_message = disabled ? '' : "<?= lang('Items.confirm_bulk_edit_wipe_taxes') ?>";
-            });
-
         $('#item_form').validate($.extend({
             submitHandler: function(form) {
-                if (!confirm_message || confirm(confirm_message)) {
+                {
                     $(form).ajaxSubmit({
                         beforeSubmit: function(arr, $form, options) {
                             arr.push({
@@ -211,9 +157,6 @@
                 unit_price: {
                     number: true
                 },
-                tax_percent: {
-                    number: true
-                },
                 quantity: {
                     number: true
                 },
@@ -225,9 +168,6 @@
             messages: {
                 unit_price: {
                     number: "<?= lang('Items.unit_price_number') ?>"
-                },
-                tax_percent: {
-                    number: "<?= lang('Items.tax_percent_number') ?>"
                 },
                 quantity: {
                     number: "<?= lang('Items.quantity_number') ?>"

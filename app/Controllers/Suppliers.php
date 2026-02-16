@@ -34,7 +34,6 @@ class Suppliers extends Persons
     public function getRow($row_id): void
     {
         $data_row = get_supplier_data_row($this->supplier->get_info($row_id));
-        $data_row['category'] = $this->supplier->get_category_name($data_row['category']);
 
         echo json_encode($data_row);
     }
@@ -58,7 +57,6 @@ class Suppliers extends Persons
 
         foreach ($suppliers->getResult() as $supplier) {
             $row = get_supplier_data_row($supplier);
-            $row['category'] = $this->supplier->get_category_name($row['category']);
             $data_rows[] = $row;
         }
 
@@ -124,24 +122,24 @@ class Suppliers extends Persons
         $person_data = [
             'first_name'   => $first_name,
             'last_name'    => $last_name,
-            'gender'       => $this->request->getPost('gender'),
+            'gender'       => $this->request->getPost('gender') ?? '',
             'email'        => $email,
-            'phone_number' => $this->request->getPost('phone_number', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-            'address_1'    => $this->request->getPost('address_1', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-            'address_2'    => $this->request->getPost('address_2', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-            'city'         => $this->request->getPost('city', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-            'state'        => $this->request->getPost('state', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-            'zip'          => $this->request->getPost('zip', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-            'country'      => $this->request->getPost('country', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-            'comments'     => $this->request->getPost('comments', FILTER_SANITIZE_FULL_SPECIAL_CHARS)
+            'phone_number' => $this->request->getPost('phone_number', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '',
+            'address_1'    => $this->request->getPost('address_1', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '',
+            'address_2'    => $this->request->getPost('address_2', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '',
+            'city'         => $this->request->getPost('city', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '',
+            'state'        => $this->request->getPost('state', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '',
+            'zip'          => $this->request->getPost('zip', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '',
+            'country'      => $this->request->getPost('country', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '',
+            'comments'     => $this->request->getPost('comments', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? ''
         ];
 
         $supplier_data = [
             'company_name'   => $this->request->getPost('company_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
             'agency_name'    => $this->request->getPost('agency_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-            'category'       => $this->request->getPost('category', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
+            'category'       => GOODS_SUPPLIER,
             'account_number' => $this->request->getPost('account_number') == '' ? null : $this->request->getPost('account_number', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-            'tax_id'         => $this->request->getPost('tax_id', FILTER_SANITIZE_NUMBER_INT)
+            'tax_id'         => $this->request->getPost('tax_id', FILTER_SANITIZE_NUMBER_INT) ?? ''
         ];
 
         if ($this->supplier->save_supplier($person_data, $supplier_data, $supplier_id)) {

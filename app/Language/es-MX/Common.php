@@ -1,7 +1,7 @@
 <?php
 
 return [
-    "address_1"                      => "Dirección 1",
+    "address_1"                      => "Dirección",
     "address_2"                      => "Dirección 2",
     "admin"                          => "",
     "city"                           => "Ciudad",
@@ -73,8 +73,8 @@ return [
     "search"                         => "Buscar",
     "search_options"                 => "Opciones de búsqueda",
     "searched_for"                   => "Buscado por",
-    "software_short"                 => "OSPOS",
-    "software_title"                 => "Punto de Venta de Código Abierto (Open Source Point of Sale)",
+    "software_short"                 => "MSystem",
+    "software_title"                 => "MSystem - Punto de Venta",
     "state"                          => "Estado",
     "submit"                         => "Enviar",
     "total_spent"                    => "Total Gastado",
@@ -82,8 +82,8 @@ return [
     "view_recent_sales"              => "Ver Ventas Recientes",
     "website"                        => "sitio web",
     "welcome"                        => "Bienvenido(a)",
-    "welcome_message"                => "Bienvenido(a) a OSPOS, haga clic en un módulo para comenzar.",
+    "welcome_message"                => "Bienvenido(a) a MSystem, haga clic en un módulo para comenzar.",
     "yes"                            => "Si",
-    "you_are_using_ospos"            => "Está utilizando la versión de Código Abierto de Punto de Venta",
+    "you_are_using_ospos"            => "Está utilizando MSystem",
     "zip"                            => "CP",
 ];

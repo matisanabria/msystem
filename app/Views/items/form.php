@@ -216,72 +216,6 @@
             </div>
         </div>
 
-        <?php if (!$use_destination_based_tax) { ?>
-            <div class="form-group form-group-sm">
-                <?= form_label(lang('Items.tax_1'), 'tax_percent_1', ['class' => 'control-label col-xs-3']) ?>
-                <div class="col-xs-4">
-                    <?= form_input([
-                        'name'  => 'tax_names[]',
-                        'id'    => 'tax_name_1',
-                        'class' => 'form-control input-sm',
-                        'value' => $item_tax_info[0]['name'] ?? $config['default_tax_1_name']
-                    ]) ?>
-                </div>
-                <div class="col-xs-4">
-                    <div class="input-group input-group-sm">
-                        <?= form_input([
-                            'name'  => 'tax_percents[]',
-                            'id'    => 'tax_percent_name_1',
-                            'class' => 'form-control input-sm',
-                            'value' => isset($item_tax_info[0]['percent']) ? to_tax_decimals($item_tax_info[0]['percent']) : to_tax_decimals($default_tax_1_rate)
-                        ]) ?>
-                        <span class="input-group-addon input-sm"><b>%</b></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group form-group-sm">
-                <?= form_label(lang('Items.tax_2'), 'tax_percent_2', ['class' => 'control-label col-xs-3']) ?>
-                <div class="col-xs-4">
-                    <?= form_input([
-                        'name'  => 'tax_names[]',
-                        'id'    => 'tax_name_2',
-                        'class' => 'form-control input-sm',
-                        'value' => $item_tax_info[1]['name'] ?? $config['default_tax_2_name']
-                    ]) ?>
-                </div>
-                <div class="col-xs-4">
-                    <div class="input-group input-group-sm">
-                        <?= form_input([
-                            'name'  => 'tax_percents[]',
-                            'class' => 'form-control input-sm',
-                            'id'    => 'tax_percent_name_2',
-                            'value' => isset($item_tax_info[1]['percent']) ? to_tax_decimals($item_tax_info[1]['percent']) : to_tax_decimals($default_tax_2_rate)
-                        ]) ?>
-                        <span class="input-group-addon input-sm"><b>%</b></span>
-                    </div>
-                </div>
-            </div>
-        <?php } ?>
-
-        <?php if ($use_destination_based_tax): ?>
-            <div class="form-group form-group-sm">
-                <?= form_label(lang('Taxes.tax_category'), 'tax_category', ['class' => 'control-label col-xs-3']) ?>
-                <div class="col-xs-8">
-                    <div class="input-group input-group-sm">
-                        <?= form_input([
-                            'name'  => 'tax_category',
-                            'id'    => 'tax_category',
-                            'class' => 'form-control input-sm',
-                            'size'  => '50',
-                            'value' => $tax_category
-                        ]) ?>
-                        <?= form_hidden('tax_category_id', $tax_category_id) ?>
-                    </div>
-                </div>
-            </div>
-        <?php endif; ?>
-
         <?php if ($include_hsn): ?>
             <div class="form-group form-group-sm">
                 <?= form_label(lang('Items.hsn_code'), 'category', ['class' => 'control-label col-xs-3']) ?>
@@ -461,26 +395,6 @@
 
         $('#submit').click(function() {
             let stay_open = false;
-        });
-
-        $("input[name='tax_category']").change(function() {
-            !$(this).val() && $(this).val('');
-        });
-
-        var fill_tax_category_value = function(event, ui) {
-            event.preventDefault();
-            $("input[name='tax_category_id']").val(ui.item.value);
-            $("input[name='tax_category']").val(ui.item.label);
-        };
-
-        $('#tax_category').autocomplete({
-            source: "<?= 'taxes/suggestTaxCategories' ?>",
-            minChars: 0,
-            delay: 15,
-            cacheLength: 1,
-            appendTo: '.modal-content',
-            select: fill_tax_category_value,
-            focus: fill_tax_category_value
         });
 
         var fill_low_sell_value = function(event, ui) {

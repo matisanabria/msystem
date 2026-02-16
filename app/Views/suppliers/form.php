@@ -25,13 +25,6 @@
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Suppliers.category'), 'category', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-6">
-                <?= form_dropdown('category', $categories, $person_info->category, ['class' => 'form-control', 'id' => 'category']) ?>
-            </div>
-        </div>
-
-        <div class="form-group form-group-sm">
             <?= form_label(lang('Suppliers.agency_name'), 'agency_name', ['class' => 'control-label col-xs-3']) ?>
             <div class="col-xs-8">
                 <?= form_input([
@@ -45,29 +38,7 @@
 
         <?= view('people/form_basic_info') ?>
 
-        <div class="form-group form-group-sm">
-            <?= form_label(lang('Suppliers.account_number'), 'account_number', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <?= form_input([
-                    'name'  => 'account_number',
-                    'id'    => 'account_number',
-                    'class' => 'form-control input-sm',
-                    'value' => $person_info->account_number
-                ]) ?>
-            </div>
-        </div>
 
-        <div class="form-group form-group-sm">
-            <?= form_label(lang('Suppliers.tax_id'), 'tax_id', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <?= form_input([
-                    'name'  => 'tax_id',
-                    'id'    => 'tax_id',
-                    'class' => 'form-control input-sm',
-                    'value' => $person_info->tax_id
-                ]) ?>
-            </div>
-        </div>
 
     </fieldset>
 <?= form_close() ?>

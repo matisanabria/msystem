@@ -38,6 +38,8 @@ return [
     "reports_desc"               => "View and generate Reports.",
     "sales"                      => "Sales",
     "sales_desc"                 => "Process Sales and Returns.",
+    "service_tickets"            => "Service Tickets",
+    "service_tickets_desc"       => "Add, Update, Delete, and Search Service Tickets.",
     "suppliers"                  => "Suppliers",
     "suppliers_desc"             => "Add, Update, Delete, and Search Suppliers.",
     "taxes"                      => "Taxes",

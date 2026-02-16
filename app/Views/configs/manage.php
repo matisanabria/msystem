@@ -12,9 +12,6 @@
         <a data-toggle="tab" href="#general_tab" title="<?= lang('Config.general_configuration') ?>"><?= lang('Config.general') ?></a>
     </li>
     <li role="presentation">
-        <a data-toggle="tab" href="#tax_tab" title="<?= lang('Config.tax_configuration') ?>"><?= lang('Config.tax') ?></a>
-    </li>
-    <li role="presentation">
         <a data-toggle="tab" href="#locale_tab" title="<?= lang('Config.locale_configuration') ?>"><?= lang('Config.locale') ?></a>
     </li>
     <li role="presentation">
@@ -46,9 +43,6 @@
     </div>
     <div class="tab-pane" id="general_tab">
         <?= view('configs/general_config') ?>
-    </div>
-    <div class="tab-pane" id="tax_tab">
-        <?= view('configs/tax_config') ?>
     </div>
     <div class="tab-pane" id="locale_tab">
         <?= view('configs/locale_config') ?>

@@ -2,8 +2,6 @@
 
 use App\Models\Attribute;
 use App\Models\Employee;
-use App\Models\Item_taxes;
-use App\Models\Tax_category;
 use CodeIgniter\Database\ResultInterface;
 use CodeIgniter\Session\Session;
 use Config\OSPOS;
@@ -270,13 +268,6 @@ function get_customer_manage_table_headers(): string
 {
     $headers = customer_headers();
 
-    $employee = model(Employee::class);
-    $session = session();
-
-    if ($employee->has_grant('messages', $session->get('person_id'))) {
-        $headers[] = ['messages' => '', 'sortable' => false];
-    }
-
     return transform_headers($headers);
 }
 
@@ -294,17 +285,6 @@ function get_customer_data_row(object $person, object $stats): array
         'email'            => empty($person->email) ? '' : mailto($person->email, $person->email),
         'phone_number'     => $person->phone_number,
         'total'            => to_currency($stats->total),
-        'messages'         => empty($person->phone_number)
-            ? ''
-            : anchor(
-                "Messages/view/$person->person_id",
-                '<span class="glyphicon glyphicon-phone"></span>',
-                [
-                    'class'           => 'modal-dlg',
-                    'data-btn-submit' => lang('Common.submit'),
-                    'title'           => lang('Messages.sms_send')
-                ]
-            ),
         'edit'             => anchor(
             "$controller/view/$person->person_id",
             '<span class="glyphicon glyphicon-edit"></span>',
@@ -323,7 +303,6 @@ function supplier_headers(): array
         ['people.person_id' => lang('Common.id')],
         ['company_name'     => lang('Suppliers.company_name')],
         ['agency_name'      => lang('Suppliers.agency_name')],
-        ['category'         => lang('Suppliers.category')],
         ['last_name'        => lang('Common.last_name')],
         ['first_name'       => lang('Common.first_name')],
         ['email'            => lang('Common.email')],
@@ -337,13 +316,6 @@ function supplier_headers(): array
 function get_suppliers_manage_table_headers(): string
 {
     $headers = supplier_headers();
-
-    $employee = model(Employee::class);
-    $session = session();
-
-    if ($employee->has_grant('messages', $session->get('person_id'))) {
-        $headers[] = ['messages' => ''];
-    }
 
     return transform_headers($headers);
 }
@@ -359,22 +331,10 @@ function get_supplier_data_row(object $supplier): array
         'people.person_id' => $supplier->person_id,
         'company_name'     => html_entity_decode($supplier->company_name),
         'agency_name'      => $supplier->agency_name,
-        'category'         => $supplier->category,
         'last_name'        => $supplier->last_name,
         'first_name'       => $supplier->first_name,
         'email'            => empty($supplier->email) ? '' : mailto($supplier->email, $supplier->email),
         'phone_number'     => $supplier->phone_number,
-        'messages'         => empty($supplier->phone_number)
-            ? ''
-            : anchor(
-                "Messages/view/$supplier->person_id",
-                '<span class="glyphicon glyphicon-phone"></span>',
-                [
-                    'class'           => "modal-dlg",
-                    'data-btn-submit' => lang('Common.submit'),
-                    'title'           => lang('Messages.sms_send')
-                ]
-            ),
         'edit'             => anchor(
             "$controller/view/$supplier->person_id",
             '<span class="glyphicon glyphicon-edit"></span>',
@@ -436,28 +396,9 @@ function get_items_manage_table_headers(): string
 function get_item_data_row(object $item): array
 {
     $attribute = model(Attribute::class);
-    $item_taxes = model(Item_taxes::class);
-    $tax_category = model(Tax_category::class);
     $config = config(OSPOS::class)->settings;
 
-    if ($config['use_destination_based_tax']) {
-        if ($item->tax_category_id == null) {    // TODO: === ?
-            $tax_percents = '-';
-        } else {
-            $tax_category_info = $tax_category->get_info($item->tax_category_id);
-            $tax_percents = $tax_category_info->tax_category;
-        }
-    } else {
-        $item_tax_info = $item_taxes->get_info($item->item_id);
-        $tax_percents = '';
-        foreach ($item_tax_info as $tax_info) {
-            $tax_percents .= to_tax_decimals($tax_info['percent']) . '%, ';
-        }
-
-        // Remove ', ' from last item
-        $tax_percents = substr($tax_percents, 0, -2);
-        $tax_percents = !$tax_percents ? '-' : $tax_percents;
-    }
+    $tax_percents = ($config['default_tax_1_name'] ?? 'IVA') . ' ' . ($config['default_tax_1_rate'] ?? '10') . '%';
 
     $controller = get_controller();
 
@@ -908,6 +849,64 @@ function get_cash_up_data_row(object $cash_up): array
                 'class'           => 'modal-dlg',
                 'data-btn-submit' => lang('Common.submit'),
                 'title'           => lang(ucfirst($controller) . ".update")
+            ]
+        )
+    ];
+}
+
+function service_ticket_headers(): array
+{
+    return [
+        ['customer_name'             => lang('Service_tickets.customer')],
+        ['receiver_name'             => lang('Service_tickets.receiver')],
+        ['technician_name'           => lang('Service_tickets.technician')],
+        ['device_name'               => lang('Service_tickets.device_name')],
+        ['issue_description'         => lang('Service_tickets.issue_description')],
+        ['status'                    => lang('Service_tickets.status'), 'escape' => false],
+        ['estimated_price'           => lang('Service_tickets.estimated_price')],
+        ['created_at'                => lang('Service_tickets.created_at')]
+    ];
+}
+
+/**
+ * Get the header for the service tickets tabular view
+ */
+function get_service_tickets_manage_table_headers(): string
+{
+    return transform_headers(service_ticket_headers());
+}
+
+/**
+ * Get the html data row for the service ticket
+ */
+function get_service_ticket_data_row(object $ticket): array
+{
+    $controller = get_controller();
+
+    $status_labels = [
+        'received'  => '<span class="label label-info">' . lang('Service_tickets.status_received') . '</span>',
+        'waiting'   => '<span class="label label-warning">' . lang('Service_tickets.status_waiting') . '</span>',
+        'in_repair' => '<span class="label label-primary">' . lang('Service_tickets.status_in_repair') . '</span>',
+        'repaired'  => '<span class="label label-success">' . lang('Service_tickets.status_repaired') . '</span>',
+    ];
+
+    return [
+        'service_tickets.ticket_id' => $ticket->ticket_id,
+        'customer_name'             => $ticket->customer_name,
+        'receiver_name'             => $ticket->receiver_name,
+        'technician_name'           => $ticket->technician_name,
+        'device_name'               => $ticket->device_name,
+        'issue_description'         => $ticket->issue_description,
+        'status'                    => $status_labels[$ticket->status] ?? $ticket->status,
+        'estimated_price'           => to_currency($ticket->estimated_price),
+        'created_at'                => $ticket->created_at,
+        'edit'                      => anchor(
+            "$controller/view/$ticket->ticket_id",
+            '<span class="glyphicon glyphicon-edit"></span>',
+            [
+                'class'           => 'modal-dlg',
+                'data-btn-submit' => lang('Common.submit'),
+                'title'           => lang('Service_tickets.update')
             ]
         )
     ];

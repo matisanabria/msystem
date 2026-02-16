@@ -6,7 +6,6 @@ use App\Libraries\Barcode_lib;
 use App\Libraries\Mailchimp_lib;
 use App\Libraries\Receiving_lib;
 use App\Libraries\Sale_lib;
-use App\Libraries\Tax_lib;
 use App\Models\Appconfig;
 use App\Models\Attribute;
 use App\Models\Customer_rewards;
@@ -14,7 +13,6 @@ use App\Models\Dinner_table;
 use App\Models\Module;
 use App\Models\Enums\Rounding_mode;
 use App\Models\Stock_location;
-use App\Models\Tax;
 use CodeIgniter\Database\BaseConnection;
 use CodeIgniter\Encryption\EncrypterInterface;
 use Config\Database;
@@ -32,14 +30,12 @@ class Config extends Secure_Controller
     private Barcode_lib $barcode_lib;
     private Sale_lib $sale_lib;
     private Receiving_lib $receiving_lib;
-    private Tax_lib $tax_lib;
     private Appconfig $appconfig;
     private Attribute $attribute;
     private Customer_rewards $customer_rewards;
     private Dinner_table $dinner_table;
     protected Module $module;
     private Stock_location $stock_location;
-    private Tax $tax;
     private array $config;
 
 
@@ -50,14 +46,12 @@ class Config extends Secure_Controller
         $this->barcode_lib = new Barcode_lib();
         $this->sale_lib = new Sale_lib();
         $this->receiving_lib = new receiving_lib();
-        $this->tax_lib = new Tax_lib();
         $this->appconfig = model(Appconfig::class);
         $this->attribute = model(Attribute::class);
         $this->customer_rewards = model(Customer_rewards::class);
         $this->dinner_table = model(Dinner_table::class);
         $this->module = model(Module::class);
         $this->stock_location = model(Stock_location::class);
-        $this->tax = model(Tax::class);
         $this->config = config(OSPOS::class)->settings;
         $this->db = Database::connect();
 
@@ -228,9 +222,6 @@ class Config extends Secure_Controller
         $data['register_mode_options'] = $this->sale_lib->get_register_mode_options();
         $data['invoice_type_options'] = $this->sale_lib->get_invoice_type_options();
         $data['rounding_options'] = rounding_mode::get_rounding_options();
-        $data['tax_code_options'] = $this->tax_lib->get_tax_code_options();
-        $data['tax_category_options'] = $this->tax_lib->get_tax_category_options();
-        $data['tax_jurisdiction_options'] = $this->tax_lib->get_tax_jurisdiction_options();
         $data['show_office_group'] = $this->module->get_show_office_group();
         $data['currency_code'] = $this->config['currency_code'] ?? '';
         $data['dbVersion'] = mysqli_get_server_info($this->db->getConnection());
@@ -636,18 +627,6 @@ class Config extends Secure_Controller
 
 
     /**
-     * Gets all tax categories.
-     *
-     * @return void
-     */
-    public function ajax_tax_categories(): void    // TODO: Is this function called anywhere in the code?
-    {
-        $tax_categories = $this->tax->get_all_tax_categories()->getResultArray();
-
-        echo view('partial/tax_categories', ['tax_categories' => $tax_categories]);
-    }
-
-    /**
      * Gets all customer rewards. Used in app/Views/configs/reward_config.php
      *
      * @return void
@@ -769,31 +748,6 @@ class Config extends Secure_Controller
      * @return void
      * @noinspection PhpUnused
      */
-    public function postSaveTax(): void
-    {
-        $default_tax_1_rate = $this->request->getPost('default_tax_1_rate');
-        $default_tax_2_rate = $this->request->getPost('default_tax_2_rate');
-
-        $batch_save_data = [
-            'default_tax_1_rate'        => parse_tax(filter_var($default_tax_1_rate, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION)),
-            'default_tax_1_name'        => $this->request->getPost('default_tax_1_name'),
-            'default_tax_2_rate'        => parse_tax(filter_var($default_tax_2_rate, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION)),
-            'default_tax_2_name'        => $this->request->getPost('default_tax_2_name'),
-            'tax_included'              => $this->request->getPost('tax_included') != null,
-            'use_destination_based_tax' => $this->request->getPost('use_destination_based_tax') != null,
-            'default_tax_code'          => $this->request->getPost('default_tax_code'),
-            'default_tax_category'      => $this->request->getPost('default_tax_category'),
-            'default_tax_jurisdiction'  => $this->request->getPost('default_tax_jurisdiction'),
-            'tax_id'                    => $this->request->getPost('tax_id', FILTER_SANITIZE_NUMBER_INT)
-        ];
-
-        $success = $this->appconfig->batch_save($batch_save_data);
-
-        $message = lang('Config.saved_' . ($success ? '' : 'un') . 'successfully');
-
-        echo json_encode(['success' => $success, 'message' => $message]);
-    }
-
     /**
      * Saves customer rewards configuration. Used in app/Views/configs/reward_config.php
      *

@@ -79,32 +79,6 @@
                     </div>
                 </div>
 
-                <div class="form-group form-group-sm">
-                    <?= form_label(lang('Employees.language'), 'language', ['class' => 'control-label col-xs-3']) ?>
-                    <div class="col-xs-8">
-                        <div class="input-group">
-                            <?php
-                            $languages = get_languages();
-                            $languages[':'] = lang('Employees.system_language');
-                            $language_code = current_language_code();
-                            $language = current_language();
-
-                            // If No language is set then it will display "System Language"
-                            if ($language_code === current_language_code(true)) {
-                                $language_code = '';
-                                $language = '';
-                            }
-
-                            echo form_dropdown(
-                                'language',
-                                $languages,
-                                "$language_code:$language",
-                                ['class' => 'form-control input-sm']
-                            );
-                            ?>
-                        </div>
-                    </div>
-                </div>
             </fieldset>
         </div>
 
@@ -113,7 +87,13 @@
                 <p><?= lang('Employees.permission_desc') ?></p>
 
                 <ul id="permission_list">
-                    <?php foreach ($all_modules as $module) { ?>
+                    <?php
+                    $hidden_modules = ['config', 'attributes', 'item_kits', 'taxes', 'messages', 'giftcards', 'cashups', 'expenses', 'expenses_categories', 'timeclocks', 'timeclocks_categories', 'migrate'];
+                    $hidden_subpermissions = ['reports_discounts', 'reports_taxes'];
+                    ?>
+                    <?php foreach ($all_modules as $module) {
+                        if (in_array($module->module_id, $hidden_modules)) continue;
+                    ?>
                         <li>
                             <?= form_checkbox("grant_$module->module_id", $module->module_id, $module->grant == 1, 'class="module"') ?>
                             <?= form_dropdown(
@@ -131,6 +111,7 @@
                             <span class="small"><?= lang("Module.$module->module_id" . '_desc') ?></span>
                             <?php
                             foreach ($all_subpermissions as $permission) {
+                                if (in_array($permission->permission_id, $hidden_subpermissions)) continue;
                                 $exploded_permission = explode('_', $permission->permission_id, 2);
                                 if ($permission->module_id == $module->module_id) {
                                     $lang_key = $module->module_id . '.' . $exploded_permission[1];

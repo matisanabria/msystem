@@ -6,7 +6,6 @@ use App\Libraries\Mailchimp_lib;
 
 use App\Models\Customer;
 use App\Models\Customer_rewards;
-use App\Models\Tax_code;
 use CodeIgniter\HTTP\DownloadResponse;
 use Config\OSPOS;
 use Config\Services;
@@ -18,7 +17,6 @@ class Customers extends Persons
     private Mailchimp_lib $mailchimp_lib;
     private Customer_rewards $customer_rewards;
     private Customer $customer;
-    private Tax_code $tax_code;
     private array $config;
 
     public function __construct()
@@ -27,7 +25,6 @@ class Customers extends Persons
         $this->mailchimp_lib = new Mailchimp_lib();
         $this->customer_rewards = model(Customer_rewards::class);
         $this->customer = model(Customer::class);
-        $this->tax_code = model(Tax_code::class);
         $this->config = config(OSPOS::class)->settings;
 
         $encrypter = Services::encrypter();
@@ -158,14 +155,6 @@ class Customers extends Persons
         $employee_info = $this->employee->get_info($info->employee_id);
         $data['employee'] = $employee_info->first_name . ' ' . $employee_info->last_name;
 
-        $tax_code_info = $this->tax_code->get_info($info->sales_tax_code_id);
-
-        if ($tax_code_info->tax_code != null) {
-            $data['sales_tax_code_label'] = $tax_code_info->tax_code . ' ' . $tax_code_info->tax_code_name;
-        } else {
-            $data['sales_tax_code_label'] = '';
-        }
-
         $packages = ['' => lang('Items.none')];
         foreach ($this->customer_rewards->get_all()->getResultArray() as $row) {
             $packages[$row['package_id']] = $row['package_name'];
@@ -173,7 +162,7 @@ class Customers extends Persons
         $data['packages'] = $packages;
         $data['selected_package'] = $info->package_id;
 
-        $data['use_destination_based_tax'] = $this->config['use_destination_based_tax'];
+        $data['use_destination_based_tax'] = false;
 
         // Retrieve the total amount the customer spent so far together with min, max and average values
         $stats = $this->customer->get_stats($customer_id);
@@ -246,16 +235,16 @@ class Customers extends Persons
         $person_data = [
             'first_name'   => $first_name,
             'last_name'    => $last_name,
-            'gender'       => $this->request->getPost('gender', FILTER_SANITIZE_NUMBER_INT),
+            'gender'       => $this->request->getPost('gender', FILTER_SANITIZE_NUMBER_INT) ?? '',
             'email'        => $email,
-            'phone_number' => $this->request->getPost('phone_number'),
-            'address_1'    => $this->request->getPost('address_1'),
-            'address_2'    => $this->request->getPost('address_2'),
-            'city'         => $this->request->getPost('city'),
-            'state'        => $this->request->getPost('state'),
-            'zip'          => $this->request->getPost('zip'),
-            'country'      => $this->request->getPost('country'),
-            'comments'     => $this->request->getPost('comments')
+            'phone_number' => $this->request->getPost('phone_number') ?? '',
+            'address_1'    => $this->request->getPost('address_1') ?? '',
+            'address_2'    => $this->request->getPost('address_2') ?? '',
+            'city'         => $this->request->getPost('city') ?? '',
+            'state'        => $this->request->getPost('state') ?? '',
+            'zip'          => $this->request->getPost('zip') ?? '',
+            'country'      => $this->request->getPost('country') ?? '',
+            'comments'     => $this->request->getPost('comments') ?? ''
         ];
 
         $date_formatter = date_create_from_format($this->config['dateformat'] . ' ' . $this->config['timeformat'], $this->request->getPost('date'));
@@ -263,15 +252,14 @@ class Customers extends Persons
         $customer_data = [
             'consent'           => $this->request->getPost('consent') != null,
             'account_number'    => $this->request->getPost('account_number') == '' ? null : $this->request->getPost('account_number'),
-            'tax_id'            => $this->request->getPost('tax_id'),
+            'tax_id'            => $this->request->getPost('tax_id') ?? '',
             'company_name'      => $this->request->getPost('company_name') == '' ? null : $this->request->getPost('company_name'),
             'discount'          => $this->request->getPost('discount') == '' ? 0.00 : parse_decimals($this->request->getPost('discount')),
             'discount_type'     => $this->request->getPost('discount_type') == null ? PERCENT : $this->request->getPost('discount_type', FILTER_SANITIZE_NUMBER_INT),
             'package_id'        => $this->request->getPost('package_id') == '' ? null : $this->request->getPost('package_id'),
-            'taxable'           => $this->request->getPost('taxable') != null,
+            'taxable'           => 1,
             'date'              => $date_formatter->format('Y-m-d H:i:s'),
-            'employee_id'       => $this->request->getPost('employee_id', FILTER_SANITIZE_NUMBER_INT),
-            'sales_tax_code_id' => $this->request->getPost('sales_tax_code_id') == '' ? null : $this->request->getPost('sales_tax_code_id', FILTER_SANITIZE_NUMBER_INT)
+            'employee_id'       => $this->request->getPost('employee_id', FILTER_SANITIZE_NUMBER_INT)
         ];
 
         if ($this->customer->save_customer($person_data, $customer_data, $customer_id)) {

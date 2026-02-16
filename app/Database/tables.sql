@@ -14,17 +14,22 @@ CREATE TABLE `ospos_app_config` (
 --
 
 INSERT INTO `ospos_app_config` (`key`, `value`) VALUES
-    ('address', '123 Nowhere street'),
-    ('company', 'Open Source Point of Sale'),
-    ('default_tax_rate', '8'),
-    ('email', 'changeme@example.com'),
+    ('address', ''),
+    ('company', 'Mi Empresa'),
+    ('default_tax_rate', '10'),
+    ('default_tax_1_name', 'IVA'),
+    ('default_tax_1_rate', '10'),
+    ('default_tax_2_name', ''),
+    ('default_tax_2_rate', ''),
+    ('email', ''),
     ('fax', ''),
-    ('phone', '555-555-5555'),
-    ('return_policy', 'Test'),
-    ('timezone', 'America/New_York'),
+    ('phone', ''),
+    ('return_policy', ''),
+    ('timezone', 'America/Campo_Grande'),
     ('website', ''),
     ('company_logo', ''),
-    ('tax_included', '0'),
+    ('tax_included', '1'),
+    ('use_destination_based_tax', '0'),
     ('barcode_content', 'id'),
     ('barcode_type', 'Code39'),
     ('barcode_width', '250'),
@@ -39,15 +44,15 @@ INSERT INTO `ospos_app_config` (`key`, `value`) VALUES
     ('barcode_page_width', '100'),
     ('barcode_page_cellspacing', '20'),
     ('barcode_generate_if_empty', '0'),
-    ('receipt_show_taxes', '0'),
+    ('receipt_show_taxes', '1'),
     ('receipt_show_total_discount', '1'),
     ('receipt_show_description', '1'),
     ('receipt_show_serialnumber', '1'),
     ('invoice_enable', '1'),
-    ('recv_invoice_format', '$CO'),
-    ('sales_invoice_format', '$CO'),
-    ('invoice_email_message', 'Dear $CU, In attachment the receipt for sale $INV'),
-    ('invoice_default_comments', 'This is a default comment'),
+    ('recv_invoice_format', '{CO}'),
+    ('sales_invoice_format', '{CO}'),
+    ('invoice_email_message', 'Estimado {CU}, adjuntamos el recibo de la venta {ISEQ}'),
+    ('invoice_default_comments', ''),
     ('print_silently', '1'),
     ('print_header', '0'),
     ('print_footer', '0'),
@@ -57,15 +62,16 @@ INSERT INTO `ospos_app_config` (`key`, `value`) VALUES
     ('print_right_margin', '0'),
     ('default_sales_discount', '0'),
     ('lines_per_page', '25'),
-    ('dateformat', 'm/d/Y'),
+    ('dateformat', 'd/m/Y'),
     ('timeformat', 'H:i:s'),
-    ('currency_symbol', '$'),
-    ('number_locale', 'en_US'),
+    ('currency_symbol', 'Gs.'),
+    ('currency_code', 'PYG'),
+    ('number_locale', 'es_PY'),
     ('thousands_separator', '1'),
-    ('currency_decimals', '2'),
-    ('tax_decimals', '2'),
+    ('currency_decimals', '0'),
+    ('tax_decimals', '0'),
     ('quantity_decimals', '0'),
-    ('country_codes', 'us'),
+    ('country_codes', 'py'),
     ('msg_msg', ''),
     ('msg_uid', ''),
     ('msg_src', ''),
@@ -81,8 +87,8 @@ INSERT INTO `ospos_app_config` (`key`, `value`) VALUES
     ('receipt_template', 'receipt_default'),
     ('theme', 'flatly'),
     ('statistics', '1'),
-    ('language', 'english'),
-    ('language_code', 'en');
+    ('language', 'spanish'),
+    ('language_code', 'es-MX');
 
 
 -- --------------------------------------------------------
@@ -319,6 +325,7 @@ INSERT INTO `ospos_modules` (`name_lang_key`, `desc_lang_key`, `sort`, `module_i
     ('module_receivings', 'module_receivings_desc', 60, 'receivings'),
     ('module_reports', 'module_reports_desc', 50, 'reports'),
     ('module_sales', 'module_sales_desc', 70, 'sales'),
+    ('module_service_tickets', 'module_service_tickets_desc', 15, 'service_tickets'),
     ('module_suppliers', 'module_suppliers_desc', 40, 'suppliers');
 
 -- --------------------------------------------------------
@@ -390,6 +397,7 @@ INSERT INTO `ospos_permissions` (`permission_id`, `module_id`) VALUES
     ('receivings', 'receivings'),
     ('reports', 'reports'),
     ('sales', 'sales'),
+    ('service_tickets', 'service_tickets'),
     ('config', 'config'),
     ('suppliers', 'suppliers');
 
@@ -440,7 +448,33 @@ INSERT INTO `ospos_grants` (`permission_id`, `person_id`) VALUES
     ('items_stock', 1),
     ('sales_stock', 1),
     ('receivings_stock', 1),
+    ('service_tickets', 1),
     ('suppliers', 1);
+
+--
+-- Table structure for table `ospos_service_tickets`
+--
+
+CREATE TABLE `ospos_service_tickets` (
+    `ticket_id` int(10) NOT NULL AUTO_INCREMENT,
+    `customer_id` int(10) DEFAULT NULL,
+    `employee_id_receiver` int(10) NOT NULL,
+    `employee_id_technician` int(10) DEFAULT NULL,
+    `device_name` varchar(255) NOT NULL,
+    `issue_description` text NOT NULL,
+    `status` varchar(20) NOT NULL DEFAULT 'received',
+    `notes` text,
+    `estimated_price` decimal(15,2) NOT NULL DEFAULT '0.00',
+    `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted` int(1) NOT NULL DEFAULT '0',
+    PRIMARY KEY (`ticket_id`),
+    KEY `customer_id` (`customer_id`),
+    KEY `employee_id_receiver` (`employee_id_receiver`),
+    KEY `employee_id_technician` (`employee_id_technician`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `ospos_receivings`

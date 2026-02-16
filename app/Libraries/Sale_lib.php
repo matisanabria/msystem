@@ -8,7 +8,6 @@ use App\Models\Dinner_table;
 use App\Models\Item;
 use App\Models\Item_kit_items;
 use App\Models\Item_quantity;
-use App\Models\Item_taxes;
 use App\Models\Enums\Rounding_mode;
 use App\Models\Sale;
 use CodeIgniter\Session\Session;
@@ -29,7 +28,6 @@ class Sale_lib
     private Item $item;
     private Item_kit_items $item_kit_items;
     private Item_quantity $item_quantity;
-    private Item_taxes $item_taxes;
     private Sale $sale;
     private Stock_location $stock_location;
     private Session $session;
@@ -45,7 +43,6 @@ class Sale_lib
         $this->item = model(Item::class);
         $this->item_kit_items = model(Item_kit_items::class);
         $this->item_quantity = model(Item_quantity::class);
-        $this->item_taxes = model(Item_taxes::class);
         $this->sale = model(Sale::class);
         $this->stock_location = model(Stock_location::class);
         $this->config = config(OSPOS::class)->settings;
@@ -1462,14 +1459,11 @@ class Sale_lib
      */
     public function get_item_total_tax_exclusive(int $item_id, string $quantity, string $price, string $discount, int $discount_type, bool $include_discount = false): string
     {
-        $tax_info = $this->item_taxes->get_info($item_id);
         $item_total = $this->get_item_total($quantity, $price, $discount, $discount_type, $include_discount);
 
-        // Only additive tax here
-        foreach ($tax_info as $tax) {
-            $tax_percentage = $tax['percent'];
-            $item_total = bcsub($item_total, $this->get_item_tax($quantity, $price, $discount, $discount_type, $tax_percentage));
-        }
+        // IVA 10% included: subtract IVA from total
+        $tax_percentage = $this->config['default_tax_1_rate'] ?? '10';
+        $item_total = bcsub($item_total, $this->get_item_tax($quantity, $price, $discount, $discount_type, $tax_percentage));
 
         return $item_total;
     }
@@ -1487,13 +1481,9 @@ class Sale_lib
      */
     public function get_extended_total_tax_exclusive(int $item_id, string $discounted_extended_amount, string $quantity, string $price, string $discount = '0.0', int $discount_type = 0): string
     {
-        $tax_info = $this->item_taxes->get_info($item_id);
-
-        // Only additive tax here
-        foreach ($tax_info as $tax) {
-            $tax_percentage = $tax['percent'];
-            $discounted_extended_amount = bcsub($discounted_extended_amount, $this->get_item_tax($quantity, $price, $discount, $discount_type, $tax_percentage));
-        }
+        // IVA 10% included: subtract IVA from total
+        $tax_percentage = $this->config['default_tax_1_rate'] ?? '10';
+        $discounted_extended_amount = bcsub($discounted_extended_amount, $this->get_item_tax($quantity, $price, $discount, $discount_type, $tax_percentage));
 
         return $discounted_extended_amount;
     }

@@ -653,10 +653,8 @@ class Sale extends Model
             $attribute->copy_attribute_links($item_data['item_id'], 'sale_id', $sale_id);
         }
 
-        if ($customer_id == NEW_ENTRY || $customer->taxable) {
-            $this->save_sales_tax($sale_id, $sales_taxes[0]);
-            $this->save_sales_items_taxes($sale_id, $sales_taxes[1]);
-        }
+        $this->save_sales_tax($sale_id, $sales_taxes[0]);
+        $this->save_sales_items_taxes($sale_id, $sales_taxes[1]);
 
         if ($config['dinner_table_enable']) {
             $dinner_table = model(Dinner_table::class);
