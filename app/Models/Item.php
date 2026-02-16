@@ -339,6 +339,8 @@ class Item extends Model
      */
     public function get_info_by_id_or_number(string $item_id, bool $include_deleted = true)
     {
+        $item_id = trim($item_id);
+
         $builder = $this->db->table('items');
         $builder->groupStart();
         $builder->where('items.item_number', $item_id);
