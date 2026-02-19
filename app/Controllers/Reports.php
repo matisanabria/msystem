@@ -15,6 +15,7 @@ use App\Models\Reports\Specific_discount;
 use App\Models\Reports\Specific_employee;
 use App\Models\Reports\Specific_supplier;
 use App\Models\Reports\Summary_categories;
+use App\Models\Reports\Summary_categories_trend;
 use App\Models\Reports\Summary_customers;
 use App\Models\Reports\Summary_discounts;
 use App\Models\Reports\Summary_employees;
@@ -37,6 +38,7 @@ class Reports extends Secure_Controller
     private Summary_sales $summary_sales;
     private Summary_sales_taxes $summary_sales_taxes;
     private Summary_categories $summary_categories;
+    private Summary_categories_trend $summary_categories_trend;
     private Summary_expenses_categories $summary_expenses_categories;
     private Summary_customers $summary_customers;
     private Summary_items $summary_items;
@@ -64,6 +66,7 @@ class Reports extends Secure_Controller
         $this->summary_sales = model(Summary_sales::class);
         $this->summary_sales_taxes = model(Summary_sales_taxes::class);
         $this->summary_categories = model(Summary_categories::class);
+        $this->summary_categories_trend = model(Summary_categories_trend::class);
         $this->summary_expenses_categories = model(Summary_expenses_categories::class);
         $this->summary_customers = model(Summary_customers::class);
         $this->summary_items = model(Summary_items::class);
@@ -884,6 +887,93 @@ class Reports extends Secure_Controller
             'series_data_1'  => $series,
             'summary_data_1' => $summary,
             'show_currency'  => true
+        ];
+
+        echo view('reports/graphical', $data);
+    }
+
+    /**
+     * Graphical category trends report - multi-series line chart showing top categories over time.
+     *
+     * @param string $start_date
+     * @param string $end_date
+     * @param string $sale_type
+     * @param string $location_id
+     * @return void
+     */
+    public function graphical_summary_trend_categories(string $start_date, string $end_date, string $sale_type, string $location_id = 'all'): void
+    {
+        $this->clearCache();
+
+        $inputs = [
+            'start_date'  => $start_date,
+            'end_date'    => $end_date,
+            'sale_type'   => $sale_type,
+            'location_id' => $location_id
+        ];
+
+        $top_categories = $this->summary_categories_trend->getTopCategories($inputs, 5);
+
+        if (empty($top_categories)) {
+            $data = [
+                'title'                    => lang('Reports.categories_trend_report'),
+                'subtitle'                 => $this->_get_subtitle_report(['start_date' => $start_date, 'end_date' => $end_date]),
+                'chart_type'               => 'reports/graphs/line_multi',
+                'labels_1'                 => [],
+                'series_data_1'            => [],
+                'summary_data_1'           => [],
+                'legend_labels'            => [],
+                'yaxis_title'              => lang('Reports.revenue'),
+                'xaxis_title'              => lang('Reports.date'),
+                'show_currency'            => true,
+                'hide_cost_profit_toggle'  => true
+            ];
+
+            echo view('reports/graphical', $data);
+            return;
+        }
+
+        $report_data = $this->summary_categories_trend->getData($inputs);
+        $summary = $this->summary_categories_trend->getSummaryData($inputs);
+
+        // Build a date => category => total pivot
+        $dates = [];
+        $pivot = [];
+        foreach ($report_data as $row) {
+            $date = to_date(strtotime($row['sale_date']));
+            $dates[$date] = true;
+            if (in_array($row['category'], $top_categories, true)) {
+                $pivot[$row['category']][$date] = round((float)$row['total'], 2);
+            }
+        }
+
+        $labels = array_keys($dates);
+
+        // Build Chartist multi-series: array of arrays (one per category)
+        $series = [];
+        foreach ($top_categories as $category) {
+            $category_data = [];
+            foreach ($labels as $date) {
+                $category_data[] = [
+                    'meta'  => $category,
+                    'value' => $pivot[$category][$date] ?? 0
+                ];
+            }
+            $series[] = $category_data;
+        }
+
+        $data = [
+            'title'                    => lang('Reports.categories_trend_report'),
+            'subtitle'                 => $this->_get_subtitle_report(['start_date' => $start_date, 'end_date' => $end_date]),
+            'chart_type'               => 'reports/graphs/line_multi',
+            'labels_1'                 => $labels,
+            'series_data_1'            => $series,
+            'summary_data_1'           => isset($summary['total']) ? ['total' => $summary['total']] : [],
+            'legend_labels'            => $top_categories,
+            'yaxis_title'              => lang('Reports.revenue'),
+            'xaxis_title'              => lang('Reports.date'),
+            'show_currency'            => true,
+            'hide_cost_profit_toggle'  => true
         ];
 
         echo view('reports/graphical', $data);

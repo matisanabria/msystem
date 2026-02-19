@@ -7,12 +7,11 @@
 
 $detailed_reports = [
     'reports_sales'      => 'detailed',
-    'reports_receivings' => 'detailed',
     'reports_customers'  => 'specific',
-    'reports_discounts'  => 'specific',
-    'reports_employees'  => 'specific',
     'reports_suppliers'  => 'specific',
 ];
+
+$allowed_summary_reports = ['reports_customers', 'reports_items', 'reports_suppliers', 'reports_sales'];
 ?>
 
 <?= view('partial/header') ?>
@@ -31,30 +30,11 @@ if (isset($error)) {
     <div class="col-md-4">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <h3 class="panel-title"><span class="glyphicon glyphicon-stats">&nbsp;</span><?= lang('Reports.graphical_reports') ?></h3>
-            </div>
-            <div class="list-group">
-                <?php foreach ($permission_ids as $permission_id) {
-                    if (can_show_report($permission_id, ['inventory', 'receiving'])) {
-                        $link = get_report_link($permission_id, 'graphical_summary');
-                ?>
-                        <a class="list-group-item" href="<?= $link['path'] ?>"><?= $link['label'] ?></a>
-                <?php
-                    }
-                }
-                ?>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
                 <h3 class="panel-title"><span class="glyphicon glyphicon-list">&nbsp;</span><?= lang('Reports.summary_reports') ?></h3>
             </div>
             <div class="list-group">
                 <?php foreach ($permission_ids as $permission_id) {
-                    if (can_show_report($permission_id, ['inventory', 'receiving'])) {
+                    if (can_show_report($permission_id, ['inventory', 'receiving']) && in_array($permission_id, $allowed_summary_reports, true)) {
                         $link = get_report_link($permission_id, 'summary');
                 ?>
                         <a class="list-group-item" href="<?= $link['path'] ?>"><?= $link['label'] ?></a>
@@ -83,7 +63,9 @@ if (isset($error)) {
                 ?>
             </div>
         </div>
+    </div>
 
+    <div class="col-md-4">
         <?php if (in_array('reports_inventory', $permission_ids, true)) { ?>
             <div class="panel panel-primary">
                 <div class="panel-heading">
@@ -96,6 +78,23 @@ if (isset($error)) {
                     ?>
                     <a class="list-group-item" href="<?= $inventory_low_report['path'] ?>"><?= $inventory_low_report['label'] ?></a>
                     <a class="list-group-item" href="<?= $inventory_summary_report['path'] ?>"><?= $inventory_summary_report['label'] ?></a>
+                </div>
+            </div>
+        <?php } ?>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <?php if (in_array('reports_categories', $permission_ids, true) || in_array('reports_sales', $permission_ids, true)) { ?>
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><span class="glyphicon glyphicon-signal">&nbsp;</span><?= lang('Reports.graphical_reports') ?></h3>
+                </div>
+                <div class="list-group">
+                    <a class="list-group-item" href="<?= site_url('reports/graphical_summary_trend_categories') ?>">
+                        <span class="glyphicon glyphicon-stats">&nbsp;</span><?= lang('Reports.categories_trend_report') ?>
+                    </a>
                 </div>
             </div>
         <?php } ?>

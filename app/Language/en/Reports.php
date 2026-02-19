@@ -6,6 +6,8 @@ return [
     "canceled"                                => "Canceled",
     "categories"                              => "Categories",
     "categories_summary_report"               => "Categories Summary Report",
+    "categories_trend_report"                 => "Top Categories Trend",
+    "categories_trend"                        => "Categories Trend",
     "category"                                => "Category",
     "code_canceled"                           => "CNL",
     "code_invoice"                            => "INV",

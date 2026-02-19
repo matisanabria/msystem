@@ -19,6 +19,7 @@
 
 <div class="ct-chart ct-golden-section" id="chart1"></div>
 
+<?php if (empty($hide_cost_profit_toggle)) { ?>
 <div id="toolbar">
     <div class="pull-left form-inline" role="toolbar">
         <!-- Toggle Button -->
@@ -27,6 +28,7 @@
         </button>
     </div>
 </div>
+<?php } ?>
 
 <?= view($chart_type) ?>
 
