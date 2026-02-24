@@ -14,12 +14,12 @@ Font used for lettermark: `Helvetica Light`
 
 ### Primary logo styles for use on light backgrounds
 
-|   | <img width="100px" src="logo.svg"> | <img width="100px" src="emblem.svg"> | <img width="100px" src="mark.svg"> | <img width="100px" src="lettermark.svg"> |
+|   | <img width="100px" src="logo.png"> | <img width="100px" src="emblem.png"> | <img width="100px" src="mark.png"> | <img width="100px" src="emblem.png"> |
 |---|---|---|---|---|
 | **Logo style** | Logo | Emblem | Mark | Lettermark |
 
 ### Secondary logo styles or use on dark backgrounds
 
-|   | <img width="100px" src="logo-white.svg"> | <img width="100px" src="emblem-white.svg"> | <img width="100px" src="mark-white.svg"> | <img width="100px" src="lettermark-white.svg"> |
+|   | <img width="100px" src="logo-white.png"> | <img width="100px" src="emblem-white.png"> | <img width="100px" src="mark-white.png"> | <img width="100px" src="emblem-white.png"> |
 |---|---|---|---|---|
 | **Logo style** | Logo | Emblem | Mark | Lettermark |

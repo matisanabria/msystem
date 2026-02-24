@@ -3,6 +3,8 @@
 return [
     "admin_cashups"              => "Administrador de retiro",
     "admin_cashups_desc"         => "Administrador de retiro",
+    "backup"                     => "Respaldo",
+    "backup_desc"                => "Crear y descargar respaldos de la base de datos.",
     "attributes"                 => "Atributos",
     "attributes_desc"            => "Agregar, Actualizar, Eliminar y Buscar atributos.",
     "both"                       => "Ambos",

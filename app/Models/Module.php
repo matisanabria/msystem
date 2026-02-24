@@ -103,7 +103,7 @@ class Module extends Model
         $builder->join('grants', 'permissions.permission_id = grants.permission_id');
         $builder->where('person_id', $person_id);
         $builder->whereIn('menu_group', $menus);
-        $builder->whereNotIn('modules.module_id', ['expenses', 'expenses_categories', 'cashups', 'giftcards', 'messages', 'item_kits', 'config', 'attributes']);
+        $builder->whereNotIn('modules.module_id', ['expenses_categories', 'cashups', 'giftcards', 'messages', 'item_kits', 'config', 'attributes']);
         $builder->where('sort !=', 0);
         $builder->orderBy('sort', 'asc');
 
@@ -122,7 +122,7 @@ class Module extends Model
         $builder->join('grants', 'permissions.permission_id = grants.permission_id');
         $builder->where('person_id', $person_id);
         $builder->whereIn('menu_group', $menus);
-        $builder->whereNotIn('modules.module_id', ['expenses', 'expenses_categories', 'cashups', 'giftcards', 'messages', 'item_kits', 'config', 'attributes']);
+        $builder->whereNotIn('modules.module_id', ['expenses_categories', 'cashups', 'giftcards', 'messages', 'item_kits', 'config', 'attributes']);
         $builder->where('sort !=', 0);
         $builder->orderBy('sort', 'asc');
 

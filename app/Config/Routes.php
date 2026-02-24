@@ -14,6 +14,14 @@ $routes->post('login', 'Login::index');
 $routes->add('no_access/index/(:segment)', 'No_access::index/$1');
 $routes->add('no_access/index/(:segment)/(:segment)', 'No_access::index/$1/$2');
 
+$routes->get('backup', 'Backup::getIndex');
+$routes->post('backup/create', 'Backup::postCreate');
+$routes->get('backup/download/(:segment)', 'Backup::getDownload/$1');
+$routes->post('backup/delete', 'Backup::postDelete');
+
+$routes->add('reports/summary_monthly_sales', 'Reports::date_input_only');
+$routes->add('reports/summary_monthly_sales/(:any)/(:any)', 'Reports::monthly_summary_sales/$1/$2');
+
 $routes->add('reports/summary_(:any)/(:any)/(:any)', 'Reports::Summary_$1/$2/$3/$4');
 $routes->add('reports/summary_expenses_categories', 'Reports::date_input_only');
 $routes->add('reports/summary_payments', 'Reports::date_input_only');

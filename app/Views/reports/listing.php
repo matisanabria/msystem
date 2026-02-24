@@ -86,6 +86,21 @@ if (isset($error)) {
 
 <div class="row">
     <div class="col-md-4">
+        <?php if (in_array('reports_sales', $permission_ids, true)) { ?>
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><span class="glyphicon glyphicon-usd">&nbsp;</span><?= lang('Reports.monthly_financial_summary_report') ?></h3>
+                </div>
+                <div class="list-group">
+                    <a class="list-group-item" href="<?= site_url('reports/summary_monthly_sales') ?>">
+                        <span class="glyphicon glyphicon-stats">&nbsp;</span><?= lang('Reports.monthly_financial_summary_report') ?>
+                    </a>
+                </div>
+            </div>
+        <?php } ?>
+    </div>
+
+    <div class="col-md-4">
         <?php if (in_array('reports_categories', $permission_ids, true) || in_array('reports_sales', $permission_ids, true)) { ?>
             <div class="panel panel-success">
                 <div class="panel-heading">

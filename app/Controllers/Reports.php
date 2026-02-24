@@ -22,6 +22,7 @@ use App\Models\Reports\Summary_employees;
 use App\Models\Reports\Summary_expenses_categories;
 use App\Models\Reports\Summary_items;
 use App\Models\Reports\Summary_payments;
+use App\Models\Reports\Monthly_financial_summary;
 use App\Models\Reports\Summary_sales;
 use App\Models\Reports\Summary_sales_taxes;
 use App\Models\Reports\Summary_suppliers;
@@ -34,6 +35,7 @@ class Reports extends Secure_Controller
     private Attribute $attribute;
     private array $config;
     private Customer $customer;
+    private Monthly_financial_summary $monthly_financial_summary;
     private Stock_location $stock_location;
     private Summary_sales $summary_sales;
     private Summary_sales_taxes $summary_sales_taxes;
@@ -62,6 +64,7 @@ class Reports extends Secure_Controller
         $this->attribute = config(Attribute::class);
         $this->config = config(OSPOS::class)->settings;
         $this->customer = model(Customer::class);
+        $this->monthly_financial_summary = model(Monthly_financial_summary::class);
         $this->stock_location = model(Stock_location::class);
         $this->summary_sales = model(Summary_sales::class);
         $this->summary_sales_taxes = model(Summary_sales_taxes::class);
@@ -2179,6 +2182,53 @@ class Reports extends Secure_Controller
         ];
 
         echo view('reports/tabular', $data);
+    }
+
+    /**
+     * Monthly Financial Summary report (Resumen Financiero Mensual).
+     * Shows Revenue, COGS, Gross Result, Expenses and Net Result per month.
+     * Accessed via routes/summary_monthly_sales which maps to reports_sales permission.
+     *
+     * @param string $start_date
+     * @param string $end_date
+     * @return void
+     */
+    public function monthly_summary_sales(string $start_date, string $end_date): void
+    {
+        $this->clearCache();
+
+        $inputs = [
+            'start_date' => $start_date,
+            'end_date'   => $end_date,
+        ];
+
+        $report_data = $this->monthly_financial_summary->getData($inputs);
+        $summary     = $this->monthly_financial_summary->getSummaryData($inputs);
+
+        $rows = [];
+        foreach ($report_data as $row) {
+            [$year, $month_num] = explode('-', $row['month_key']);
+            $month_label = date('M Y', mktime(0, 0, 0, (int)$month_num, 1, (int)$year));
+
+            $rows[] = [
+                'month'           => $month_label,
+                'ingresos'        => to_currency($row['ingresos']),
+                'costos'          => to_currency($row['costos']),
+                'resultado_bruto' => to_currency($row['resultado_bruto']),
+                'egresos'         => to_currency($row['egresos']),
+                'resultado_final' => to_currency($row['resultado_final']),
+            ];
+        }
+
+        $data = [
+            'title'    => lang('Reports.monthly_financial_summary_report'),
+            'subtitle' => $this->_get_subtitle_report(['start_date' => $start_date, 'end_date' => $end_date]),
+            'headers'  => $this->monthly_financial_summary->getDataColumns(),
+            'data'     => $rows,
+            'summary'  => $summary,
+        ];
+
+        echo view('reports/monthly_financial_summary', $data);
     }
 
     /**

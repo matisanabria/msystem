@@ -149,4 +149,11 @@ return [
     "work_orders"                             => "Work Orders",
     "zero_and_less"                           => "Zero and less",
     "toggle_cost_and_profit"                  => "Toggle Cost & Profit",
+    "monthly_financial_summary_report"        => "Monthly Financial Summary",
+    "month"                                   => "Month",
+    "total_ingresos"                          => "Revenue",
+    "total_costos"                            => "Cost of Goods",
+    "resultado_bruto"                         => "Gross Result",
+    "total_egresos"                           => "Expenses",
+    "resultado_final"                         => "Net Result",
 ];

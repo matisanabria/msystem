@@ -141,22 +141,26 @@ class Employees extends Persons
             }
         }
 
+        $app_config = config(\Config\OSPOS::class)->settings;
+        $language_post = $this->request->getPost('language', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $exploded = !empty($language_post) ? explode(":", $language_post) : [];
+        $language_code = !empty($exploded[0]) ? $exploded[0] : ($app_config['language_code'] ?? 'en');
+        $language      = !empty($exploded[1]) ? $exploded[1] : ($app_config['language'] ?? 'english');
+
         // Password has been changed OR first time password set
         if (!empty($this->request->getPost('password')) && ENVIRONMENT != 'testing') {
-            $exploded = explode(":", $this->request->getPost('language', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
             $employee_data = [
                 'username'      => $this->request->getPost('username', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
                 'password'      => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
                 'hash_version'  => 2,
-                'language_code' => $exploded[0],
-                'language'      => $exploded[1]
+                'language_code' => $language_code,
+                'language'      => $language
             ];
         } else { // Password not changed
-            $exploded = explode(":", $this->request->getPost('language', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
             $employee_data = [
                 'username'      => $this->request->getPost('username', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-                'language_code' => $exploded[0],
-                'language'      => $exploded[1]
+                'language_code' => $language_code,
+                'language'      => $language
             ];
         }
 
