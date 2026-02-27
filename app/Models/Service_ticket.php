@@ -56,7 +56,7 @@ class Service_ticket extends Model
     public function get_info(int $ticket_id): object
     {
         $builder = $this->db->table('service_tickets AS service_tickets');
-        $builder->select('service_tickets.*, CONCAT(customer.first_name, " ", customer.last_name) AS customer_name, CONCAT(receiver.first_name, " ", receiver.last_name) AS receiver_name, CONCAT(technician.first_name, " ", technician.last_name) AS technician_name');
+        $builder->select('service_tickets.*, CONCAT(customer.first_name, " ", customer.last_name) AS customer_name, customer.phone_number AS customer_phone, customer.identification_type AS customer_identification_type, customer.identification AS customer_identification, CONCAT(receiver.first_name, " ", receiver.last_name) AS receiver_name, CONCAT(technician.first_name, " ", technician.last_name) AS technician_name');
         $builder->join('people AS customer', 'customer.person_id = service_tickets.customer_id', 'left');
         $builder->join('people AS receiver', 'receiver.person_id = service_tickets.employee_id_receiver', 'left');
         $builder->join('people AS technician', 'technician.person_id = service_tickets.employee_id_technician', 'left');

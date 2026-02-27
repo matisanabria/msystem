@@ -908,6 +908,10 @@ function get_service_ticket_data_row(object $ticket): array
                 'data-btn-submit' => lang('Common.submit'),
                 'title'           => lang('Service_tickets.update')
             ]
+        ) . '&nbsp;' . anchor(
+            "$controller/receipt/$ticket->ticket_id",
+            '<span class="glyphicon glyphicon-print"></span>',
+            ['target' => '_blank', 'title' => lang('Common.print')]
         )
     ];
 }

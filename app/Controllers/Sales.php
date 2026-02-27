@@ -789,7 +789,7 @@ class Sales extends Secure_Controller
 
                 // Save the data to the sales table
                 $data['sale_id_num'] = $this->sale->save_value($sale_id, $data['sale_status'], $data['cart'], $customer_id, $employee_id, $data['comments'], $invoice_number, $work_order_number, $quote_number, $sale_type, $data['payments'], $data['dinner_table'], $tax_details);
-                $data['sale_id'] = 'POS ' . $data['sale_id_num'];
+                $data['sale_id'] = $data['sale_id_num'];
 
                 // Resort and filter cart lines for printing
                 $data['cart'] = $this->sale_lib->sort_and_filter_cart($data['cart']);
@@ -875,7 +875,7 @@ class Sales extends Secure_Controller
 
             $data['sale_id_num'] = $this->sale->save_value($sale_id, $data['sale_status'], $data['cart'], $customer_id, $employee_id, $data['comments'], $invoice_number, $work_order_number, $quote_number, $sale_type, $data['payments'], $data['dinner_table'], $tax_details);
 
-            $data['sale_id'] = 'POS ' . $data['sale_id_num'];
+            $data['sale_id'] = $data['sale_id_num'];
 
             $data['cart'] = $this->sale_lib->sort_and_filter_cart($data['cart']);
 
@@ -1036,8 +1036,10 @@ class Sales extends Secure_Controller
             if ($customer_info->tax_id != '') {
                 $data['customer_info'] .= "\n" . lang('Sales.tax_id') . ": " . $customer_info->tax_id;
             }
-            $data['tax_id']        = $customer_info->tax_id;
-            $data['customer_phone'] = $customer_info->phone_number ?? '';
+            $data['tax_id']                       = $customer_info->tax_id;
+            $data['customer_phone']               = $customer_info->phone_number ?? '';
+            $data['customer_identification_type'] = $customer_info->identification_type ?? '';
+            $data['customer_identification']      = $customer_info->identification ?? '';
         }
 
         return $customer_info;
@@ -1097,7 +1099,7 @@ class Sales extends Secure_Controller
         $this->_load_customer_data($this->sale_lib->get_customer(), $data);
 
         $data['sale_id_num'] = $sale_id;
-        $data['sale_id'] = 'POS ' . $sale_id;
+        $data['sale_id'] = $sale_id;
         $data['comments'] = $sale_info['comment'];
         $data['invoice_number'] = $sale_info['invoice_number'];
         $data['quote_number'] = $sale_info['quote_number'];

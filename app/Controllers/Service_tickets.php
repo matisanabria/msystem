@@ -165,6 +165,21 @@ class Service_tickets extends Secure_Controller
     }
 
     /**
+     * Renders the printable receipt (2 copies) for a service ticket.
+     * @param int $ticket_id
+     * @return void
+     */
+    public function getReceipt(int $ticket_id): void
+    {
+        $ticket = $this->service_ticket->get_info($ticket_id);
+        $data['ticket'] = $ticket;
+        $data['config'] = $this->config;
+        $data['ticket_date'] = to_datetime(strtotime($ticket->created_at));
+
+        echo view('service_tickets/receipt', $data);
+    }
+
+    /**
      * @return void
      */
     public function getSuggest(): void

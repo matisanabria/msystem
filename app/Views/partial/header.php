@@ -16,6 +16,7 @@ $request = Services::request();
 
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <base href="<?= base_url() ?>">
     <title><?= esc($config['company']) . ' | MSystem' ?></title>
     <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
@@ -101,6 +102,13 @@ $request = Services::request();
     <style>
         html {
             overflow: auto;
+        }
+
+        @media (max-width: 767px) {
+            .topbar .navbar-left  { display: none; }
+            .topbar .navbar-center { display: none; }
+            .topbar .navbar-right  { float: none; text-align: center; padding: 4px 0; }
+            .topbar .container     { padding: 0 8px; }
         }
     </style>
 </head>
