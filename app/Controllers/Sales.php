@@ -71,7 +71,37 @@ class Sales extends Secure_Controller
     public function getIndex(): void
     {
         $this->session->set('allow_temp_items', 1);
+        $this->sale_lib->set_employee(NEW_ENTRY);    // Clear active cashier so PIN modal shows
         $this->_reload();    // TODO: Hungarian Notation
+    }
+
+    /**
+     * Verifies a cashier PIN and sets the active employee in the sale session.
+     * Returns JSON {success, name} or {success, message}.
+     *
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function postVerifyPin(): void
+    {
+        $pin = $this->request->getPost('pin', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+        if (empty($pin) || !ctype_digit($pin) || strlen($pin) !== 4) {
+            echo json_encode(['success' => false, 'message' => lang('Sales.pin_invalid')]);
+            return;
+        }
+
+        $employee = $this->employee->get_by_pin($pin);
+
+        if ($employee === false) {
+            echo json_encode(['success' => false, 'message' => lang('Sales.pin_incorrect')]);
+            return;
+        }
+
+        $this->sale_lib->set_employee($employee->person_id);
+        $name = $employee->first_name . ' ' . mb_substr($employee->last_name, 0, 1) . '.';
+
+        echo json_encode(['success' => true, 'name' => $name]);
     }
 
     /**
@@ -653,7 +683,10 @@ class Sales extends Secure_Controller
         $data['transaction_date'] = to_date($__time);
         $data['show_stock_locations'] = $this->stock_location->show_locations('sales');
         $data['comments'] = $this->sale_lib->get_comment();
-        $employee_id = $this->employee->get_logged_in_employee_info()->person_id;
+        $sale_emp = $this->sale_lib->get_employee();
+        $employee_id = ($sale_emp > 0)
+            ? $sale_emp
+            : $this->employee->get_logged_in_employee_info()->person_id;
         $employee_info = $this->employee->get_info($employee_id);
         $data['employee'] = $employee_info->first_name . ' ' . mb_substr($employee_info->last_name, 0, 1);
 
@@ -1003,7 +1036,8 @@ class Sales extends Secure_Controller
             if ($customer_info->tax_id != '') {
                 $data['customer_info'] .= "\n" . lang('Sales.tax_id') . ": " . $customer_info->tax_id;
             }
-            $data['tax_id'] = $customer_info->tax_id;
+            $data['tax_id']        = $customer_info->tax_id;
+            $data['customer_phone'] = $customer_info->phone_number ?? '';
         }
 
         return $customer_info;
@@ -1196,6 +1230,15 @@ class Sales extends Secure_Controller
 
         $data['quote_number'] = $this->sale_lib->get_quote_number();
         $data['work_order_number'] = $this->sale_lib->get_work_order_number();
+
+        $sale_emp = $this->sale_lib->get_employee();
+        $data['current_cashier_id'] = $sale_emp;
+        if ($sale_emp > 0) {
+            $emp_info = $this->employee->get_info($sale_emp);
+            $data['current_cashier_name'] = $emp_info->first_name . ' ' . mb_substr($emp_info->last_name, 0, 1) . '.';
+        } else {
+            $data['current_cashier_name'] = '';
+        }
 
         // TODO: the if/else set below should be converted to a switch
         if ($this->sale_lib->get_mode() == 'sale_invoice') {    // TODO: Duplicated code.

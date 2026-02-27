@@ -901,24 +901,9 @@ class Sale extends Model
     /**
      * Gets sale payment options
      */
-    public function get_payment_options(bool $giftcard = true, bool $reward_points = true): array
+    public function get_payment_options(bool $giftcard = false, bool $reward_points = false): array
     {
-        $payments = get_payment_options();
-
-        if ($giftcard) {
-            $payments[lang('Sales.giftcard')] = lang('Sales.giftcard');
-        }
-
-        if ($reward_points) {
-            $payments[lang('Sales.rewards')] = lang('Sales.rewards');
-        }
-        $sale_lib = new Sale_lib();
-        if ($sale_lib->get_mode() == 'sale_work_order') {
-            $payments[lang('Sales.cash_deposit')] = lang('Sales.cash_deposit');
-            $payments[lang('Sales.credit_deposit')] = lang('Sales.credit_deposit');
-        }
-
-        return $payments;
+        return get_payment_options();
     }
 
     /**

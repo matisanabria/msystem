@@ -6,6 +6,6 @@ return [
     "half_five"  => "Cinco y media",
     "half_odd"   => "Mitad impar",
     "half_up"    => "Medio arriba",
-    "round_down" => "Truncado",
+    "round_down" => "Redondeo abajo",
     "round_up"   => "Redondeo arriba",
 ];

@@ -27,7 +27,9 @@ class Person extends Model
         'zip',
         'country',
         'comments',
-        'gender'
+        'gender',
+        'identification_type',
+        'identification'
     ];
 
     /**

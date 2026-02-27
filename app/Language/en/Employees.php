@@ -42,4 +42,6 @@ return [
     "username_duplicate"           => "Employee username is already in use. Please choose another one.",
     "username_minlength"           => "Username must be at least 5 characters in length.",
     "username_required"            => "Username is a required field.",
+    "pin"                          => "Cashier PIN",
+    "pin_help"                     => "4 digits. Leave blank if the employee does not use the register.",
 ];

@@ -84,30 +84,29 @@
 </div>
 
 <div class="form-group form-group-sm">
-    <?= form_label(lang('Common.state'), 'state', ['class' => 'control-label col-xs-3']) ?>
+    <?= form_label(lang('Common.identification_type'), 'identification_type', ['class' => 'control-label col-xs-3']) ?>
     <div class="col-xs-8">
-        <?= form_input([
-            'name'  => 'state',
-            'id'    => 'state',
-            'class' => 'form-control input-sm',
-            'value' => $person_info->state
-        ]) ?>
+        <?= form_dropdown('identification_type', [
+            ''         => lang('Common.select_id_type'),
+            'CI'       => lang('Common.id_type_ci'),
+            'RUC'      => lang('Common.id_type_ruc'),
+            'DNI'      => lang('Common.id_type_dni'),
+            'PASAPORTE'=> lang('Common.id_type_passport'),
+        ], $person_info->identification_type ?? '', ['id' => 'identification_type', 'class' => 'form-control input-sm']) ?>
     </div>
 </div>
 
-<?php if (!isset($controller_name) || $controller_name !== 'customers'): ?>
 <div class="form-group form-group-sm">
-    <?= form_label(lang('Common.zip'), 'zip', ['class' => 'control-label col-xs-3']) ?>
+    <?= form_label(lang('Common.identification'), 'identification', ['class' => 'control-label col-xs-3']) ?>
     <div class="col-xs-8">
         <?= form_input([
-            'name'  => 'zip',
-            'id'    => 'postcode',
+            'name'  => 'identification',
+            'id'    => 'identification',
             'class' => 'form-control input-sm',
-            'value' => $person_info->zip
+            'value' => $person_info->identification ?? ''
         ]) ?>
     </div>
 </div>
-<?php endif; ?>
 
 <div class="form-group form-group-sm">
     <?= form_label(lang('Common.country'), 'country', ['class' => 'control-label col-xs-3']) ?>
@@ -138,27 +137,15 @@
     $(document).ready(function() {
         nominatim.init({
             fields: {
-                postcode: {
-                    dependencies: ["postcode", "city", "state", "country"],
-                    response: {
-                        field: 'postalcode',
-                        format: ["postcode", "village|town|hamlet|city_district|city", "state", "country"]
-                    }
-                },
-
                 city: {
-                    dependencies: ["postcode", "city", "state", "country"],
+                    dependencies: ["city", "country"],
                     response: {
-                        format: ["postcode", "village|town|hamlet|city_district|city", "state", "country"]
+                        format: ["village|town|hamlet|city_district|city", "country"]
                     }
-                },
-
-                state: {
-                    dependencies: ["state", "country"]
                 },
 
                 country: {
-                    dependencies: ["state", "country"]
+                    dependencies: ["country"]
                 }
             },
             language: '<?= current_language_code() ?>',

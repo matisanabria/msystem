@@ -79,6 +79,25 @@
                     </div>
                 </div>
 
+                <div class="form-group form-group-sm">
+                    <?= form_label(lang('Employees.pin'), 'pin', ['class' => 'control-label col-xs-3']) ?>
+                    <div class="col-xs-8">
+                        <div class="input-group">
+                            <span class="input-group-addon input-sm"><span class="glyphicon glyphicon-tag"></span></span>
+                            <?= form_input([
+                                'name'        => 'pin',
+                                'id'          => 'pin',
+                                'class'       => 'form-control input-sm',
+                                'value'       => $person_info->pin ?? '',
+                                'maxlength'   => '4',
+                                'inputmode'   => 'numeric',
+                                'placeholder' => '####'
+                            ]) ?>
+                        </div>
+                        <span class="help-block"><?= lang('Employees.pin_help') ?></span>
+                    </div>
+                </div>
+
             </fieldset>
         </div>
 

@@ -115,18 +115,18 @@ class Employees extends Persons
         $last_name = $this->nameize($last_name);
 
         $person_data = [
-            'first_name'   => $first_name,
-            'last_name'    => $last_name,
-            'gender'       => $this->request->getPost('gender', FILTER_SANITIZE_NUMBER_INT),
-            'email'        => $email,
-            'phone_number' => $this->request->getPost('phone_number', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-            'address_1'    => $this->request->getPost('address_1', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-            'address_2'    => $this->request->getPost('address_2', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-            'city'         => $this->request->getPost('city', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-            'state'        => $this->request->getPost('state', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-            'zip'          => $this->request->getPost('zip', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-            'country'      => $this->request->getPost('country', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-            'comments'     => $this->request->getPost('comments', FILTER_SANITIZE_FULL_SPECIAL_CHARS)
+            'first_name'          => $first_name,
+            'last_name'           => $last_name,
+            'gender'              => $this->request->getPost('gender', FILTER_SANITIZE_NUMBER_INT) ?? 0,
+            'email'               => $email,
+            'phone_number'        => $this->request->getPost('phone_number', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '',
+            'address_1'           => $this->request->getPost('address_1', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '',
+            'address_2'           => $this->request->getPost('address_2', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '',
+            'city'                => $this->request->getPost('city', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '',
+            'country'             => $this->request->getPost('country', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '',
+            'comments'            => $this->request->getPost('comments', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '',
+            'identification_type' => $this->request->getPost('identification_type', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '',
+            'identification'      => $this->request->getPost('identification', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? ''
         ];
 
         $grants_array = [];
@@ -147,6 +147,9 @@ class Employees extends Persons
         $language_code = !empty($exploded[0]) ? $exploded[0] : ($app_config['language_code'] ?? 'en');
         $language      = !empty($exploded[1]) ? $exploded[1] : ($app_config['language'] ?? 'english');
 
+        $pin_raw = $this->request->getPost('pin', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $pin = (ctype_digit((string)$pin_raw) && strlen((string)$pin_raw) === 4) ? $pin_raw : null;
+
         // Password has been changed OR first time password set
         if (!empty($this->request->getPost('password')) && ENVIRONMENT != 'testing') {
             $employee_data = [
@@ -154,13 +157,15 @@ class Employees extends Persons
                 'password'      => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
                 'hash_version'  => 2,
                 'language_code' => $language_code,
-                'language'      => $language
+                'language'      => $language,
+                'pin'           => $pin
             ];
         } else { // Password not changed
             $employee_data = [
                 'username'      => $this->request->getPost('username', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
                 'language_code' => $language_code,
-                'language'      => $language
+                'language'      => $language,
+                'pin'           => $pin
             ];
         }
 

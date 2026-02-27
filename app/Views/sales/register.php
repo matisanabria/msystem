@@ -37,6 +37,8 @@
  * @var float $non_cash_total
  * @var float $cash_amount_due
  * @var array $config
+ * @var int $current_cashier_id
+ * @var string $current_cashier_name
  */
 
 use App\Models\Employee;
@@ -109,6 +111,18 @@ helper('url');
                         ) ?>
                     </li>
                 <?php } ?>
+
+                <li class="pull-right" style="margin-right:8px; line-height:30px;">
+                    <?php if ($current_cashier_id > 0): ?>
+                        <span id="current_cashier_badge" class="label label-success" style="font-size:13px; padding:5px 10px;">
+                            <span class="glyphicon glyphicon-user"></span>&nbsp;<?= lang('Sales.cashier') ?>: <?= esc($current_cashier_name) ?>
+                        </span>
+                    <?php else: ?>
+                        <span id="current_cashier_badge" class="label label-default" style="font-size:13px; padding:5px 10px;">
+                            <span class="glyphicon glyphicon-user"></span>&nbsp;<?= lang('Sales.no_cashier') ?>
+                        </span>
+                    <?php endif; ?>
+                </li>
             </ul>
         </div>
     <?= form_close() ?>
@@ -262,21 +276,9 @@ helper('url');
                                     ?>
                                 </td>
                                 <td>&nbsp;</td>
-                                <td style="color: #2F4F4F;">
-                                    <?php
-                                    if ($item['is_serialized']) {
-                                        echo lang(ucfirst($controller_name) . '.serial');
-                                    }
-                                    ?>
-                                </td>
+                                <td></td>
                                 <td colspan="4" style="text-align: left;">
-                                    <?php
-                                    if ($item['is_serialized']) {
-                                        echo form_input(['name' => 'serialnumber', 'class' => 'form-control input-sm', 'value' => $item['serialnumber'], 'onClick' => 'this.select();']);
-                                    } else {
-                                        echo form_hidden('serialnumber', '');
-                                    }
-                                    ?>
+                                    <?= form_hidden('serialnumber', '') ?>
                                 </td>
                             <?php } ?>
                         </tr>
@@ -374,10 +376,6 @@ helper('url');
                 <th style="width: 55%;"><?= lang(ucfirst($controller_name) . '.quantity_of_items', [$item_count]) ?></th>
                 <th style="width: 45%; text-align: right;"><?= $total_units ?></th>
             </tr>
-            <tr>
-                <th style="width: 55%;"><?= lang(ucfirst($controller_name) . '.sub_total') ?></th>
-                <th style="width: 45%; text-align: right;"><?= to_currency($subtotal) ?></th>
-            </tr>
             <?php foreach ($taxes as $tax_group_index => $tax) { ?>
                 <tr>
                     <th style="width: 55%;"><?= (float)$tax['tax_rate'] . '% ' . $tax['tax_group'] ?></th>
@@ -397,7 +395,7 @@ helper('url');
                     <th style="width: 45%; text-align: right;"><?= to_currency($payments_total) ?></th>
                 </tr>
                 <tr>
-                    <th style="width: 55%; font-size: 120%"><?= lang(ucfirst($controller_name) . '.amount_due') ?></th>
+                    <th style="width: 55%; font-size: 120%"><?= lang('Sales.money_remaining') ?></th>
                     <th style="width: 45%; font-size: 120%; text-align: right;"><span id="sale_amount_due"><?= to_currency($amount_due) ?></span></th>
                 </tr>
             </table>
@@ -520,14 +518,6 @@ helper('url');
                                 </label>
                             </div>
 
-                            <?php if (!empty($customer_email)) { ?>
-                                <div class="col-xs-6">
-                                    <label for="email_receipt" class="control-label checkbox">
-                                        <?= form_checkbox(['name' => 'email_receipt', 'id' => 'email_receipt', 'value' => 1, 'checked' => $email_receipt]) ?>
-                                        <?= lang(ucfirst($controller_name) . '.email_receipt') ?>
-                                    </label>
-                                </div>
-                            <?php } ?>
                             <?php if ($mode == 'sale_work_order') { ?>
                                 <div class="col-xs-6">
                                     <label for="price_work_orders" class="control-label checkbox">
@@ -561,6 +551,64 @@ helper('url');
             }
         }
         ?>
+    </div>
+</div>
+
+<!-- PIN Identification Modal -->
+<div class="modal fade" id="pin_modal" tabindex="-1" role="dialog"
+     data-backdrop="static" data-keyboard="false" aria-labelledby="pin_modal_label">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="<?= site_url('home') ?>" class="close" style="float:right; font-size:1.5em;" title="<?= lang('Common.home') ?>">&times;</a>
+                <h4 class="modal-title" id="pin_modal_label">
+                    <span class="glyphicon glyphicon-user"></span>&nbsp;<?= lang('Sales.pin_identify') ?>
+                </h4>
+            </div>
+            <div class="modal-body" style="text-align:center;">
+                <p class="text-muted"><?= lang('Sales.pin_enter_prompt') ?></p>
+                <div style="margin: 0 auto; max-width: 180px;">
+                    <input type="password" id="pin_input" inputmode="numeric" maxlength="4"
+                           class="form-control input-lg" style="text-align:center; letter-spacing:0.4em; font-size:2em;"
+                           placeholder="????">
+                </div>
+                <div id="pin_error" class="text-danger" style="margin-top:10px; min-height:20px;"></div>
+            </div>
+            <div class="modal-footer" style="text-align:center;">
+                <button type="button" id="pin_submit_btn" class="btn btn-primary btn-lg">
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;<?= lang('Sales.pin_enter') ?>
+                </button>
+                <button type="button" id="pin_price_check_btn" class="btn btn-default btn-sm" style="display:block; margin:10px auto 0;">
+                    <span class="glyphicon glyphicon-search"></span>&nbsp;<?= lang('Sales.price_check') ?>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Price Check Modal -->
+<div class="modal fade" id="price_check_modal" tabindex="-1" role="dialog"
+     data-backdrop="static" data-keyboard="false" aria-labelledby="price_check_modal_label">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="price_check_modal_label">
+                    <span class="glyphicon glyphicon-search"></span>&nbsp;<?= lang('Sales.price_check') ?>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="text" id="price_check_input" class="form-control input-sm"
+                           placeholder="<?= lang('Sales.start_typing_item_name') ?>">
+                </div>
+                <div id="price_check_results" style="min-height:60px;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="price_check_back_btn" class="btn btn-default">
+                    <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<?= lang('Sales.pin_back') ?>
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -880,6 +928,131 @@ helper('url');
                 break;
         }
     }
+
+    // PIN Modal logic
+    $(document).ready(function() {
+        var currentCashierId = <?= (int)$current_cashier_id ?>;
+
+        function showPinModal() {
+            $('#pin_input').val('');
+            $('#pin_error').text('');
+            $('#pin_modal').modal('show');
+            setTimeout(function() { $('#pin_input').focus(); }, 400);
+        }
+
+        if (currentCashierId <= 0) {
+            showPinModal();
+        }
+
+        // Auto-submit when 4 digits are entered
+        $('#pin_input').on('input', function() {
+            var val = $(this).val().replace(/\D/g, '');
+            $(this).val(val);
+            if (val.length === 4) {
+                submitPin(val);
+            }
+        });
+
+        $('#pin_submit_btn').on('click', function() {
+            submitPin($('#pin_input').val());
+        });
+
+        $('#pin_input').on('keypress', function(e) {
+            if (e.which === 13) {
+                submitPin($(this).val());
+            }
+        });
+
+        function submitPin(pin) {
+            if (!pin || pin.length !== 4) {
+                showPinError('<?= lang('Sales.pin_invalid') ?>');
+                return;
+            }
+
+            $('#pin_submit_btn').prop('disabled', true);
+
+            $.ajax({
+                url: '<?= site_url('sales/verifyPin') ?>',
+                type: 'POST',
+                data: { pin: pin },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        // Update badge
+                        $('#current_cashier_badge')
+                            .removeClass('label-default')
+                            .addClass('label-success')
+                            .html('<span class="glyphicon glyphicon-user"></span>&nbsp;<?= lang('Sales.cashier') ?>: ' + response.name);
+                        $('#pin_modal').modal('hide');
+                        setTimeout(function() { $('#item').focus(); }, 300);
+                    } else {
+                        showPinError(response.message);
+                    }
+                },
+                error: function() {
+                    showPinError('<?= lang('Sales.pin_incorrect') ?>');
+                },
+                complete: function() {
+                    $('#pin_submit_btn').prop('disabled', false);
+                }
+            });
+        }
+
+        function showPinError(msg) {
+            $('#pin_error').text(msg);
+            $('#pin_input').val('').focus();
+            // Shake animation
+            $('#pin_input').addClass('has-error');
+            setTimeout(function() { $('#pin_input').removeClass('has-error'); }, 600);
+        }
+
+        // Price check modal
+        $('#pin_price_check_btn').on('click', function() {
+            $('#pin_modal').modal('hide');
+            $('#price_check_results').html('');
+            $('#price_check_input').val('');
+            $('#price_check_modal').modal('show');
+            setTimeout(function() { $('#price_check_input').focus(); }, 400);
+        });
+
+        $('#price_check_back_btn').on('click', function() {
+            $('#price_check_modal').modal('hide');
+            showPinModal();
+        });
+
+        $('#price_check_input').autocomplete({
+            source: '<?= esc(site_url("sales/itemSearch")) ?>',
+            minChars: 1,
+            delay: 300,
+            select: function(event, ui) {
+                $('#price_check_results').html(
+                    '<div class="alert alert-info"><strong>' + ui.item.label + '</strong></div>'
+                );
+                return false;
+            }
+        });
+
+        $('#price_check_input').on('keypress', function(e) {
+            if (e.which === 13) {
+                var term = $(this).val();
+                if (term.length > 0) {
+                    $.getJSON('<?= esc(site_url("sales/itemSearch")) ?>', { term: term }, function(data) {
+                        if (data && data.length > 0) {
+                            var html = '<table class="table table-condensed table-bordered">' +
+                                '<tr><th><?= lang('Sales.item_name') ?></th><th><?= lang('Sales.price') ?></th></tr>';
+                            $.each(data, function(i, item) {
+                                html += '<tr><td>' + item.label + '</td><td>' + (item.price !== undefined ? item.price : '') + '</td></tr>';
+                            });
+                            html += '</table>';
+                            $('#price_check_results').html(html);
+                        } else {
+                            $('#price_check_results').html('<div class="alert alert-warning"><?= lang('Sales.no_items_in_cart') ?></div>');
+                        }
+                    });
+                }
+            }
+        });
+    });
 </script>
 
 <?= view('partial/footer') ?>

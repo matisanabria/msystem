@@ -19,13 +19,6 @@
 
 <div id="page_subtitle"><?= esc($subtitle) ?></div>
 
-<div id="toolbar">
-    <div class="pull-left form-inline" role="toolbar">
-        <button id="toggleCostProfitButton" class="btn btn-default btn-sm print_hide">
-            <?php echo lang('Reports.toggle_cost_and_profit'); ?>
-        </button>
-    </div>
-</div>
 
 <div id="table_holder">
     <table id="table"></table>

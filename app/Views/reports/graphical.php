@@ -19,16 +19,6 @@
 
 <div class="ct-chart ct-golden-section" id="chart1"></div>
 
-<?php if (empty($hide_cost_profit_toggle)) { ?>
-<div id="toolbar">
-    <div class="pull-left form-inline" role="toolbar">
-        <!-- Toggle Button -->
-        <button id="toggleCostProfitButton" class="btn btn-default btn-sm print_hide">
-            <?php echo lang('Reports.toggle_cost_and_profit'); ?>
-        </button>
-    </div>
-</div>
-<?php } ?>
 
 <?= view($chart_type) ?>
 

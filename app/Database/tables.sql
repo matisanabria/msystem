@@ -101,9 +101,17 @@ CREATE TABLE `ospos_customers` (
     `person_id` int(10) NOT NULL,
     `company_name` varchar(255) DEFAULT NULL,
     `account_number` varchar(255) DEFAULT NULL,
-    `taxable` int(1) NOT NULL DEFAULT '1',
-    `discount_percent` decimal(15,2) NOT NULL DEFAULT '0',
-    `deleted` int(1) NOT NULL DEFAULT '0',
+    `taxable` tinyint(1) NOT NULL DEFAULT '1',
+    `tax_id` varchar(32) NOT NULL DEFAULT '',
+    `sales_tax_code_id` int(11) DEFAULT NULL,
+    `package_id` int(11) DEFAULT NULL,
+    `points` int(11) DEFAULT NULL,
+    `deleted` tinyint(1) NOT NULL DEFAULT '0',
+    `discount` decimal(15,2) NOT NULL DEFAULT '0.00',
+    `discount_type` tinyint(1) NOT NULL DEFAULT '0',
+    `date` timestamp NOT NULL DEFAULT current_timestamp(),
+    `employee_id` int(10) NOT NULL DEFAULT '0',
+    `consent` tinyint(4) NOT NULL DEFAULT '0',
     PRIMARY KEY `person_id` (`person_id`),
     UNIQUE KEY `account_number` (`account_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -123,8 +131,11 @@ CREATE TABLE `ospos_employees` (
     `username` varchar(255) NOT NULL,
     `password` varchar(255) NOT NULL,
     `person_id` int(10) NOT NULL,
-    `deleted` int(1) NOT NULL DEFAULT '0',
-    `hash_version` int(1) NOT NULL DEFAULT '2',
+    `deleted` tinyint(1) NOT NULL DEFAULT '0',
+    `hash_version` tinyint(1) NOT NULL DEFAULT '2',
+    `language` varchar(48) DEFAULT NULL,
+    `language_code` varchar(8) DEFAULT NULL,
+    `pin` varchar(4) DEFAULT NULL,
     PRIMARY KEY `person_id` (`person_id`),
     UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -347,9 +358,11 @@ CREATE TABLE `ospos_people` (
     `zip` varchar(255) NOT NULL,
     `country` varchar(255) NOT NULL,
     `comments` text NOT NULL,
+    `identification_type` varchar(15) DEFAULT NULL,
+    `identification` varchar(30) DEFAULT NULL,
     `person_id` int(10) NOT NULL AUTO_INCREMENT,
     PRIMARY KEY (`person_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8  ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `ospos_people`

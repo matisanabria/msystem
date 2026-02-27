@@ -42,4 +42,6 @@ return [
     "username_duplicate"           => "El usuario del empleado ya esta en uso. Favor de escoger otro.",
     "username_minlength"           => "Nombre de usuario debe tener por lo menos 5 letras.",
     "username_required"            => "Es necesario el nombre de usuario.",
+    "pin"                          => "PIN de caja",
+    "pin_help"                     => "4 dígitos. Dejar vacío si el empleado no usa la caja.",
 ];

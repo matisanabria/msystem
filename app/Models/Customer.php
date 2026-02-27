@@ -320,6 +320,7 @@ class Customer extends Person
         $builder->like('first_name', $search);
         $builder->orLike('last_name', $search);
         $builder->orLike('CONCAT(first_name, " ", last_name)', $search);
+        $builder->orLike('identification', $search);
 
         if ($unique) {
             $builder->orLike('email', $search);
@@ -422,6 +423,7 @@ class Customer extends Person
         $builder->orLike('phone_number', $search);
         $builder->orLike('account_number', $search);
         $builder->orLike('company_name', $search);
+        $builder->orLike('identification', $search);
         $builder->orLike('CONCAT(first_name, " ", last_name)', $search);    // TODO: Duplicated code.
         $builder->groupEnd();
         $builder->where('deleted', 0);

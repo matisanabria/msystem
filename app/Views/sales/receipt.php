@@ -61,6 +61,6 @@ if (isset($error_message)) {
     <?php endif; ?>
 </div>
 
-<?= view('sales/' . $config['receipt_template']) ?>
+<?= view('sales/receipt_thermal') ?>
 
 <?= view('partial/footer') ?>

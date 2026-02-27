@@ -24,7 +24,8 @@ class Employee extends Person
         'deleted',
         'hashversion',
         'language',
-        'language_code'
+        'language_code',
+        'pin'
     ];
 
     public function __construct()
@@ -411,6 +412,25 @@ class Employee extends Person
     {
         if ($this->is_logged_in()) {
             return $this->get_info($this->session->get('person_id'));
+        }
+
+        return false;
+    }
+
+    /**
+     * Finds an active employee by their 4-digit PIN.
+     * Returns the employee+person row or false if not found.
+     */
+    public function get_by_pin(string $pin): object|false
+    {
+        $builder = $this->db->table('employees');
+        $builder->join('people', 'people.person_id = employees.person_id');
+        $builder->where('employees.pin', $pin);
+        $builder->where('employees.deleted', 0);
+        $query = $builder->get();
+
+        if ($query->getNumRows() === 1) {
+            return $query->getRow();
         }
 
         return false;

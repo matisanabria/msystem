@@ -237,14 +237,14 @@ class Customers extends Persons
             'last_name'    => $last_name,
             'gender'       => $this->request->getPost('gender', FILTER_SANITIZE_NUMBER_INT) ?? '',
             'email'        => $email,
-            'phone_number' => $this->request->getPost('phone_number') ?? '',
-            'address_1'    => $this->request->getPost('address_1') ?? '',
-            'address_2'    => $this->request->getPost('address_2') ?? '',
-            'city'         => $this->request->getPost('city') ?? '',
-            'state'        => $this->request->getPost('state') ?? '',
-            'zip'          => $this->request->getPost('zip') ?? '',
-            'country'      => $this->request->getPost('country') ?? '',
-            'comments'     => $this->request->getPost('comments') ?? ''
+            'phone_number'      => $this->request->getPost('phone_number') ?? '',
+            'address_1'         => $this->request->getPost('address_1') ?? '',
+            'address_2'         => $this->request->getPost('address_2') ?? '',
+            'city'              => $this->request->getPost('city') ?? '',
+            'country'           => $this->request->getPost('country') ?? '',
+            'comments'          => $this->request->getPost('comments') ?? '',
+            'identification_type' => $this->request->getPost('identification_type') ?? '',
+            'identification'    => $this->request->getPost('identification') ?? ''
         ];
 
         $date_formatter = date_create_from_format($this->config['dateformat'] . ' ' . $this->config['timeformat'], $this->request->getPost('date'));

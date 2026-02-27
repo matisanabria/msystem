@@ -71,13 +71,10 @@ class Sale_lib
             $register_modes['sale'] = lang('Sales.sale');
         } else {
             $register_modes['sale'] = lang('Sales.receipt');
-            $register_modes['sale_quote'] = lang('Sales.quote');
 
             if ($this->config['work_order_enable']) {
                 $register_modes['sale_work_order'] = lang('Sales.work_order');
             }
-
-            $register_modes['sale_invoice'] = lang('Sales.invoice');
         }
 
         $register_modes['return'] = lang('Sales.return');
