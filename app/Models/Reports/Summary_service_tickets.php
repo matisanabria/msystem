@@ -46,7 +46,8 @@ class Summary_service_tickets extends Model
      */
     public function getByTechnician(): array
     {
-        $prefix = $this->db->prefixTable('');
+        $t_tickets = $this->db->prefixTable('service_tickets');
+        $t_people  = $this->db->prefixTable('people');
 
         $sql = "
             SELECT
@@ -54,8 +55,8 @@ class Summary_service_tickets extends Model
                 SUM(CASE WHEN st.status IN ('received', 'waiting', 'in_repair') THEN 1 ELSE 0 END) AS pending,
                 SUM(CASE WHEN st.status = 'repaired' THEN 1 ELSE 0 END) AS repaired,
                 COUNT(*) AS total
-            FROM {$prefix}service_tickets st
-            JOIN {$prefix}people p ON p.person_id = st.employee_id_technician
+            FROM {$t_tickets} st
+            JOIN {$t_people} p ON p.person_id = st.employee_id_technician
             WHERE st.deleted = 0
               AND st.employee_id_technician IS NOT NULL
             GROUP BY st.employee_id_technician
