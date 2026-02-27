@@ -156,4 +156,9 @@ return [
     "resultado_bruto"                         => "Gross Result",
     "total_egresos"                           => "Expenses",
     "resultado_final"                         => "Net Result",
+    "service_tickets_stats_report"            => "Service Tickets Statistics",
+    "service_tickets_by_status"               => "Devices by Status",
+    "service_tickets_pending_income"          => "Estimated Pending Income",
+    "service_tickets_by_technician"           => "Tickets by Technician",
+    "service_tickets_pending"                 => "Pending",
 ];

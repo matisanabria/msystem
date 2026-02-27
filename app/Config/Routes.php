@@ -22,6 +22,8 @@ $routes->post('backup/delete', 'Backup::postDelete');
 $routes->add('reports/summary_monthly_sales', 'Reports::date_input_only');
 $routes->add('reports/summary_monthly_sales/(:any)/(:any)', 'Reports::monthly_summary_sales/$1/$2');
 
+$routes->add('reports/service_tickets_sales', 'Reports::getServiceTicketsSales');
+
 $routes->add('reports/summary_(:any)/(:any)/(:any)', 'Reports::Summary_$1/$2/$3/$4');
 $routes->add('reports/summary_expenses_categories', 'Reports::date_input_only');
 $routes->add('reports/summary_payments', 'Reports::date_input_only');

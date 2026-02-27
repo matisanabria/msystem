@@ -101,6 +101,23 @@ if (isset($error)) {
     </div>
 
     <div class="col-md-4">
+        <?php if (in_array('reports_sales', $permission_ids, true)) { ?>
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><span class="glyphicon glyphicon-wrench">&nbsp;</span><?= lang('Reports.service_tickets_stats_report') ?></h3>
+                </div>
+                <div class="list-group">
+                    <a class="list-group-item" href="<?= site_url('reports/service_tickets_sales') ?>">
+                        <span class="glyphicon glyphicon-stats">&nbsp;</span><?= lang('Reports.service_tickets_stats_report') ?>
+                    </a>
+                </div>
+            </div>
+        <?php } ?>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
         <?php if (in_array('reports_categories', $permission_ids, true) || in_array('reports_sales', $permission_ids, true)) { ?>
             <div class="panel panel-success">
                 <div class="panel-heading">

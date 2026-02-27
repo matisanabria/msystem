@@ -155,4 +155,9 @@ return [
     "resultado_bruto"                         => "Resultado Bruto",
     "total_egresos"                           => "Egresos",
     "resultado_final"                         => "Resultado Neto",
+    "service_tickets_stats_report"            => "Estadísticas de Fichas Técnicas",
+    "service_tickets_by_status"               => "Dispositivos por Estado",
+    "service_tickets_pending_income"          => "Ingresos Estimados Pendientes",
+    "service_tickets_by_technician"           => "Fichas por Técnico",
+    "service_tickets_pending"                 => "Pendientes",
 ];

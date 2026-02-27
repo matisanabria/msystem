@@ -24,6 +24,7 @@ use App\Models\Reports\Summary_items;
 use App\Models\Reports\Summary_payments;
 use App\Models\Reports\Monthly_financial_summary;
 use App\Models\Reports\Summary_sales;
+use App\Models\Reports\Summary_service_tickets;
 use App\Models\Reports\Summary_sales_taxes;
 use App\Models\Reports\Summary_suppliers;
 use App\Models\Reports\Summary_taxes;
@@ -53,6 +54,7 @@ class Reports extends Secure_Controller
     private Supplier $supplier;
     private Detailed_receivings $detailed_receivings;
     private Inventory_summary $inventory_summary;
+    private Summary_service_tickets $summary_service_tickets;
 
     public function __construct()
     {
@@ -82,6 +84,7 @@ class Reports extends Secure_Controller
         $this->supplier = model(Supplier::class);
         $this->detailed_receivings = model(Detailed_receivings::class);
         $this->inventory_summary = model(Inventory_summary::class);
+        $this->summary_service_tickets = model(Summary_service_tickets::class);
 
         if (sizeof($exploder) > 1) {
             preg_match('/(?:inventory)|([^_.]*)(?:_graph|_row)?$/', $method_name, $matches);
@@ -2229,6 +2232,26 @@ class Reports extends Secure_Controller
         ];
 
         echo view('reports/monthly_financial_summary', $data);
+    }
+
+    /**
+     * Service Tickets Statistics report.
+     * Shows totals by status, pending income, and per-technician breakdown.
+     */
+    public function getServiceTicketsSales(): void
+    {
+        $totals     = $this->summary_service_tickets->getTotals();
+        $technicians = $this->summary_service_tickets->getByTechnician();
+        $pending_income = $this->summary_service_tickets->getPendingIncome();
+
+        $data = [
+            'title'          => lang('Reports.service_tickets_stats_report'),
+            'totals'         => $totals,
+            'technicians'    => $technicians,
+            'pending_income' => $pending_income,
+        ];
+
+        echo view('reports/service_tickets_summary', $data);
     }
 
     /**
