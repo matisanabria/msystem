@@ -673,6 +673,7 @@ class Sales extends Secure_Controller
     {
         $sale_id = $this->sale_lib->get_sale_id();
         $data = [];
+        $sale_channel = $this->request->getPost('sale_channel') ?: 'store';
         $data['dinner_table'] = $this->sale_lib->get_dinner_table();
 
         $data['cart'] = $this->sale_lib->get_cart();
@@ -788,7 +789,7 @@ class Sales extends Secure_Controller
                 $invoice_view = $this->config['invoice_type'];
 
                 // Save the data to the sales table
-                $data['sale_id_num'] = $this->sale->save_value($sale_id, $data['sale_status'], $data['cart'], $customer_id, $employee_id, $data['comments'], $invoice_number, $work_order_number, $quote_number, $sale_type, $data['payments'], $data['dinner_table'], $tax_details);
+                $data['sale_id_num'] = $this->sale->save_value($sale_id, $data['sale_status'], $data['cart'], $customer_id, $employee_id, $data['comments'], $invoice_number, $work_order_number, $quote_number, $sale_type, $data['payments'], $data['dinner_table'], $tax_details, $sale_channel);
                 $data['sale_id'] = $data['sale_id_num'];
 
                 // Resort and filter cart lines for printing
@@ -825,7 +826,7 @@ class Sales extends Secure_Controller
                 $data['sale_status'] = SUSPENDED;
                 $sale_type = SALE_TYPE_WORK_ORDER;
 
-                $data['sale_id_num'] = $this->sale->save_value($sale_id, $data['sale_status'], $data['cart'], $customer_id, $employee_id, $data['comments'], $invoice_number, $work_order_number, $quote_number, $sale_type, $data['payments'], $data['dinner_table'], $tax_details);
+                $data['sale_id_num'] = $this->sale->save_value($sale_id, $data['sale_status'], $data['cart'], $customer_id, $employee_id, $data['comments'], $invoice_number, $work_order_number, $quote_number, $sale_type, $data['payments'], $data['dinner_table'], $tax_details, $sale_channel);
                 $this->sale_lib->set_suspended_id($data['sale_id_num']);
 
                 $data['cart'] = $this->sale_lib->sort_and_filter_cart($data['cart']);
@@ -854,7 +855,7 @@ class Sales extends Secure_Controller
                 $data['sale_status'] = SUSPENDED;
                 $sale_type = SALE_TYPE_QUOTE;
 
-                $data['sale_id_num'] = $this->sale->save_value($sale_id, $data['sale_status'], $data['cart'], $customer_id, $employee_id, $data['comments'], $invoice_number, $work_order_number, $quote_number, $sale_type, $data['payments'], $data['dinner_table'], $tax_details);
+                $data['sale_id_num'] = $this->sale->save_value($sale_id, $data['sale_status'], $data['cart'], $customer_id, $employee_id, $data['comments'], $invoice_number, $work_order_number, $quote_number, $sale_type, $data['payments'], $data['dinner_table'], $tax_details, $sale_channel);
                 $this->sale_lib->set_suspended_id($data['sale_id_num']);
 
                 $data['cart'] = $this->sale_lib->sort_and_filter_cart($data['cart']);
@@ -873,7 +874,7 @@ class Sales extends Secure_Controller
                 $sale_type = SALE_TYPE_POS;
             }
 
-            $data['sale_id_num'] = $this->sale->save_value($sale_id, $data['sale_status'], $data['cart'], $customer_id, $employee_id, $data['comments'], $invoice_number, $work_order_number, $quote_number, $sale_type, $data['payments'], $data['dinner_table'], $tax_details);
+            $data['sale_id_num'] = $this->sale->save_value($sale_id, $data['sale_status'], $data['cart'], $customer_id, $employee_id, $data['comments'], $invoice_number, $work_order_number, $quote_number, $sale_type, $data['payments'], $data['dinner_table'], $tax_details, $sale_channel);
 
             $data['sale_id'] = $data['sale_id_num'];
 

@@ -497,6 +497,16 @@ helper('url');
 
                 <div class="btn btn-sm btn-danger pull-right" id="cancel_sale_button"><span class="glyphicon glyphicon-remove">&nbsp;</span><?= lang(ucfirst($controller_name) . '.cancel_sale') ?></div>
             </div>
+            <?php if ($payments_cover_total || !$pos_mode) { ?>
+            <div class="form-group form-group-sm" style="margin-top: 8px; margin-bottom: 4px;">
+                <label class="control-label" style="display:block; margin-bottom: 2px;"><?= lang('Sales.sale_channel') ?></label>
+                <select name="sale_channel" class="form-control input-sm">
+                    <option value="store"><?= lang('Sales.sale_channel_store') ?></option>
+                    <option value="delivery"><?= lang('Sales.sale_channel_delivery') ?></option>
+                    <option value="shipping"><?= lang('Sales.sale_channel_shipping') ?></option>
+                </select>
+            </div>
+            <?php } ?>
             <?= form_close() ?>
 
             <?php if ($payments_cover_total || !$pos_mode) { // Only show this part if the payment cover the total ?>
