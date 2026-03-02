@@ -42,6 +42,7 @@ class Detailed_sales extends Report
                 ['cost'          => lang('Reports.cost'), 'sorter' => 'number_sorter'],
                 ['profit'        => lang('Reports.profit'), 'sorter' => 'number_sorter'],
                 ['payment_type'  => lang('Reports.payment_type'), 'sortable' => false],
+                ['sale_channel'  => lang('Sales.sale_channel'), 'sortable' => false],
                 ['comment'       => lang('Reports.comments')]
             ],
             'details' => [
@@ -117,6 +118,7 @@ class Detailed_sales extends Report
             SUM(cost) AS cost,
             SUM(profit) AS profit,
             MAX(payment_type) AS payment_type,
+            MAX(sale_channel) AS sale_channel,
             MAX(comment) AS comment');
 
         if ($inputs['location_id'] != 'all') {    // TODO: Duplicated code

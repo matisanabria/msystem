@@ -125,7 +125,10 @@ class Sales extends Secure_Controller
                 'only_check'        => lang('Sales.check_filter'),
                 'only_creditcard'   => lang('Sales.credit_filter'),
                 'only_invoices'     => lang('Sales.invoice_filter'),
-                'selected_customer' => lang('Sales.selected_customer')
+                'selected_customer' => lang('Sales.selected_customer'),
+                'only_store'        => lang('Sales.sale_channel_store'),
+                'only_delivery'     => lang('Sales.sale_channel_delivery'),
+                'only_shipping'     => lang('Sales.sale_channel_shipping')
             ];
 
             if ($this->sale_lib->get_customer() != -1) {
@@ -175,7 +178,10 @@ class Sales extends Secure_Controller
             'selected_customer' => false,
             'only_creditcard'   => false,
             'only_invoices'     => $this->config['invoice_enable'] && $this->request->getGet('only_invoices', FILTER_SANITIZE_NUMBER_INT),
-            'is_valid_receipt'  => $this->sale->is_valid_receipt($search)
+            'is_valid_receipt'  => $this->sale->is_valid_receipt($search),
+            'only_store'        => false,
+            'only_delivery'     => false,
+            'only_shipping'     => false
         ];
 
         // Check if any filter is set in the multiselect dropdown

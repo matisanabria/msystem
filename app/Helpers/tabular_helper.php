@@ -67,7 +67,8 @@ function sales_headers(): array
         ['amount_due'      => lang('Sales.amount_due')],
         ['amount_tendered' => lang('Sales.amount_tendered')],
         ['change_due'      => lang('Sales.change_due')],
-        ['payment_type'    => lang('Sales.payment_type')]
+        ['payment_type'    => lang('Sales.payment_type')],
+        ['sale_channel'    => lang('Sales.sale_channel')]
     ];
 }
 
@@ -104,7 +105,8 @@ function get_sale_data_row(object $sale): array
         'amount_due'      => to_currency($sale->amount_due),
         'amount_tendered' => to_currency($sale->amount_tendered),
         'change_due'      => to_currency($sale->change_due),
-        'payment_type'    => $sale->payment_type
+        'payment_type'    => $sale->payment_type,
+        'sale_channel'    => lang('Sales.sale_channel_' . ($sale->sale_channel ?? 'store'))
     ];
 
     $config = config(OSPOS::class)->settings;

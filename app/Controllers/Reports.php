@@ -1912,6 +1912,7 @@ class Reports extends Secure_Controller
                 'cost'          => to_currency($row['cost']),
                 'profit'        => to_currency($row['profit']),
                 'payment_type'  => $row['payment_type'],
+                'sale_channel'  => lang('Sales.sale_channel_' . ($row['sale_channel'] ?? 'store')),
                 'comment'       => $row['comment'],
                 'edit'          => anchor(
                     'sales/edit/' . $row['sale_id'],

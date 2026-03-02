@@ -78,7 +78,8 @@ class Sale extends Model
                 MAX(IFnull(payments.sale_payment_amount, 0)) AS amount_tendered,
                 (MAX(payments.sale_payment_amount)) - ($sale_total) AS change_due,
                 " . '
-                MAX(payments.payment_type) AS payment_type';
+                MAX(payments.payment_type) AS payment_type,
+                MAX(sales.sale_channel) AS sale_channel';
 
         $builder = $this->db->table('sales_items AS sales_items');
         $builder->select($sql);
@@ -172,7 +173,8 @@ class Sale extends Model
                 $sale_total . ' AS amount_due',
                 'MAX(`payments`.`sale_payment_amount`) AS amount_tendered',
                 '(MAX(`payments`.`sale_payment_amount`)) - (' . $sale_total . ') AS change_due',
-                'MAX(`payments`.`payment_type`) AS payment_type'
+                'MAX(`payments`.`payment_type`) AS payment_type',
+                'MAX(`' . $db_prefix . 'sales`.`sale_channel`) AS sale_channel'
             ], false);
         }
 
@@ -1111,6 +1113,7 @@ class Sale extends Model
                     MAX(sales_items.description) AS description,
                     MAX(payments.payment_type) AS payment_type,
                     MAX(payments.sale_payment_amount) AS sale_payment_amount,
+                    MAX(sales.sale_channel) AS sale_channel,
                     ' . "
                     $sale_subtotal AS subtotal,
                     $tax AS tax,
@@ -1486,6 +1489,14 @@ class Sale extends Model
 
         if ($filters['only_check']) {
             $builder->like('payments.payment_type', lang('Sales.check'));
+        }
+
+        $channel_filters = [];
+        if (!empty($filters['only_store']))    $channel_filters[] = 'store';
+        if (!empty($filters['only_delivery'])) $channel_filters[] = 'delivery';
+        if (!empty($filters['only_shipping'])) $channel_filters[] = 'shipping';
+        if (!empty($channel_filters)) {
+            $builder->whereIn('sales.sale_channel', $channel_filters);
         }
     }
 }
