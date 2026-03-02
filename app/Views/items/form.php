@@ -79,94 +79,6 @@
             </div>
         </div>
 
-        <div id="attributes">
-            <script type="text/javascript">
-                $('#attributes').load('<?= "items/attributes/$item_info->item_id" ?>');
-            </script>
-        </div>
-
-        <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.stock_type'), 'stock_type', !empty($basic_version) ? ['class' => 'required control-label col-xs-3'] : ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <label class="radio-inline">
-                    <?= form_radio([
-                        'name'    => 'stock_type',
-                        'type'    => 'radio',
-                        'id'      => 'stock_type',
-                        'value'   => 0,
-                        'checked' => $item_info->stock_type == HAS_STOCK
-                    ]) ?> <?= lang('Items.stock') ?>
-                </label>
-                <label class="radio-inline">
-                    <?= form_radio([
-                        'name'    => 'stock_type',
-                        'type'    => 'radio',
-                        'id'      => 'stock_type',
-                        'value'   => 1,
-                        'checked' => $item_info->stock_type == HAS_NO_STOCK
-                    ]) ?><?= lang('Items.nonstock') ?>
-                </label>
-            </div>
-        </div>
-
-        <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.type'), 'item_type', !empty($basic_version) ? ['class' => 'required control-label col-xs-3'] : ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <label class="radio-inline">
-                    <?php
-                    $radio_button = [
-                        'name'    => 'item_type',
-                        'type'    => 'radio',
-                        'id'      => 'item_type',
-                        'value'   => 0,
-                        'checked' => $item_info->item_type == ITEM
-                    ];
-
-                    if ($standard_item_locked) {
-                        $radio_button['disabled'] = true;
-                    }
-                    echo form_radio($radio_button) ?> <?= lang('Items.standard') ?>
-                </label>
-                <label class="radio-inline">
-                    <?php
-                    $radio_button = [
-                        'name'    => 'item_type',
-                        'type'    => 'radio',
-                        'id'      => 'item_type',
-                        'value'   => 1,
-                        'checked' => $item_info->item_type == ITEM_KIT
-                    ];
-
-                    if ($item_kit_disabled) {
-                        $radio_button['disabled'] = true;
-                    }
-                    echo form_radio($radio_button) ?> <?= lang('Items.kit') ?>
-                </label>
-                <?php if ($config['derive_sale_quantity'] == '1') { ?>
-                    <label class="radio-inline">
-                        <?= form_radio([
-                            'name'    => 'item_type',
-                            'type'    => 'radio',
-                            'id'      => 'item_type',
-                            'value'   => 2,
-                            'checked' => $item_info->item_type == ITEM_AMOUNT_ENTRY
-                        ]) ?><?= lang('Items.amount_entry') ?>
-                    </label>
-                <?php } ?>
-                <?php if ($allow_temp_item == 1) { ?>
-                    <label class="radio-inline">
-                        <?= form_radio([
-                            'name'    => 'item_type',
-                            'type'    => 'radio',
-                            'id'      => 'item_type',
-                            'value'   => 3,
-                            'checked' => $item_info->item_type == ITEM_TEMP
-                        ]) ?> <?= lang('Items.temp') ?>
-                    </label>
-                <?php } ?>
-            </div>
-        </div>
-
         <div class="form-group form-group-sm">
             <?= form_label(lang('Items.supplier'), 'supplier', ['class' => 'control-label col-xs-3']) ?>
             <div class="col-xs-8">
@@ -304,30 +216,6 @@
                         <a href="#" class="btn btn-default btn-sm fileinput-exists" data-dismiss="fileinput"><?= lang('Items.remove_image') ?></a>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.allow_alt_description'), 'allow_alt_description', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-1">
-                <?= form_checkbox([
-                    'name'    => 'allow_alt_description',
-                    'id'      => 'allow_alt_description',
-                    'value'   => 1,
-                    'checked' => $item_info->allow_alt_description == 1
-                ]) ?>
-            </div>
-        </div>
-
-        <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.is_serialized'), 'is_serialized', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-1">
-                <?= form_checkbox([
-                    'name'    => 'is_serialized',
-                    'id'      => 'is_serialized',
-                    'value'   => 1,
-                    'checked' => $item_info->is_serialized == 1
-                ]) ?>
             </div>
         </div>
 
