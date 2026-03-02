@@ -2,9 +2,9 @@
 
 namespace App\Database\Migrations;
 
-use App\Libraries\MY_Migration;
+use CodeIgniter\Database\Migration;
 
-class Migration_add_sale_channel extends MY_Migration
+class Migration_add_sale_channel extends Migration
 {
     public function up(): void
     {
