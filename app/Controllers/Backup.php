@@ -12,7 +12,7 @@ class Backup extends Secure_Controller
 
     public function __construct()
     {
-        parent::__construct('backup', null, 'office');
+        parent::__construct('backup');
         $this->db = \Config\Database::connect();
         $this->backup_path = 'D:\\Backups\\';
     }
