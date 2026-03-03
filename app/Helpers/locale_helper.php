@@ -245,6 +245,7 @@ function get_payment_options(): array
     $payments[lang('Sales.cash')]   = lang('Sales.cash');
     $payments[lang('Sales.debit')]  = lang('Sales.debit');
     $payments[lang('Sales.credit')] = lang('Sales.credit');
+    $payments['Transferencia']      = 'Transferencia';
     $payments['Parte de Pago']      = 'Parte de Pago';
     $payments[lang('Sales.check')]  = lang('Sales.check');
 
