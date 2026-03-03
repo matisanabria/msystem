@@ -146,7 +146,7 @@
 
         <?php foreach ($stock_locations as $key => $location_detail) { ?>
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Items.quantity') . ' ' . $location_detail['location_name'], "quantity_$key", ['class' => 'required control-label col-xs-3']) ?>
+                <?= form_label(lang('Items.current_quantity') . ' ' . $location_detail['location_name'], "quantity_$key", ['class' => 'required control-label col-xs-3']) ?>
                 <div class="col-xs-4">
                     <?= form_input([
                         'name'    => "quantity_$key",

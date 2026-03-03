@@ -35,17 +35,18 @@
     var init = function(selector) {
 
         var buttons = function(event) {
+            var $trigger = $(this);
             var buttons = [];
             var dialog_class = 'modal-dlg';
-            $.each($(this).attr('class').split(/\s+/), function(classIndex, className) {
+            $.each($trigger.attr('class').split(/\s+/), function(classIndex, className) {
                 var width_class = className.split("modal-dlg-");
                 if (width_class && width_class.length > 1) {
                     dialog_class = className;
                 }
             });
 
-            var has_new_btn = "btnNew" in $(this).data();
-            $.each($(this).data(), function(name, value) {
+            var has_new_btn = "btnNew" in $trigger.data();
+            $.each($trigger.data(), function(name, value) {
                 var btn_class = name.split("btn");
                 if (btn_class && btn_class.length > 1) {
                     var btn_name = btn_class[1].toLowerCase();
@@ -55,6 +56,7 @@
                     buttons.push({
                         id: btn_name,
                         label: value,
+                        title: $trigger.data('hint' + btn_class[1]),
                         cssClass: button_class[btn_name],
                         hotkey: is_enter ? 13 : undefined, // Enter
                         action: submit(btn_name)

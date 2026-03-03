@@ -217,7 +217,7 @@ return [
     "msg_uid_required"                          => "SMS-API Username is a required field",
     "multi_pack_enabled"                        => "Multiple Packages per Item",
     "no_risk"                                   => "No security/vulnerability risks.",
-    "none"                                      => "none",
+    "none"                                      => "Ninguno",
     "notify_alignment"                          => "Notification Popup Position",
     "number_format"                             => "Number Format",
     "number_locale"                             => "Localization",

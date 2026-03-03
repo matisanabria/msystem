@@ -374,12 +374,6 @@ function get_items_manage_table_headers(): string
 
     $headers = item_headers();
 
-    if ($config['use_destination_based_tax']) {
-        $headers[] = ['tax_percents' => lang('Items.tax_category'), 'sortable' => false];
-    } else {
-        $headers[] = ['tax_percents' => lang('Items.tax_percents'), 'sortable' => false];
-    }
-
     $headers[] = ['item_pic' => lang('Items.image'), 'sortable' => false];
 
     foreach ($definition_names as $definition_id => $definition_name) {
@@ -399,8 +393,6 @@ function get_item_data_row(object $item): array
 {
     $attribute = model(Attribute::class);
     $config = config(OSPOS::class)->settings;
-
-    $tax_percents = ($config['default_tax_1_name'] ?? 'IVA') . ' ' . ($config['default_tax_1_rate'] ?? '10') . '%';
 
     $controller = get_controller();
 
@@ -432,7 +424,6 @@ function get_item_data_row(object $item): array
         'cost_price'    => to_currency($item->cost_price),
         'unit_price'    => to_currency($item->unit_price),
         'quantity'      => to_quantity_decimals($item->quantity),
-        'tax_percents'  => !$tax_percents ? '-' : $tax_percents,
         'item_pic'      => $image
     ];
 
