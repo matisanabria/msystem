@@ -342,7 +342,7 @@ class Items extends Secure_Controller
 
         foreach ($stock_locations as $location) {
             $quantity = $this->item_quantity->get_item_quantity($item_id, $location['location_id'])->quantity;
-            $quantity = ($item_id === NEW_ENTRY) ? 0 : $quantity;
+            $quantity = ($item_id === NEW_ENTRY) ? 1 : $quantity;
             $location_array[$location['location_id']] = ['location_name' => $location['location_name'], 'quantity' => $quantity];
             $data['stock_locations'] = $location_array;
         }
