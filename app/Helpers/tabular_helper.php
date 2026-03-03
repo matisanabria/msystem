@@ -359,7 +359,8 @@ function item_headers(): array
         ['company_name'  => lang('Suppliers.company_name')],
         ['cost_price'    => lang('Items.cost_price')],
         ['unit_price'    => lang('Items.unit_price')],
-        ['quantity'      => lang('Items.quantity')]
+        ['quantity'      => lang('Items.quantity')],
+        ['date_added'    => lang('Items.date_added')]
     ];
 }
 
@@ -424,6 +425,7 @@ function get_item_data_row(object $item): array
         'cost_price'    => to_currency($item->cost_price),
         'unit_price'    => to_currency($item->unit_price),
         'quantity'      => to_quantity_decimals($item->quantity),
+        'date_added'    => !empty($item->date_added) ? to_date(strtotime($item->date_added)) : '',
         'item_pic'      => $image
     ];
 

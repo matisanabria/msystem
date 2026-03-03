@@ -2,6 +2,7 @@
 
 return [
     "add_minus"                          => "Inventory to add or subtract.",
+    "date_added"                         => "Date Added",
     "allow_alt_description"              => "Allow Alternate Description",
     "amount_entry"                       => "Amount Entry",
     "bulk_edit"                          => "Bulk Edit",

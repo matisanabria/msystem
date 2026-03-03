@@ -160,6 +160,7 @@ class Item extends Model
             $builder->select('MAX(items.pack_name) AS pack_name');
             $builder->select('MAX(items.tax_category_id) AS tax_category_id');
             $builder->select('MAX(items.deleted) AS deleted');
+            $builder->select('MIN(inventory.trans_date) AS date_added');
 
             $builder->select('MAX(suppliers.person_id) AS person_id');
             $builder->select('MAX(suppliers.company_name) AS company_name');

@@ -104,6 +104,35 @@ $request = Services::request();
             overflow: auto;
         }
 
+        /* Scrollbars siempre visibles en Safari/macOS (por defecto son invisibles) */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+            background: #f0f0f0;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #aaa;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #888;
+        }
+
+        /* Scroll horizontal en el contenedor de la tabla */
+        .fixed-table-body,
+        #table_holder {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Contenedor más ancho en pantallas de laptop (MacBook 1280-1800px) */
+        @media (min-width: 1200px) {
+            .container {
+                width: 96%;
+                max-width: 1700px;
+            }
+        }
+
         @media (max-width: 767px) {
             .topbar .navbar-left  { display: none; }
             .topbar .navbar-center { display: none; }

@@ -58,7 +58,7 @@
             </div>
         </div>
 
-        <div class="form-group form-group-sm">
+        <div class="form-group form-group-sm" style="display:none">
             <?= form_label(lang('Items.stock_location'), 'stock_location', ['class' => 'control-label col-xs-3']) ?>
             <div class="col-xs-8">
                 <?= form_dropdown('stock_location', $stock_locations, current($stock_locations), ['onchange' => 'fill_quantity(this.value)', 'class' => 'form-control']) ?>

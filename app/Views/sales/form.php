@@ -97,7 +97,7 @@
                 </div>
             </div>
 
-            <div class="form-group form-group-sm">
+            <div class="form-group form-group-sm" style="display:none">
                 <?= form_label(lang('Sales.refund'), "refund_$i", ['class' => 'control-label col-xs-3']) ?>
                 <div class="col-xs-4">
                     <?php // No editing of Gift Card payments as it's a complex change ?>
@@ -124,6 +124,17 @@
         }
         echo form_hidden('number_of_payments', strval($i));
         ?>
+
+        <div class="form-group form-group-sm">
+            <?= form_label(lang('Sales.sale_channel'), 'sale_channel', ['class' => 'control-label col-xs-3']) ?>
+            <div class="col-xs-8">
+                <?= form_dropdown('sale_channel', [
+                    'store'    => lang('Sales.sale_channel_store'),
+                    'delivery' => lang('Sales.sale_channel_delivery'),
+                    'shipping' => lang('Sales.sale_channel_shipping')
+                ], $sale_info['sale_channel'] ?? 'store', ['id' => 'sale_channel', 'class' => 'form-control']) ?>
+            </div>
+        </div>
 
         <div class="form-group form-group-sm">
             <?= form_label(lang('Sales.customer'), 'customer', ['class' => 'control-label col-xs-3']) ?>
