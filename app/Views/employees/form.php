@@ -107,7 +107,7 @@
 
                 <ul id="permission_list">
                     <?php
-                    $hidden_modules = ['config', 'attributes', 'item_kits', 'taxes', 'messages', 'giftcards', 'cashups', 'expenses', 'expenses_categories', 'timeclocks', 'timeclocks_categories', 'migrate'];
+                    $hidden_modules = ['config', 'attributes', 'item_kits', 'taxes', 'messages', 'giftcards', 'cashups', 'timeclocks', 'timeclocks_categories', 'migrate'];
                     $hidden_subpermissions = ['reports_discounts', 'reports_taxes'];
                     ?>
                     <?php foreach ($all_modules as $module) {

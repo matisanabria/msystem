@@ -696,16 +696,13 @@ function get_expense_category_data_row(object $expense_category): array
 function expense_headers(): array
 {
     return [
-        ['expense_id'        => lang('Expenses.expense_id')],
-        ['date'              => lang('Expenses.date')],
-        ['supplier_name'     => lang('Expenses.supplier_name')],
-        ['supplier_tax_code' => lang('Expenses.supplier_tax_code')],
-        ['amount'            => lang('Expenses.amount')],
-        ['tax_amount'        => lang('Expenses.tax_amount')],
-        ['payment_type'      => lang('Expenses.payment')],
-        ['category_name'     => lang('Expenses_categories.name')],
-        ['description'       => lang('Expenses.description')],
-        ['created_by'        => lang('Expenses.employee')]
+        ['expense_id'   => lang('Expenses.expense_id')],
+        ['date'         => lang('Expenses.date')],
+        ['amount'       => lang('Expenses.amount')],
+        ['tax_amount'   => lang('Expenses.tax_amount')],
+        ['payment_type' => lang('Expenses.payment')],
+        ['description'  => lang('Expenses.description')],
+        ['created_by'   => lang('Expenses.employee')]
     ];
 }
 
@@ -725,16 +722,13 @@ function get_expenses_data_row(object $expense): array
     $controller = get_controller();
 
     return [
-        'expense_id'        => $expense->expense_id,
-        'date'              => to_datetime(strtotime($expense->date)),
-        'supplier_name'     => $expense->supplier_name,
-        'supplier_tax_code' => $expense->supplier_tax_code,
-        'amount'            => to_currency($expense->amount),
-        'tax_amount'        => to_currency($expense->tax_amount),
-        'payment_type'      => $expense->payment_type,
-        'category_name'     => $expense->category_name,
-        'description'       => $expense->description,
-        'created_by'        => $expense->first_name . ' ' . $expense->last_name,
+        'expense_id'   => $expense->expense_id,
+        'date'         => to_datetime(strtotime($expense->date)),
+        'amount'       => to_currency($expense->amount),
+        'tax_amount'   => to_currency($expense->tax_amount),
+        'payment_type' => $expense->payment_type,
+        'description'  => $expense->description,
+        'created_by'   => $expense->first_name . ' ' . $expense->last_name,
         'edit'              => anchor(
             "$controller/view/$expense->expense_id",
             '<span class="glyphicon glyphicon-edit"></span>',

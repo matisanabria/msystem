@@ -158,7 +158,7 @@ class Expenses extends Secure_Controller
             'amount'              => parse_decimals($this->request->getPost('amount')),
             'tax_amount'          => parse_decimals($this->request->getPost('tax_amount')),
             'payment_type'        => $this->request->getPost('payment_type', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-            'expense_category_id' => $this->request->getPost('expense_category_id', FILTER_SANITIZE_NUMBER_INT),
+            'expense_category_id' => $this->request->getPost('expense_category_id') != '' ? $this->request->getPost('expense_category_id', FILTER_SANITIZE_NUMBER_INT) : null,
             'description'         => $this->request->getPost('description', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
             'employee_id'         => $this->request->getPost('employee_id', FILTER_SANITIZE_NUMBER_INT),
             'deleted'             => $this->request->getPost('deleted') != null

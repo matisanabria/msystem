@@ -11,11 +11,6 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        // When any filter is clicked and the dropdown window is closed
-        $('#filters').on('hidden.bs.select', function(e) {
-            table_support.refresh();
-        });
-
         // Load the preset datarange picker
         <?= view('partial/daterangepicker') ?>
 
@@ -41,7 +36,7 @@
                 return $.extend(arguments[0], {
                     "start_date": start_date,
                     "end_date": end_date,
-                    "filters": $("#filters").val()
+                    "filters": []
                 });
             }
         });
@@ -51,9 +46,6 @@
 <?= view('partial/print_receipt', ['print_after_sale' => false, 'selected_printer' => 'takings_printer']) ?>
 
 <div id="title_bar" class="print_hide btn-toolbar">
-    <button onclick="javascript:printdoc()" class="btn btn-info btn-sm pull-right">
-        <span class="glyphicon glyphicon-print">&nbsp;</span><?= lang('Common.print') ?>
-    </button>
     <button class="btn btn-info btn-sm pull-right modal-dlg" data-btn-submit="<?= lang('Common.submit') ?>" data-href="<?= "$controller_name/view" ?>" title="<?= lang(ucfirst($controller_name) . '.new') ?>">
         <span class="glyphicon glyphicon-tags">&nbsp;</span><?= lang(ucfirst($controller_name) . '.new') ?>
     </button>
@@ -65,14 +57,6 @@
             <span class="glyphicon glyphicon-trash">&nbsp;</span><?= lang('Common.delete') ?>
         </button>
         <?= form_input(['name' => 'daterangepicker', 'class' => 'form-control input-sm', 'id' => 'daterangepicker']) ?>
-        <?= form_multiselect('filters[]', esc($filters), [''], [
-            'id'                        => 'filters',
-            'data-none-selected-text'   => lang('Common.none_selected_text'),
-            'class'                     => 'selectpicker show-menu-arrow',
-            'data-selected-text-format' => 'count > 1',
-            'data-style'                => 'btn-default btn-sm',
-            'data-width'                => 'fit'
-        ]) ?>
     </div>
 </div>
 
