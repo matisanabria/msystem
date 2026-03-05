@@ -473,7 +473,7 @@ class Sale extends Model
                     ];
                     $success = $builder->insert($sales_payments_data);
                 } elseif ($payment_id != NEW_ENTRY) {
-                    if ($payment_amount != 0) {
+                    if ($payment_amount !== false && $payment_amount != 0) {
                         // Update existing payment transactions (payment_type only)
                         $sales_payments_data = [
                             'payment_type'    => $payment_type,
@@ -484,10 +484,11 @@ class Sale extends Model
 
                         $builder->where('payment_id', $payment_id);
                         $success = $builder->update($sales_payments_data);
-                    } else {
+                    } elseif ($payment_amount !== false) {
                         // Remove existing payment transactions with a payment amount of zero
                         $success = $builder->delete(['payment_id' => $payment_id]);
                     }
+                    // If $payment_amount === false (parse failure), skip — preserve existing record
                 }
             }
 

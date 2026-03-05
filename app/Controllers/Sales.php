@@ -1338,6 +1338,14 @@ class Sales extends Secure_Controller
             $payment_options[lang('Sales.cash_adjustment')] = lang('Sales.cash_adjustment');
         }
 
+        // Ensure existing payment types on this sale are always in the options list,
+        // so form_dropdown (strict comparison) can pre-select them correctly.
+        foreach ($data['payments'] as $payment) {
+            if (!array_key_exists($payment->payment_type, $payment_options)) {
+                $payment_options[$payment->payment_type] = $payment->payment_type;
+            }
+        }
+
         $data['payment_options'] = $payment_options;
 
         // Set up a slightly modified list of payment types for new payment entry
