@@ -236,6 +236,8 @@ class Sale extends Model
             if ($filters['is_valid_receipt']) {
                 $pieces = explode(' ', $search);
                 $builder->where('sales.sale_id', $pieces[1]);
+            } elseif (ctype_digit($search)) {
+                $builder->where('sales.sale_id', (int)$search);
             } else {
                 $builder->groupStart();
                 $builder->like('customer_p.last_name', $search);    // Customer last name
@@ -1447,6 +1449,8 @@ class Sale extends Model
             if ($filters['is_valid_receipt']) {
                 $pieces = explode(' ', $search);
                 $builder->where('sales.sale_id', $pieces[1]);
+            } elseif (ctype_digit($search)) {
+                $builder->where('sales.sale_id', (int)$search);
             } else {
                 $builder->groupStart();
                 // Customer last name
