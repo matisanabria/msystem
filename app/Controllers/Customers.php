@@ -123,6 +123,21 @@ class Customers extends Persons
     }
 
     /**
+     * Returns basic customer info as JSON for a given person_id.
+     */
+    public function getInfoJson(int $person_id): void
+    {
+        $info = $this->customer->get_info($person_id);
+        echo json_encode([
+            'name'                => trim($info->first_name . ' ' . $info->last_name),
+            'phone'               => $info->phone_number ?? '',
+            'identification_type' => $info->identification_type ?? '',
+            'identification'      => $info->identification ?? '',
+            'company'             => $info->company_name ?? '',
+        ]);
+    }
+
+    /**
      * @return void
      */
     public function suggest_search(): void

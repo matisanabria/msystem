@@ -3,6 +3,7 @@
  * @var string $controller_name
  * @var string $table_headers
  * @var array $filters
+ * @var array $categories
  * @var array $stock_locations
  * @var int $stock_location
  * @var array $config
@@ -41,6 +42,10 @@ use App\Models\Employee;
             table_support.refresh();
         });
 
+        $("#category_filter").change(function() {
+            table_support.refresh();
+        });
+
         <?php
         echo view('partial/bootstrap_tables_locale');
         $employee = model(Employee::class);
@@ -57,7 +62,8 @@ use App\Models\Employee;
                     "start_date": start_date,
                     "end_date": end_date,
                     "stock_location": $("#stock_location").val(),
-                    "filters": $("#filters").val()
+                    "filters": $("#filters").val(),
+                    "category": $("#category_filter").val()
                 });
             },
             onLoadSuccess: function(response) {
@@ -91,6 +97,13 @@ use App\Models\Employee;
             <span class="glyphicon glyphicon-barcode">&nbsp;</span><?= lang('Items.generate_barcodes') ?>
         </button>
         <?= form_input(['name' => 'daterangepicker', 'class' => 'form-control input-sm', 'id' => 'daterangepicker']) ?>
+        <?= form_dropdown('category', $categories, 'all', [
+            'id'               => 'category_filter',
+            'class'            => 'selectpicker show-menu-arrow',
+            'data-style'       => 'btn-default btn-sm',
+            'data-width'       => 'fit',
+            'data-live-search' => 'true'
+        ]) ?>
         <?= form_multiselect('filters[]', $filters, [''], [
             'id'                        => 'filters',
             'class'                     => 'selectpicker show-menu-arrow',

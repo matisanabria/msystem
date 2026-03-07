@@ -73,12 +73,13 @@ class Items extends Secure_Controller
         $data['filters'] = [
             'empty_upc'      => lang('Items.empty_upc_items'),
             'low_inventory'  => lang('Items.low_inventory_items'),
-            'is_serialized'  => lang('Items.serialized_items'),
             'no_description' => lang('Items.no_description_items'),
-            'search_custom'  => lang('Items.search_attributes'),
             'is_deleted'     => lang('Items.is_deleted'),
-            'temporary'      => lang('Items.temp')
         ];
+
+        $categories = $this->item->get_categories()->getResultArray();
+        $category_list = array_filter(array_column($categories, 'category'), fn($c) => $c !== '' && $c !== null);
+        $data['categories'] = array_merge(['all' => 'Todas las categorías'], array_combine($category_list, $category_list));
 
         echo view('items/manage', $data);
     }
@@ -110,6 +111,7 @@ class Items extends Secure_Controller
             'search_custom'     => false,
             'is_deleted'        => false,
             'temporary'         => false,
+            'category'          => $this->request->getGet('category', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? 'all',
             'definition_ids'    => array_keys($definition_names)
         ];
 

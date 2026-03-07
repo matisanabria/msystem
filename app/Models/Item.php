@@ -214,6 +214,10 @@ class Item extends Model
             }
         }
 
+        if (!empty($filters['category']) && $filters['category'] !== 'all') {
+            $builder->where('items.category', $filters['category']);
+        }
+
         if ($attributes_enabled) {
             $format = $this->db->escape(dateformat_mysql());
             $this->db->simpleQuery('SET SESSION group_concat_max_len=49152');

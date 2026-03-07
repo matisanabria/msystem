@@ -82,10 +82,14 @@ class Service_tickets extends Secure_Controller
     {
         $ticket_info = $this->service_ticket->get_info($ticket_id);
 
-        // Build customers dropdown
-        $customers = ['' => lang('Common.none_selected_text')];
-        foreach ($this->customer->get_all()->getResult() as $row) {
-            $customers[$row->person_id] = "$row->first_name $row->last_name";
+        // Customer name for existing tickets
+        $selected_customer_id = $ticket_info->customer_id ?? null;
+        $data['selected_customer_name'] = '';
+        if ($selected_customer_id) {
+            $customer_info = $this->customer->get_info($selected_customer_id);
+            if ($customer_info) {
+                $data['selected_customer_name'] = trim($customer_info->first_name . ' ' . $customer_info->last_name);
+            }
         }
 
         // Build employees dropdown
@@ -102,7 +106,6 @@ class Service_tickets extends Secure_Controller
         ];
 
         $data['ticket_info'] = $ticket_info;
-        $data['customers'] = $customers;
         $data['employees'] = $employees;
         $data['statuses'] = $statuses;
         $data['selected_customer'] = $ticket_info->customer_id ?? '';
