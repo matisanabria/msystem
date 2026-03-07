@@ -233,6 +233,7 @@ return [
     "pin_invalid"                      => "Invalid PIN — enter 4 digits",
     "pin_back"                         => "Back",
     "price_check"                      => "Price check",
+    "items_sold"                       => "Items",
     "sale_channel"                     => "Channel",
     "sale_channel_store"               => "Store",
     "sale_channel_delivery"            => "Delivery",

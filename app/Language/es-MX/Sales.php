@@ -233,6 +233,7 @@ return [
     "pin_invalid"                      => "PIN inválido — ingresa 4 dígitos",
     "pin_back"                         => "Volver",
     "price_check"                      => "Consulta de precio",
+    "items_sold"                       => "Artículos",
     "sale_channel"                     => "Canal",
     "sale_channel_store"               => "Tienda",
     "sale_channel_delivery"            => "Delivery",

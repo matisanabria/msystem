@@ -174,11 +174,13 @@ class Sale extends Model
                 'MAX(`payments`.`sale_payment_amount`) AS amount_tendered',
                 '(MAX(`payments`.`sale_payment_amount`)) - (' . $sale_total . ') AS change_due',
                 'MAX(`payments`.`payment_type`) AS payment_type',
-                'MAX(`' . $db_prefix . 'sales`.`sale_channel`) AS sale_channel'
+                'MAX(`' . $db_prefix . 'sales`.`sale_channel`) AS sale_channel',
+                'GROUP_CONCAT(DISTINCT `sale_items_ref`.`name` ORDER BY `sale_items_ref`.`name` SEPARATOR \', \') AS items_sold'
             ], false);
         }
 
         $builder->join('sales', '`sales_items`.`sale_id` = `' . $db_prefix . 'sales`.`sale_id`', 'inner');
+        $builder->join('items AS sale_items_ref', '`sales_items`.`item_id` = `sale_items_ref`.`item_id`', 'LEFT');
         $builder->join('people AS customer_p', '`' . $db_prefix . 'sales`.`customer_id` = `customer_p`.`person_id`', 'LEFT');
         $builder->join('customers AS customer', '`' . $db_prefix . 'sales`.`customer_id` = `customer`.`person_id`', 'LEFT');
         $builder->join('sales_payments_temp AS payments', '`' . $db_prefix . 'sales`.`sale_id` = `payments`.`sale_id`', 'LEFT OUTER');
