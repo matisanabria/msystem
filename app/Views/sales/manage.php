@@ -4,6 +4,7 @@
  * @var string $table_headers
  * @var array $filters
  * @var array $selected_filters
+ * @var array $payment_filter_options
  * @var array $config
  */
 ?>
@@ -14,6 +15,10 @@
     $(document).ready(function() {
         // When any filter is clicked and the dropdown window is closed
         $('#filters').on('hidden.bs.select', function(e) {
+            table_support.refresh();
+        });
+
+        $('#payment_filter').on('hidden.bs.select', function(e) {
             table_support.refresh();
         });
 
@@ -30,7 +35,8 @@
             return {
                 "start_date": start_date,
                 "end_date": end_date,
-                "filters": $("#filters").val()
+                "filters": $("#filters").val(),
+                "payment_filter": $("#payment_filter").val()
             }
         };
 
@@ -81,6 +87,12 @@
             'data-selected-text-format' => 'count > 1',
             'data-style'                => 'btn-default btn-sm',
             'data-width'                => 'fit'
+        ]) ?>
+        <?= form_dropdown('payment_filter', $payment_filter_options, '', [
+            'id'          => 'payment_filter',
+            'class'       => 'selectpicker show-menu-arrow',
+            'data-style'  => 'btn-default btn-sm',
+            'data-width'  => 'fit'
         ]) ?>
     </div>
 </div>

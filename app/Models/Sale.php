@@ -175,12 +175,14 @@ class Sale extends Model
                 '(MAX(`payments`.`sale_payment_amount`)) - (' . $sale_total . ') AS change_due',
                 'MAX(`payments`.`payment_type`) AS payment_type',
                 'MAX(`' . $db_prefix . 'sales`.`sale_channel`) AS sale_channel',
-                'GROUP_CONCAT(DISTINCT `sale_items_ref`.`name` ORDER BY `sale_items_ref`.`name` SEPARATOR \', \') AS items_sold'
+                'GROUP_CONCAT(DISTINCT `sale_items_ref`.`name` ORDER BY `sale_items_ref`.`name` SEPARATOR \', \') AS items_sold',
+                'GROUP_CONCAT(DISTINCT `sale_supplier`.`company_name` ORDER BY `sale_supplier`.`company_name` SEPARATOR \', \') AS supplier_name'
             ], false);
         }
 
         $builder->join('sales', '`sales_items`.`sale_id` = `' . $db_prefix . 'sales`.`sale_id`', 'inner');
         $builder->join('items AS sale_items_ref', '`sales_items`.`item_id` = `sale_items_ref`.`item_id`', 'LEFT');
+        $builder->join('suppliers AS sale_supplier', '`sale_items_ref`.`supplier_id` = `sale_supplier`.`person_id`', 'LEFT');
         $builder->join('people AS customer_p', '`' . $db_prefix . 'sales`.`customer_id` = `customer_p`.`person_id`', 'LEFT');
         $builder->join('customers AS customer', '`' . $db_prefix . 'sales`.`customer_id` = `customer`.`person_id`', 'LEFT');
         $builder->join('sales_payments_temp AS payments', '`' . $db_prefix . 'sales`.`sale_id` = `payments`.`sale_id`', 'LEFT OUTER');
@@ -264,20 +266,8 @@ class Sale extends Model
             $builder->where('invoice_number IS NOT NULL');
         }
 
-        if ($filters['only_cash']) {
-            $builder->like('payment_type', lang('Sales.cash'));
-        }
-
-        if ($filters['only_due']) {
-            $builder->like('payment_type', lang('Sales.due'));
-        }
-
-        if ($filters['only_check']) {
-            $builder->like('payment_type', lang('Sales.check'));
-        }
-
-        if ($filters['only_creditcard']) {
-            $builder->like('payment_type', lang('Sales.credit'));
+        if (!empty($filters['payment_filter'])) {
+            $builder->like('payment_type', $filters['payment_filter']);
         }
 
         $builder->groupBy('payment_type');
@@ -1469,7 +1459,7 @@ class Sale extends Model
             $builder->where('sales_items.item_location', $filters['location_id']);
         }
 
-        if ($filters['selected_customer'] != false) {
+        if (!empty($filters['selected_customer'])) {
             $sale_lib = new Sale_lib();
             $builder->where('sales.customer_id', $sale_lib->get_customer());
         }
@@ -1479,31 +1469,16 @@ class Sale extends Model
             $builder->where('sales.invoice_number IS NOT NULL');
         }
 
-        if ($filters['only_cash']) {
-            $builder->groupStart();
-            $builder->like('payments.payment_type', lang('Sales.cash'));
-            $builder->orWhere('payments.payment_type IS NULL');
-            $builder->groupEnd();
-        }
-
-        if ($filters['only_creditcard']) {
-            $builder->like('payments.payment_type', lang('Sales.credit'));
-        }
-
-        if ($filters['only_due']) {
-            $builder->like('payments.payment_type', lang('Sales.due'));
-        }
-
-        if ($filters['only_check']) {
-            $builder->like('payments.payment_type', lang('Sales.check'));
-        }
-
         $channel_filters = [];
         if (!empty($filters['only_store']))    $channel_filters[] = 'store';
         if (!empty($filters['only_delivery'])) $channel_filters[] = 'delivery';
         if (!empty($filters['only_shipping'])) $channel_filters[] = 'shipping';
         if (!empty($channel_filters)) {
             $builder->whereIn('sales.sale_channel', $channel_filters);
+        }
+
+        if (!empty($filters['payment_filter'])) {
+            $builder->like('payments.payment_type', $filters['payment_filter']);
         }
     }
 }

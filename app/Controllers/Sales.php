@@ -120,25 +120,14 @@ class Sales extends Secure_Controller
             $data['table_headers'] = get_sales_manage_table_headers();
 
             $data['filters'] = [
-                'only_cash'         => lang('Sales.cash_filter'),
-                'only_due'          => lang('Sales.due_filter'),
-                'only_check'        => lang('Sales.check_filter'),
-                'only_creditcard'   => lang('Sales.credit_filter'),
-                'only_invoices'     => lang('Sales.invoice_filter'),
-                'selected_customer' => lang('Sales.selected_customer'),
-                'only_store'        => lang('Sales.sale_channel_store'),
-                'only_delivery'     => lang('Sales.sale_channel_delivery'),
-                'only_shipping'     => lang('Sales.sale_channel_shipping')
+                'only_store'    => lang('Sales.sale_channel_store'),
+                'only_delivery' => lang('Sales.sale_channel_delivery'),
+                'only_shipping' => lang('Sales.sale_channel_shipping')
             ];
 
-            if ($this->sale_lib->get_customer() != -1) {
-                $selected_filters = ['selected_customer'];
-                $data['customer_selected'] = true;
-            } else {
-                $data['customer_selected'] = false;
-                $selected_filters = [];
-            }
-            $data['selected_filters'] = $selected_filters;
+            $data['payment_filter_options'] = array_merge(['' => lang('Sales.payment_type')], get_payment_options());
+
+            $data['selected_filters'] = [];
 
             echo view('sales/manage', $data);
         }
@@ -168,20 +157,16 @@ class Sales extends Secure_Controller
         $order = $this->request->getGet('order', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         $filters = [
-            'sale_type'         => 'all',
-            'location_id'       => 'all',
-            'start_date'        => $this->request->getGet('start_date', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-            'end_date'          => $this->request->getGet('end_date', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-            'only_cash'         => false,
-            'only_due'          => false,
-            'only_check'        => false,
-            'selected_customer' => false,
-            'only_creditcard'   => false,
-            'only_invoices'     => $this->config['invoice_enable'] && $this->request->getGet('only_invoices', FILTER_SANITIZE_NUMBER_INT),
-            'is_valid_receipt'  => $this->sale->is_valid_receipt($search),
-            'only_store'        => false,
-            'only_delivery'     => false,
-            'only_shipping'     => false
+            'sale_type'        => 'all',
+            'location_id'      => 'all',
+            'start_date'       => $this->request->getGet('start_date', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
+            'end_date'         => $this->request->getGet('end_date', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
+            'only_invoices'    => $this->config['invoice_enable'] && $this->request->getGet('only_invoices', FILTER_SANITIZE_NUMBER_INT),
+            'is_valid_receipt' => $this->sale->is_valid_receipt($search),
+            'only_store'       => false,
+            'only_delivery'    => false,
+            'only_shipping'    => false,
+            'payment_filter'   => $this->request->getGet('payment_filter', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? ''
         ];
 
         // Check if any filter is set in the multiselect dropdown

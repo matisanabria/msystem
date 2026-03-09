@@ -65,6 +65,7 @@ function sales_headers(): array
         ['sale_time'       => lang('Sales.sale_time')],
         ['customer_name'   => lang('Customers.customer')],
         ['items_sold'      => lang('Sales.items_sold'), 'sortable' => false],
+        ['supplier_name'   => lang('Suppliers.supplier'), 'sortable' => false],
         ['amount_due'      => lang('Sales.amount_due')],
         ['amount_tendered' => lang('Sales.amount_tendered')],
         ['change_due'      => lang('Sales.change_due')],
@@ -108,7 +109,8 @@ function get_sale_data_row(object $sale): array
         'change_due'      => to_currency($sale->change_due),
         'payment_type'    => $sale->payment_type,
         'sale_channel'    => lang('Sales.sale_channel_' . ($sale->sale_channel ?? 'store')),
-        'items_sold'      => $sale->items_sold ?? ''
+        'items_sold'      => $sale->items_sold ?? '',
+        'supplier_name'   => $sale->supplier_name ?? ''
     ];
 
     $config = config(OSPOS::class)->settings;
