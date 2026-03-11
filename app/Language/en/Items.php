@@ -39,6 +39,7 @@ return [
     "edit_fields_you_want_to_update"     => "Edit the desired fields for selected item(s).",
     "edit_multiple_items"                => "Editing Multiple Items",
     "empty_upc_items"                    => "Empty Barcode Items",
+    "has_stock_items"                    => "Items In Stock",
     "error_adding_updating"              => "Error adding/updating item",
     "error_updating_multiple"            => "Error updating items",
     "generate_barcodes"                  => "Generate Barcodes",

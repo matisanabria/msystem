@@ -233,6 +233,9 @@ class Item extends Model
         if ($filters['empty_upc']) {
             $builder->where('item_number', null);
         }
+        if ($filters['has_stock']) {
+            $builder->where('quantity >=', 1);
+        }
         if ($filters['low_inventory']) {
             $builder->where('quantity <=', 'reorder_level');
         }

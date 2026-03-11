@@ -39,6 +39,7 @@ return [
     "edit_fields_you_want_to_update"     => "Edite los campos deseados para los artículos seleccionados.",
     "edit_multiple_items"                => "Edición de varios elementos",
     "empty_upc_items"                    => "Artículos sin código de barras",
+    "has_stock_items"                    => "Artículos con stock",
     "error_adding_updating"              => "Error al agregar/actualizar artículo",
     "error_updating_multiple"            => "Error al actualizar artículos",
     "generate_barcodes"                  => "Generar códigos de barras",
