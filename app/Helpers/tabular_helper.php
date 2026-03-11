@@ -65,6 +65,7 @@ function sales_headers(): array
         ['sale_time'       => lang('Sales.sale_time')],
         ['customer_name'   => lang('Customers.customer')],
         ['items_sold'      => lang('Sales.items_sold'), 'sortable' => false],
+        ['barcodes'        => lang('Sales.barcodes'), 'sortable' => false],
         ['supplier_name'   => lang('Suppliers.supplier'), 'sortable' => false],
         ['amount_due'      => lang('Sales.amount_due')],
         ['amount_tendered' => lang('Sales.amount_tendered')],
@@ -84,7 +85,6 @@ function get_sales_manage_table_headers(): string
 
     if ($config['invoice_enable']) {
         $headers[] = ['invoice_number' => lang('Sales.invoice_number')];
-        $headers[] = ['invoice' => '', 'sortable' => false, 'escape' => false];
     }
 
     $headers[] = ['receipt' => '', 'sortable' => false, 'escape' => false];
@@ -110,6 +110,7 @@ function get_sale_data_row(object $sale): array
         'payment_type'    => $sale->payment_type,
         'sale_channel'    => lang('Sales.sale_channel_' . ($sale->sale_channel ?? 'store')),
         'items_sold'      => $sale->items_sold ?? '',
+        'barcodes'        => $sale->barcodes ?? '',
         'supplier_name'   => $sale->supplier_name ?? ''
     ];
 
@@ -117,13 +118,6 @@ function get_sale_data_row(object $sale): array
 
     if ($config['invoice_enable']) {
         $row['invoice_number'] = $sale->invoice_number;
-        $row['invoice'] = empty($sale->invoice_number)
-            ? '-'
-            : anchor(
-                "$controller/invoice/$sale->sale_id",
-                '<span class="glyphicon glyphicon-list-alt"></span>',
-                ['title' => lang('Sales.show_invoice')]
-            );
     }
 
     $row['receipt'] = anchor(

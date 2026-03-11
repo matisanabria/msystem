@@ -234,6 +234,7 @@ return [
     "pin_back"                         => "Volver",
     "price_check"                      => "Consulta de precio",
     "items_sold"                       => "Artículos",
+    "barcodes"                         => "Cód. Barras",
     "sale_channel"                     => "Canal",
     "sale_channel_store"               => "Tienda",
     "sale_channel_delivery"            => "Delivery",

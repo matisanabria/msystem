@@ -176,6 +176,7 @@ class Sale extends Model
                 'MAX(`payments`.`payment_type`) AS payment_type',
                 'MAX(`' . $db_prefix . 'sales`.`sale_channel`) AS sale_channel',
                 'GROUP_CONCAT(DISTINCT `sale_items_ref`.`name` ORDER BY `sale_items_ref`.`name` SEPARATOR \', \') AS items_sold',
+                'GROUP_CONCAT(DISTINCT NULLIF(`sale_items_ref`.`item_number`, \'\') ORDER BY `sale_items_ref`.`item_number` SEPARATOR \', \') AS barcodes',
                 'GROUP_CONCAT(DISTINCT `sale_supplier`.`company_name` ORDER BY `sale_supplier`.`company_name` SEPARATOR \', \') AS supplier_name'
             ], false);
         }
@@ -1451,6 +1452,8 @@ class Sale extends Model
                 $builder->orLike('CONCAT(customer_p.first_name, " ", customer_p.last_name)', $search);
                 // Customer company name
                 $builder->orLike('customer.company_name', $search);
+                // Barcode / item number
+                $builder->orLike('sale_items_ref.item_number', $search);
                 $builder->groupEnd();
             }
         }

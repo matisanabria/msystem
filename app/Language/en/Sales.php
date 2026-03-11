@@ -234,6 +234,7 @@ return [
     "pin_back"                         => "Back",
     "price_check"                      => "Price check",
     "items_sold"                       => "Items",
+    "barcodes"                         => "Barcodes",
     "sale_channel"                     => "Channel",
     "sale_channel_store"               => "Store",
     "sale_channel_delivery"            => "Delivery",
