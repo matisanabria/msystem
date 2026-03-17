@@ -9,6 +9,7 @@ use App\Models\Inventory;
 use App\Models\Item;
 use App\Models\Item_kit;
 use App\Models\Receiving;
+use App\Models\Sale;
 use App\Models\Stock_location;
 use App\Models\Supplier;
 use Config\OSPOS;
@@ -24,6 +25,7 @@ class Receivings extends Secure_Controller
     private Item $item;
     private Item_kit $item_kit;
     private Receiving $receiving;
+    private Sale $sale;
     private Stock_location $stock_location;
     private Supplier $supplier;
     private array $config;
@@ -40,6 +42,7 @@ class Receivings extends Secure_Controller
         $this->item_kit = model(Item_kit::class);
         $this->item = model(Item::class);
         $this->receiving = model(Receiving::class);
+        $this->sale = model(Sale::class);
         $this->stock_location = model(Stock_location::class);
         $this->supplier = model(Supplier::class);
         $this->config = config(OSPOS::class)->settings;
@@ -177,6 +180,14 @@ class Receivings extends Secure_Controller
 
         if ($mode == 'return' && $this->receiving->is_valid_receipt($item_id_or_number_or_item_kit_or_receipt)) {
             $this->receiving_lib->return_entire_receiving($item_id_or_number_or_item_kit_or_receipt);
+        } elseif ($mode == 'return' && !$this->item_kit->is_valid_item_kit($item_id_or_number_or_item_kit_or_receipt)) {
+            // In return mode, verify that the item has a prior sale before allowing the return
+            $item_id = $this->item->get_item_id($item_id_or_number_or_item_kit_or_receipt);
+            if ($item_id === false || !$this->sale->is_item_sold($item_id)) {
+                $data['error'] = lang('Receivings.return_no_sale_found');
+            } elseif (!$this->receiving_lib->add_item($item_id_or_number_or_item_kit_or_receipt, $quantity, $item_location, $discount, $discount_type)) {
+                $data['error'] = lang('Receivings.unable_to_add_item');
+            }
         } elseif ($this->item_kit->is_valid_item_kit($item_id_or_number_or_item_kit_or_receipt)) {
             $this->receiving_lib->add_item_kit($item_id_or_number_or_item_kit_or_receipt, $item_location, $discount, $discount_type);
         } elseif (!$this->receiving_lib->add_item($item_id_or_number_or_item_kit_or_receipt, $quantity, $item_location, $discount,  $discount_type)) {

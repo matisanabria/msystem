@@ -208,6 +208,7 @@ return [
     "total"                            => "Total",
     "total_tax_exclusive"              => "Tax excluded",
     "transaction_failed"               => "Sales Transaction failed.",
+    "item_out_of_stock"                => "Sale not allowed: this item has no stock available.",
     "unable_to_add_item"               => "Item add to Sale failed",
     "unsuccessfully_deleted"           => "Sale(s) delete failed.",
     "unsuccessfully_restored"          => "Sale(s) restore failed.",

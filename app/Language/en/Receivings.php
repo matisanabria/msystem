@@ -53,6 +53,7 @@ return [
     "supplier_location"            => "Location",
     "total"                        => "Total",
     "transaction_failed"           => "Receivings transaction(s) failed.",
+    "return_no_sale_found"         => "Return not allowed: no prior sale found for this item.",
     "unable_to_add_item"           => "Item add to Receiving failed.",
     "unsuccessfully_updated"       => "Receiving update failed.",
     "update"                       => "Update",

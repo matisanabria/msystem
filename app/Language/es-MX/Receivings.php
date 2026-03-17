@@ -53,6 +53,7 @@ return [
     "supplier_location"            => "Ubicación",
     "total"                        => "Total",
     "transaction_failed"           => "Transacción de Recepción falló.",
+    "return_no_sale_found"         => "Devolución no permitida: no se encontró venta previa para este artículo.",
     "unable_to_add_item"           => "Agregar Articulo a Recepción falló.",
     "unsuccessfully_updated"       => "Actualización de Recepción falló.",
     "update"                       => "Actualizar",

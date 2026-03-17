@@ -28,6 +28,7 @@ class Sale_lib
     private Item $item;
     private Item_kit_items $item_kit_items;
     private Item_quantity $item_quantity;
+    private string $last_error = '';
     private Sale $sale;
     private Stock_location $stock_location;
     private Session $session;
@@ -46,6 +47,11 @@ class Sale_lib
         $this->sale = model(Sale::class);
         $this->stock_location = model(Stock_location::class);
         $this->config = config(OSPOS::class)->settings;
+    }
+
+    public function get_last_error(): string
+    {
+        return $this->last_error;
     }
 
     /**
@@ -962,6 +968,7 @@ class Sale_lib
         // Make sure item exists
         if (empty($item_info)) {
             $item_id = NEW_ENTRY;
+            $this->last_error = '';
             return false;
         }
 
@@ -969,6 +976,15 @@ class Sale_lib
         $item_id = $item_info->item_id;
         $item_type = $item_info->item_type;
         $stock_type = $item_info->stock_type;
+
+        // Block sale if item tracks stock and has no available quantity
+        if ($stock_type == HAS_STOCK && $quantity > 0) {
+            $available = $this->item_quantity->get_item_quantity($item_id, $item_location)->quantity;
+            if ($available <= 0) {
+                $this->last_error = 'out_of_stock';
+                return false;
+            }
+        }
 
         $price = $item_info->unit_price;
         $cost_price = $item_info->cost_price;

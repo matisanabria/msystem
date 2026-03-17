@@ -39,6 +39,18 @@ class Sale extends Model
     }
 
     /**
+     * Checks if an item (by item_id) has been sold at least once.
+     */
+    public function is_item_sold(int $item_id): bool
+    {
+        $builder = $this->db->table('sales_items');
+        $builder->where('item_id', $item_id);
+        $builder->where('quantity_purchased >', 0);
+
+        return $builder->countAllResults() > 0;
+    }
+
+    /**
      * Get sale info
      */
     public function get_info(int $sale_id): ResultInterface
