@@ -237,6 +237,8 @@ class Sale extends Model
         $builder = $this->db->table('sales AS sales');
         $builder->select('payment_type, COUNT(payment_amount) AS count, SUM(payment_amount - cash_refund) AS payment_amount');
         $builder->join('sales_payments', 'sales_payments.sale_id = sales.sale_id');
+        $builder->join('sales_items', 'sales_items.sale_id = sales.sale_id', 'LEFT');
+        $builder->join('items AS sale_items_ref', 'sales_items.item_id = sale_items_ref.item_id', 'LEFT');
         $builder->join('people AS customer_p', 'sales.customer_id = customer_p.person_id', 'LEFT');
         $builder->join('customers AS customer', 'sales.customer_id = customer.person_id', 'LEFT');
 
@@ -252,7 +254,10 @@ class Sale extends Model
                 $pieces = explode(' ', $search);
                 $builder->where('sales.sale_id', $pieces[1]);
             } elseif (ctype_digit($search)) {
+                $builder->groupStart();
                 $builder->where('sales.sale_id', (int)$search);
+                $builder->orLike('sale_items_ref.item_number', $search);
+                $builder->groupEnd();
             } else {
                 $builder->groupStart();
                 $builder->like('customer_p.last_name', $search);    // Customer last name
@@ -1453,7 +1458,10 @@ class Sale extends Model
                 $pieces = explode(' ', $search);
                 $builder->where('sales.sale_id', $pieces[1]);
             } elseif (ctype_digit($search)) {
+                $builder->groupStart();
                 $builder->where('sales.sale_id', (int)$search);
+                $builder->orLike('sale_items_ref.item_number', $search);
+                $builder->groupEnd();
             } else {
                 $builder->groupStart();
                 // Customer last name
