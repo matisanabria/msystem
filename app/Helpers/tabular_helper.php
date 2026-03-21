@@ -904,6 +904,68 @@ function get_service_ticket_data_row(object $ticket): array
 }
 
 /**
+ * Headers for assistance columns
+ */
+function assistance_headers(): array
+{
+    return [
+        ['item_name'        => lang('Assistances.item_name')],
+        ['customer_name'    => lang('Assistances.customer')],
+        ['supplier_name'    => lang('Assistances.supplier')],
+        ['status'           => lang('Assistances.status'), 'escape' => false],
+        ['employee_name'    => lang('Assistances.employee')],
+        ['created_at'       => lang('Assistances.created_at')]
+    ];
+}
+
+/**
+ * Get the header for the assistances tabular view
+ */
+function get_assistances_manage_table_headers(): string
+{
+    return transform_headers(assistance_headers());
+}
+
+/**
+ * Get the html data row for an assistance
+ */
+function get_assistance_data_row(object $assistance): array
+{
+    $controller = get_controller();
+
+    $status_labels = [
+        'received'              => '<span class="label label-info">' . lang('Assistances.status_received') . '</span>',
+        'sent_to_supplier'      => '<span class="label label-warning">' . lang('Assistances.status_sent_to_supplier') . '</span>',
+        'in_repair'             => '<span class="label label-primary">' . lang('Assistances.status_in_repair') . '</span>',
+        'returned'              => '<span class="label label-success">' . lang('Assistances.status_returned') . '</span>',
+        'delivered_to_customer' => '<span class="label label-default">' . lang('Assistances.status_delivered_to_customer') . '</span>',
+    ];
+
+    return [
+        'assistances.assistance_id' => $assistance->assistance_id,
+        'item_name'        => $assistance->item_name,
+        'customer_name'    => $assistance->customer_name,
+        'supplier_name'    => $assistance->supplier_name,
+        'status'           => $status_labels[$assistance->status] ?? $assistance->status,
+        'employee_name'    => $assistance->employee_name,
+        'created_at'       => $assistance->created_at,
+        'edit'             => anchor(
+            "$controller/view/$assistance->assistance_id",
+            '<span class="glyphicon glyphicon-edit"></span>',
+            [
+                'class'           => 'modal-dlg',
+                'data-btn-submit' => lang('Common.submit'),
+                'title'           => lang('Assistances.update')
+            ]
+        ) . '&nbsp;' . anchor(
+            "$controller/receipt/$assistance->assistance_id",
+            '<span class="glyphicon glyphicon-print"></span>',
+            ['target' => '_blank', 'title' => lang('Common.print')]
+        )
+    ];
+}
+
+/**
  * Returns the right-most part of the controller name
  * @return string
  */

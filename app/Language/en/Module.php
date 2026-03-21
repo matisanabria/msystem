@@ -3,6 +3,8 @@
 return [
     "admin_cashups"              => "",
     "admin_cashups_desc"         => "",
+    "assistances"                => "Assistances",
+    "assistances_desc"           => "Track products sent to suppliers for warranty repair.",
     "backup"                     => "Backup",
     "backup_desc"                => "Create and download database backups.",
     "attributes"                 => "Attributes",

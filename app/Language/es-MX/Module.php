@@ -3,6 +3,8 @@
 return [
     "admin_cashups"              => "",
     "admin_cashups_desc"         => "",
+    "assistances"                => "Asistencias",
+    "assistances_desc"           => "Rastrear productos enviados al proveedor para reparación en garantía.",
     "backup"                     => "Respaldo",
     "backup_desc"                => "Crear y descargar respaldos de la base de datos.",
     "attributes"                 => "Atributos",

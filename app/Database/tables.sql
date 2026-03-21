@@ -337,6 +337,7 @@ INSERT INTO `ospos_modules` (`name_lang_key`, `desc_lang_key`, `sort`, `module_i
     ('module_reports', 'module_reports_desc', 50, 'reports'),
     ('module_sales', 'module_sales_desc', 70, 'sales'),
     ('module_service_tickets', 'module_service_tickets_desc', 15, 'service_tickets'),
+    ('module_assistances', 'module_assistances_desc', 16, 'assistances'),
     ('module_suppliers', 'module_suppliers_desc', 40, 'suppliers');
 
 -- --------------------------------------------------------
@@ -411,6 +412,7 @@ INSERT INTO `ospos_permissions` (`permission_id`, `module_id`) VALUES
     ('reports', 'reports'),
     ('sales', 'sales'),
     ('service_tickets', 'service_tickets'),
+    ('assistances', 'assistances'),
     ('config', 'config'),
     ('suppliers', 'suppliers');
 
@@ -462,6 +464,7 @@ INSERT INTO `ospos_grants` (`permission_id`, `person_id`) VALUES
     ('sales_stock', 1),
     ('receivings_stock', 1),
     ('service_tickets', 1),
+    ('assistances', 1),
     ('suppliers', 1);
 
 --
@@ -485,6 +488,40 @@ CREATE TABLE `ospos_service_tickets` (
     KEY `customer_id` (`customer_id`),
     KEY `employee_id_receiver` (`employee_id_receiver`),
     KEY `employee_id_technician` (`employee_id_technician`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ospos_assistances`
+--
+
+CREATE TABLE `ospos_assistances` (
+    `assistance_id` int(10) NOT NULL AUTO_INCREMENT,
+    `item_id` int(10) DEFAULT NULL,
+    `customer_id` int(10) DEFAULT NULL,
+    `supplier_id` int(10) DEFAULT NULL,
+    `employee_id` int(10) NOT NULL,
+    `item_name` varchar(255) NOT NULL,
+    `problem_description` text NOT NULL,
+    `supplier_notes` text,
+    `resolution` text,
+    `status` varchar(25) NOT NULL DEFAULT 'received',
+    `affects_stock` tinyint(1) NOT NULL DEFAULT 1,
+    `stock_adjusted` tinyint(1) NOT NULL DEFAULT 0,
+    `location_id` int(10) DEFAULT NULL,
+    `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `sent_date` date DEFAULT NULL,
+    `return_date` date DEFAULT NULL,
+    `delivered_date` date DEFAULT NULL,
+    `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted` int(1) NOT NULL DEFAULT 0,
+    PRIMARY KEY (`assistance_id`),
+    KEY `item_id` (`item_id`),
+    KEY `customer_id` (`customer_id`),
+    KEY `supplier_id` (`supplier_id`),
+    KEY `employee_id` (`employee_id`),
+    KEY `status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
