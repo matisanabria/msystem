@@ -24,7 +24,6 @@ class Inventory_summary extends Report
             ['quantity'          => lang('Reports.quantity')],
             ['low_sell_quantity' => lang('Reports.low_sell_quantity')],
             ['reorder_level'     => lang('Reports.reorder_level')],
-            ['location_name'     => lang('Reports.stock_location')],
             ['cost_price'        => lang('Reports.cost_price'), 'sorter' => 'number_sorter'],
             ['unit_price'        => lang('Reports.unit_price'), 'sorter' => 'number_sorter'],
             ['subtotal'          => lang('Reports.sub_total_value'), 'sorter' => 'number_sorter']

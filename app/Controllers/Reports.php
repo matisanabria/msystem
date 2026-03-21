@@ -1808,7 +1808,6 @@ class Reports extends Secure_Controller
         foreach ($report_data as $row) {
             $tabular_data[] = [
                 'id'          => $row['sale_id'],
-                'type_code'   => $row['type_code'],
                 'sale_time'   => to_datetime(strtotime($row['sale_time'])),
                 'name'        => $row['name'],
                 'category'    => $row['category'],
@@ -1843,11 +1842,8 @@ class Reports extends Secure_Controller
         $sale_type_options = [];
         $sale_type_options['complete'] = lang('Reports.complete');
         $sale_type_options['sales'] = lang('Reports.completed_sales');
-        if ($this->config['invoice_enable']) {
-            $sale_type_options['quotes'] = lang('Reports.quotes');
-            if ($this->config['work_order_enable']) {
-                $sale_type_options['work_orders'] = lang('Reports.work_orders');
-            }
+        if ($this->config['invoice_enable'] && $this->config['work_order_enable']) {
+            $sale_type_options['work_orders'] = lang('Reports.work_orders');
         }
         $sale_type_options['canceled'] = lang('Reports.canceled');
         $sale_type_options['returns'] = lang('Reports.returns');
@@ -1901,7 +1897,6 @@ class Reports extends Secure_Controller
 
             $summary_data[] = [
                 'id'            => $row['sale_id'],
-                'type_code'     => $row['type_code'],
                 'sale_time'     => to_datetime(strtotime($row['sale_time'])),
                 'quantity'      => to_quantity_decimals($row['items_purchased']),
                 'employee_name' => $row['employee_name'],
@@ -2141,10 +2136,6 @@ class Reports extends Secure_Controller
         $data = [];
         $data['item_count'] = $this->inventory_summary->getItemCountDropdownArray();
 
-        $stock_locations = $this->stock_location->get_allowed_locations();
-        $stock_locations['all'] = lang('Reports.all');
-        $data['stock_locations'] = array_reverse($stock_locations, true);
-
         echo view('reports/inventory_summary_input', $data);
     }
 
@@ -2170,7 +2161,6 @@ class Reports extends Secure_Controller
                 'quantity'          => to_quantity_decimals($row['quantity']),
                 'low_sell_quantity' => to_quantity_decimals($row['low_sell_quantity']),
                 'reorder_level'     => to_quantity_decimals($row['reorder_level']),
-                'location_name'     => $row['location_name'],
                 'cost_price'        => to_currency($row['cost_price']),
                 'unit_price'        => to_currency($row['unit_price']),
                 'subtotal'          => to_currency($row['sub_total_value'])

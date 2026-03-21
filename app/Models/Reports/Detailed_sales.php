@@ -31,7 +31,6 @@ class Detailed_sales extends Report
         return [    // TODO: Duplicated code
             'summary' => [
                 ['id'            => lang('Reports.sale_id')],
-                ['type_code'     => lang('Reports.code_type')],
                 ['sale_time'     => lang('Reports.date'), 'sortable' => false],
                 ['quantity'      => lang('Reports.quantity')],
                 ['employee_name' => lang('Reports.sold_by')],

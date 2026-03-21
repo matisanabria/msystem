@@ -1,6 +1,5 @@
 <?php
 /**
- * @var array $stock_locations
  * @var array $item_count
  */
 ?>
@@ -20,13 +19,6 @@ if (isset($error)) {
 ?>
 
 <?= form_open('#', ['id' => 'item_form', 'enctype' => 'multipart/form-data', 'class' => 'form-horizontal']) ?>
-
-    <div class="form-group form-group-sm">
-        <?= form_label(lang('Reports.stock_location'), 'reports_stock_location_label', ['class' => 'required control-label col-xs-2']) ?>
-        <div id="report_stock_location" class="col-xs-3">
-            <?= form_dropdown('stock_location', $stock_locations, 'all', 'id="location_id" class="form-control"') ?>
-        </div>
-    </div>
 
     <div class="form-group form-group-sm">
         <?= form_label(lang('Reports.item_count'), 'reports_item_count_label', ['class' => 'required control-label col-xs-2']) ?>
@@ -50,7 +42,7 @@ if (isset($error)) {
 <script type="text/javascript">
     $(document).ready(function() {
         $("#generate_report").click(function() {
-            window.location = [window.location, $("#location_id").val(), $("#item_count").val()].join("/");
+            window.location = [window.location, "all", $("#item_count").val()].join("/");
         });
     });
 </script>
