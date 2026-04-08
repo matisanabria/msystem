@@ -6,6 +6,7 @@ return [
     "invalid_gcaptcha"              => "Please verify that you are not a robot.",
     "invalid_installation"          => "The installation is not correct, check your php.ini file.",
     "invalid_username_and_password" => "Invalid username and/or password.",
+    "too_many_attempts"             => "Too many login attempts. Please wait 2 minutes before trying again.",
     "login"                         => "Login",
     "logout"                        => "Logout",
     "migration_needed"              => "A database migration to {0} will start after login.",

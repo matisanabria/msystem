@@ -85,16 +85,28 @@
                         <input class="form-control" name="password" type="password" placeholder="<?= lang('Login.password') ?>" aria-label="<?= lang('Login.password') ?>" aria-describedby="input-password" <?php if (ENVIRONMENT == "testing") echo 'value="pointofsale"'; ?>>
                     </div>
                 <?php endif; ?>
-                <?php
-                if ($gcaptcha_enabled) {
-                    echo '<script src="https://www.google.com/recaptcha/api.js"></script>';
-                    echo '<div class="g-recaptcha mb-3" style="text-align: center;" data-sitekey="' . $config['gcaptcha_site_key'] . '"></div>';
-                }
-                ?>
+                <?php if ($gcaptcha_enabled): ?>
+                    <script src="https://www.google.com/recaptcha/api.js?render=<?= $config['gcaptcha_site_key'] ?>"></script>
+                    <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+                <?php endif; ?>
                 <div class="d-grid">
                     <button class="btn btn-lg btn-primary" name="login-button" type="submit"><?= lang('Login.go') ?></button>
                 </div>
                 <?= form_close() ?>
+                <?php if ($gcaptcha_enabled): ?>
+                <script>
+                    document.querySelector('form').addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        var form = this;
+                        grecaptcha.ready(function() {
+                            grecaptcha.execute('<?= $config['gcaptcha_site_key'] ?>', {action: 'login'}).then(function(token) {
+                                document.getElementById('g-recaptcha-response').value = token;
+                                form.submit();
+                            });
+                        });
+                    });
+                </script>
+                <?php endif; ?>
             </section>
         </div>
     </main>

@@ -61,7 +61,11 @@ class ContentSecurityPolicy extends BaseConfig
         'self',
         'unsafe-inline',
         'unsafe-eval',
-        'www.google.com www.gstatic.com'
+        'www.google.com',
+        'www.gstatic.com',
+        'https://www.google.com/recaptcha/',
+        'https://www.gstatic.com/recaptcha/',
+        'https://static.cloudflareinsights.com',
     ];
 
     /**
@@ -112,6 +116,7 @@ class ContentSecurityPolicy extends BaseConfig
     public $connectSrc = [
         'self',
         'nominatim.openstreetmap.org',
+        'www.google.com',
     ];
 
     /**
@@ -148,7 +153,10 @@ class ContentSecurityPolicy extends BaseConfig
      *
      * @var list<string>|string|null
      */
-    public $frameSrc;
+    public $frameSrc = [
+        'self',
+        'www.google.com',
+    ];
 
     /**
      * Restricts the origins allowed to deliver video and audio.

@@ -4,6 +4,7 @@ namespace App\Config\Validation;
 
 use App\Models\Employee;
 use CodeIgniter\HTTP\IncomingRequest;
+use CodeIgniter\Throttle\Throttler;
 use Config\OSPOS;
 use Config\Services;
 
@@ -31,6 +32,16 @@ class OSPOSRules
         $employee = model(Employee::class);
         $this->request = Services::request();
         $this->config = config(OSPOS::class)->settings;
+
+        // Rate limiting: 5 attempts per 2 minutes per IP
+        $throttler = Services::throttler();
+        $ip = $this->request->getIPAddress();
+
+        if ($throttler->check(md5("login_attempts_{$ip}"), 5, MINUTE * 2) === false) {
+            $error = lang('Login.too_many_attempts');
+
+            return false;
+        }
 
         // Installation Check
         if (!$this->installation_check()) {
@@ -89,6 +100,11 @@ class OSPOSRules
             $status = json_decode($result, true);
 
             if (!empty($status['success'])) {
+                // reCAPTCHA v3: check score (1.0 = human, 0.0 = bot)
+                if (isset($status['score']) && $status['score'] < 0.5) {
+                    return false;
+                }
+
                 return true;
             }
         }
