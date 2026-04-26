@@ -40,6 +40,10 @@ class Summary_expenses_categories extends Summary_report
 
         $builder->where('expenses.deleted', 0);
 
+        if (!empty($inputs['location_id']) && $inputs['location_id'] !== 'all') {
+            $builder->where('expenses.location_id', (int)$inputs['location_id']);
+        }
+
         $builder->groupBy('expense_categories.category_name');
         $builder->orderBy('expense_categories.category_name');
 
@@ -64,6 +68,10 @@ class Summary_expenses_categories extends Summary_report
         }
 
         $builder->where('expenses.deleted', 0);
+
+        if (!empty($inputs['location_id']) && $inputs['location_id'] !== 'all') {
+            $builder->where('expenses.location_id', (int)$inputs['location_id']);
+        }
 
         return $builder->get()->getRowArray();
     }

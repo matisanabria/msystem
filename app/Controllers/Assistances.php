@@ -51,8 +51,9 @@ class Assistances extends Secure_Controller
         $sort = $this->sanitizeSortColumn(assistance_headers(), $this->request->getGet('sort', FILTER_SANITIZE_FULL_SPECIAL_CHARS), 'assistances.assistance_id');
         $order = $this->request->getGet('order', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-        $assistances = $this->assistance->search($search, $limit, $offset, $sort, $order);
-        $total_rows = $this->assistance->get_found_rows($search);
+        $allowed_location_ids = array_keys($this->stock_location->get_allowed_locations('items'));
+        $assistances = $this->assistance->search($search, $limit, $offset, $sort, $order, false, $allowed_location_ids ?: null);
+        $total_rows = $this->assistance->get_found_rows($search, $allowed_location_ids ?: null);
         $data_rows = [];
 
         foreach ($assistances->getResult() as $assistance) {

@@ -26,6 +26,7 @@ return [
     "due"                        => "Due",
     "due_filter"                 => "Due",
     "employee"                   => "Created By",
+    "location"                   => "Branch",
     "error_adding_updating"      => "Error adding/updating Expense",
     "expense_id"                 => "Id",
     "expenses_employee"          => "Employee",

@@ -169,12 +169,12 @@ class Assistance extends Model
         return $suggestions;
     }
 
-    public function get_found_rows(string $search): int
+    public function get_found_rows(string $search, ?array $location_ids = null): int
     {
-        return $this->search($search, 0, 0, 'assistances.assistance_id', 'desc', true);
+        return $this->search($search, 0, 0, 'assistances.assistance_id', 'desc', true, $location_ids);
     }
 
-    public function search(string $search, ?int $rows = 0, ?int $limit_from = 0, ?string $sort = 'assistances.assistance_id', ?string $order = 'desc', ?bool $count_only = false)
+    public function search(string $search, ?int $rows = 0, ?int $limit_from = 0, ?string $sort = 'assistances.assistance_id', ?string $order = 'desc', ?bool $count_only = false, ?array $location_ids = null)
     {
         if ($rows == null) $rows = 0;
         if ($limit_from == null) $limit_from = 0;
@@ -203,6 +203,10 @@ class Assistance extends Model
         $builder->orLike('assistances.status', $search);
         $builder->groupEnd();
         $builder->where('assistances.deleted', 0);
+
+        if (!empty($location_ids)) {
+            $builder->whereIn('assistances.location_id', $location_ids);
+        }
 
         if ($count_only) {
             return $builder->get()->getRow()->count;

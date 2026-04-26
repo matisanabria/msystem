@@ -226,11 +226,11 @@ class Reports extends Secure_Controller
      * @param string $sale_type
      * @return void
      */
-    public function summary_expenses_categories(string $start_date, string $end_date, string $sale_type): void
+    public function summary_expenses_categories(string $start_date, string $end_date, string $sale_type, string $location_id = 'all'): void
     {
         $this->clearCache();
 
-        $inputs = ['start_date' => $start_date, 'end_date' => $end_date, 'sale_type' => $sale_type];    // TODO: Duplicated Code
+        $inputs = ['start_date' => $start_date, 'end_date' => $end_date, 'sale_type' => $sale_type, 'location_id' => $location_id];    // TODO: Duplicated Code
 
         $report_data = $this->summary_expenses_categories->getData($inputs);
         $summary = $this->summary_expenses_categories->getSummaryData($inputs);
@@ -683,6 +683,42 @@ class Reports extends Secure_Controller
     }
 
     /**
+     * Input for expense-category and graphical-expense reports. Shows expenses locations. Used in app/Config/Routes.php
+     *
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function date_input_expenses(): void
+    {
+        $this->clearCache();
+
+        $stock_locations = $this->stock_location->get_allowed_locations('expenses');
+        $stock_locations['all'] = lang('Reports.all');
+        $data['stock_locations'] = array_reverse($stock_locations, true);
+        $data['mode'] = '';
+
+        echo view('reports/date_input', $data);
+    }
+
+    /**
+     * Input for monthly financial summary report. Shows sales locations. Used in app/Config/Routes.php
+     *
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function date_input_monthly(): void
+    {
+        $this->clearCache();
+
+        $stock_locations = $this->stock_location->get_allowed_locations('sales');
+        $stock_locations['all'] = lang('Reports.all');
+        $data['stock_locations'] = array_reverse($stock_locations, true);
+        $data['mode'] = '';
+
+        echo view('reports/date_input', $data);
+    }
+
+    /**
      * Input for reports that require only a date range. Used in app/Config/Routes.php
      *
      * @return void
@@ -726,14 +762,15 @@ class Reports extends Secure_Controller
      * @return void
      * @noinspection PhpUnused
      */
-    public function graphical_summary_expenses_categories(string $start_date, string $end_date, string $sale_type): void
+    public function graphical_summary_expenses_categories(string $start_date, string $end_date, string $sale_type, string $location_id = 'all'): void
     {
         $this->clearCache();
 
         $inputs = [
-            'start_date' => $start_date,
-            'end_date'   => $end_date,
-            'sale_type'  => $sale_type
+            'start_date'  => $start_date,
+            'end_date'    => $end_date,
+            'sale_type'   => $sale_type,
+            'location_id' => $location_id
         ];
 
         $report_data = $this->summary_expenses_categories->getData($inputs);
@@ -2187,13 +2224,14 @@ class Reports extends Secure_Controller
      * @param string $end_date
      * @return void
      */
-    public function monthly_summary_sales(string $start_date, string $end_date): void
+    public function monthly_summary_sales(string $start_date, string $end_date, string $input_type = '0', string $location_id = 'all'): void
     {
         $this->clearCache();
 
         $inputs = [
-            'start_date' => $start_date,
-            'end_date'   => $end_date,
+            'start_date'  => $start_date,
+            'end_date'    => $end_date,
+            'location_id' => $location_id,
         ];
 
         $report_data = $this->monthly_financial_summary->getData($inputs);

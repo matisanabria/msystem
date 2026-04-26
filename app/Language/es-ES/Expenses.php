@@ -26,6 +26,7 @@ return [
     "due"                        => "Hasta",
     "due_filter"                 => "Hasta",
     "employee"                   => "Creado por",
+    "location"                   => "Sucursal",
     "error_adding_updating"      => "Error añadiendo/actualizando",
     "expense_id"                 => "Id",
     "expenses_employee"          => "Empleado",

@@ -693,7 +693,8 @@ function get_expense_category_data_row(object $expense_category): array
 
 function expense_headers(): array
 {
-    return [
+    $stock_location = model(App\Models\Stock_location::class);
+    $headers = [
         ['expense_id'   => lang('Expenses.expense_id')],
         ['date'         => lang('Expenses.date')],
         ['amount'       => lang('Expenses.amount')],
@@ -702,6 +703,12 @@ function expense_headers(): array
         ['description'  => lang('Expenses.description')],
         ['created_by'   => lang('Expenses.employee')]
     ];
+
+    if ($stock_location->multiple_locations()) {
+        $headers[] = ['location_name' => lang('Expenses.location')];
+    }
+
+    return $headers;
 }
 
 /**
@@ -718,8 +725,9 @@ function get_expenses_manage_table_headers(): string
 function get_expenses_data_row(object $expense): array
 {
     $controller = get_controller();
+    $stock_location = model(App\Models\Stock_location::class);
 
-    return [
+    $row = [
         'expense_id'   => $expense->expense_id,
         'date'         => to_datetime(strtotime($expense->date)),
         'amount'       => to_currency($expense->amount),
@@ -727,16 +735,23 @@ function get_expenses_data_row(object $expense): array
         'payment_type' => $expense->payment_type,
         'description'  => $expense->description,
         'created_by'   => $expense->first_name . ' ' . $expense->last_name,
-        'edit'              => anchor(
-            "$controller/view/$expense->expense_id",
-            '<span class="glyphicon glyphicon-edit"></span>',
-            [
-                'class'           => 'modal-dlg',
-                'data-btn-submit' => lang('Common.submit'),
-                'title'           => lang(ucfirst($controller) . ".update")
-            ]
-        )
     ];
+
+    if ($stock_location->multiple_locations()) {
+        $row['location_name'] = $expense->location_name ?? '';
+    }
+
+    $row['edit'] = anchor(
+        "$controller/view/$expense->expense_id",
+        '<span class="glyphicon glyphicon-edit"></span>',
+        [
+            'class'           => 'modal-dlg',
+            'data-btn-submit' => lang('Common.submit'),
+            'title'           => lang(ucfirst($controller) . ".update")
+        ]
+    );
+
+    return $row;
 }
 
 /**

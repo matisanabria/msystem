@@ -26,7 +26,8 @@ class Expense extends Model
         'deleted',
         'supplier_tax_code',
         'tax_amount',
-        'supplier_id'
+        'supplier_id',
+        'location_id'
     ];
 
     /**
@@ -125,13 +126,15 @@ class Expense extends Model
                 MAX(expenses.description) AS description,
                 MAX(employees.first_name) AS first_name,
                 MAX(employees.last_name) AS last_name,
-                MAX(expense_categories.category_name) AS category_name
+                MAX(expense_categories.category_name) AS category_name,
+                MAX(stock_locations.location_name) AS location_name
             ');
         }
 
         $builder->join('people AS employees', 'employees.person_id = expenses.employee_id', 'LEFT');
         $builder->join('expense_categories AS expense_categories', 'expense_categories.expense_category_id = expenses.expense_category_id', 'LEFT');
         $builder->join('suppliers AS suppliers', 'suppliers.person_id = expenses.supplier_id', 'LEFT');
+        $builder->join('stock_locations AS stock_locations', 'stock_locations.location_id = expenses.location_id', 'LEFT');
 
         $builder->groupStart();
             $builder->like('employees.first_name', $search);
@@ -174,6 +177,10 @@ class Expense extends Model
             $builder->like('expenses.payment_type', lang('Expenses.check'));
         }
 
+        if (!empty($filters['location_ids'])) {
+            $builder->whereIn('expenses.location_id', $filters['location_ids']);
+        }
+
         if ($count_only) {    // TODO: replace this with `if ($count_only)`
             return $builder->get()->getRow()->count;
         }
@@ -207,15 +214,18 @@ class Expense extends Model
             expenses.description AS description,
             expenses.employee_id AS employee_id,
             expenses.deleted AS deleted,
+            expenses.location_id AS location_id,
             employees.first_name AS first_name,
             employees.last_name AS last_name,
             expense_categories.expense_category_id AS expense_category_id,
-            expense_categories.category_name AS category_name
+            expense_categories.category_name AS category_name,
+            stock_locations.location_name AS location_name
         ');
 
         $builder->join('people AS employees', 'employees.person_id = expenses.employee_id', 'LEFT');
         $builder->join('expense_categories AS expense_categories', 'expense_categories.expense_category_id = expenses.expense_category_id', 'LEFT');
         $builder->join('suppliers AS suppliers', 'suppliers.person_id = expenses.supplier_id', 'LEFT');
+        $builder->join('stock_locations AS stock_locations', 'stock_locations.location_id = expenses.location_id', 'LEFT');
         $builder->where('expense_id', $expense_id);
 
         $query = $builder->get();
@@ -331,6 +341,10 @@ class Expense extends Model
 
         if ($filters['only_debit']) {
             $builder->like('payment_type', lang('Expenses.debit'));
+        }
+
+        if (!empty($filters['location_ids'])) {
+            $builder->whereIn('location_id', $filters['location_ids']);
         }
 
         $builder->groupBy('payment_type');

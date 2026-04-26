@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Expense;
 use App\Models\Expense_category;
+use App\Models\Stock_location;
 use Config\OSPOS;
 use Config\Services;
 
@@ -11,6 +12,7 @@ class Expenses extends Secure_Controller
 {
     private Expense $expense;
     private Expense_category $expense_category;
+    private Stock_location $stock_location;
 
     public function __construct()
     {
@@ -18,6 +20,7 @@ class Expenses extends Secure_Controller
 
         $this->expense = model(Expense::class);
         $this->expense_category = model(Expense_category::class);
+        $this->stock_location = model(Stock_location::class);
     }
 
     /**
@@ -36,6 +39,10 @@ class Expenses extends Secure_Controller
             'only_debit'  => lang('Expenses.debit_filter'),
             'is_deleted'  => lang('Expenses.is_deleted')
         ];
+
+        $allowed = $this->stock_location->get_allowed_locations('expenses');
+        $data['stock_locations'] = $allowed;
+        $data['show_location_filter'] = count($allowed) > 1;
 
         echo view('expenses/manage', $data);
     }
@@ -64,6 +71,17 @@ class Expenses extends Secure_Controller
         // Check if any filter is set in the multiselect dropdown
         $request_filters = array_fill_keys($this->request->getGet('filters', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? [], true);
         $filters = array_merge($filters, $request_filters);
+
+        // Location filter: restrict to user's allowed locations
+        $allowed_location_ids = array_keys($this->stock_location->get_allowed_locations('expenses'));
+        $selected_location    = $this->request->getGet('location_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?: 'all';
+
+        if ($selected_location !== 'all' && in_array((int)$selected_location, $allowed_location_ids)) {
+            $filters['location_ids'] = [(int)$selected_location];
+        } elseif (!empty($allowed_location_ids)) {
+            $filters['location_ids'] = $allowed_location_ids;
+        }
+
         $expenses = $this->expense->search($search, $filters, $limit, $offset, $sort, $order);
         $total_rows = $this->expense->get_found_rows($search, $filters);
         $payments = $this->expense->get_payments_summary($search, $filters);
@@ -108,9 +126,16 @@ class Expenses extends Secure_Controller
 
         $expense_id = $data['expenses_info']->expense_id;
 
+        $allowed = $this->stock_location->get_allowed_locations('expenses');
+        $data['stock_locations'] = $allowed;
+        $data['show_location_select'] = count($allowed) > 1;
+
         if ($expense_id == NEW_ENTRY) {
             $data['expenses_info']->date = date('Y-m-d H:i:s');
             $data['expenses_info']->employee_id = $this->employee->get_logged_in_employee_info()->person_id;
+            if (!empty($allowed)) {
+                $data['expenses_info']->location_id = array_key_first($allowed);
+            }
         }
 
         $data['payments'] = [];
@@ -161,7 +186,8 @@ class Expenses extends Secure_Controller
             'expense_category_id' => $this->request->getPost('expense_category_id') != '' ? $this->request->getPost('expense_category_id', FILTER_SANITIZE_NUMBER_INT) : null,
             'description'         => $this->request->getPost('description', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
             'employee_id'         => $this->request->getPost('employee_id', FILTER_SANITIZE_NUMBER_INT),
-            'deleted'             => $this->request->getPost('deleted') != null
+            'deleted'             => $this->request->getPost('deleted') != null,
+            'location_id'         => $this->request->getPost('location_id') != '' ? $this->request->getPost('location_id', FILTER_SANITIZE_NUMBER_INT) : null
         ];
 
         if ($this->expense->save_value($expense_data, $expense_id)) {

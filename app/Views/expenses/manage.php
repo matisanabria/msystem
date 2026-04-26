@@ -4,6 +4,8 @@
  * @var string $table_headers
  * @var array $filters
  * @var array $config
+ * @var array $stock_locations
+ * @var bool $show_location_filter
  */
 ?>
 
@@ -36,9 +38,14 @@
                 return $.extend(arguments[0], {
                     "start_date": start_date,
                     "end_date": end_date,
-                    "filters": []
+                    "filters": [],
+                    "location_id": $("#location_id_filter").val() || 'all'
                 });
             }
+        });
+
+        $("#location_id_filter").on('change', function() {
+            table_support.refresh();
         });
     });
 </script>
@@ -57,6 +64,9 @@
             <span class="glyphicon glyphicon-trash">&nbsp;</span><?= lang('Common.delete') ?>
         </button>
         <?= form_input(['name' => 'daterangepicker', 'class' => 'form-control input-sm', 'id' => 'daterangepicker']) ?>
+        <?php if (!empty($show_location_filter) && !empty($stock_locations)): ?>
+            <?= form_dropdown('location_id_filter', array_merge(['all' => lang('Reports.all')], $stock_locations), 'all', ['id' => 'location_id_filter', 'class' => 'form-control input-sm']) ?>
+        <?php endif; ?>
     </div>
 </div>
 

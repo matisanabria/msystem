@@ -19,20 +19,22 @@ $routes->post('backup/create', 'Backup::postCreate');
 $routes->get('backup/download/(:segment)', 'Backup::getDownload/$1');
 $routes->post('backup/delete', 'Backup::postDelete');
 
-$routes->add('reports/summary_monthly_sales', 'Reports::date_input_only');
-$routes->add('reports/summary_monthly_sales/(:any)/(:any)', 'Reports::monthly_summary_sales/$1/$2');
+$routes->add('reports/summary_monthly_sales', 'Reports::date_input_monthly');
+$routes->add('reports/summary_monthly_sales/(:any)/(:any)/(:any)/(:any)/(:any)', 'Reports::monthly_summary_sales/$1/$2/$3/$4');
 
 $routes->add('reports/service_tickets_sales', 'Reports::getServiceTicketsSales');
 
+$routes->add('reports/summary_expenses_categories/(:any)/(:any)/(:any)/(:any)/(:any)', 'Reports::summary_expenses_categories/$1/$2/$3/$4');
 $routes->add('reports/summary_(:any)/(:any)/(:any)', 'Reports::Summary_$1/$2/$3/$4');
-$routes->add('reports/summary_expenses_categories', 'Reports::date_input_only');
+$routes->add('reports/summary_expenses_categories', 'Reports::date_input_expenses');
 $routes->add('reports/summary_payments', 'Reports::date_input_only');
 $routes->add('reports/summary_discounts', 'Reports::summary_discounts_input');
 $routes->add('reports/summary_(:any)', 'Reports::date_input');
 
+$routes->add('reports/graphical_summary_expenses_categories/(:any)/(:any)/(:any)/(:any)/(:any)', 'Reports::graphical_summary_expenses_categories/$1/$2/$3/$4');
 $routes->add('reports/graphical_(:any)/(:any)/(:any)', 'Reports::Graphical_$1/$2/$3/$4');
 $routes->add('reports/graphical_summary_trend_categories', 'Reports::date_input');
-$routes->add('reports/graphical_summary_expenses_categories', 'Reports::date_input_only');
+$routes->add('reports/graphical_summary_expenses_categories', 'Reports::date_input_expenses');
 $routes->add('reports/graphical_summary_discounts', 'Reports::summary_discounts_input');
 $routes->add('reports/graphical_(:any)', 'Reports::date_input');
 

@@ -4,6 +4,8 @@
  * @var array $payment_options
  * @var array $expense_categories
  * @var array $employees
+ * @var array $stock_locations
+ * @var bool $show_location_select
  * @var string $controller_name
  * @var array $config
  */
@@ -74,6 +76,17 @@
                 <?= form_dropdown('employee_id', $employees, $expenses_info->employee_id, 'id="employee_id" class="form-control"') ?>
             </div>
         </div>
+
+        <?php if (!empty($show_location_select) && !empty($stock_locations)): ?>
+        <div class="form-group form-group-sm">
+            <?= form_label(lang('Expenses.location'), 'location_id', ['class' => 'control-label col-xs-3']) ?>
+            <div class="col-xs-6">
+                <?= form_dropdown('location_id', $stock_locations, $expenses_info->location_id ?? '', ['id' => 'location_id', 'class' => 'form-control']) ?>
+            </div>
+        </div>
+        <?php else: ?>
+            <?= form_input(['type' => 'hidden', 'name' => 'location_id', 'value' => $expenses_info->location_id ?? array_key_first($stock_locations ?? [])]) ?>
+        <?php endif; ?>
 
         <div class="form-group form-group-sm">
             <?= form_label(lang('Expenses.description'), 'description', ['class' => 'control-label col-xs-3']) ?>
