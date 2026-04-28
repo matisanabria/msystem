@@ -36,9 +36,14 @@
                 "start_date": start_date,
                 "end_date": end_date,
                 "filters": $("#filters").val(),
-                "payment_filter": $("#payment_filter").val()
+                "payment_filter": $("#payment_filter").val(),
+                "location_id": $("#location_id_filter").val() || 'all'
             }
         };
+
+        $("#location_id_filter").on('change', function() {
+            table_support.refresh();
+        });
 
         table_support.init({
             resource: '<?= esc($controller_name) ?>',
@@ -94,6 +99,9 @@
             'data-style'  => 'btn-default btn-sm',
             'data-width'  => 'fit'
         ]) ?>
+        <?php if (!empty($show_location_filter) && !empty($stock_locations)): ?>
+            <?= form_dropdown('location_id_filter', ['all' => lang('Reports.all')] + $stock_locations, 'all', ['id' => 'location_id_filter', 'class' => 'form-control input-sm']) ?>
+        <?php endif; ?>
     </div>
 </div>
 

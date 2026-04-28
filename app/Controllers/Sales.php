@@ -129,6 +129,10 @@ class Sales extends Secure_Controller
 
             $data['selected_filters'] = [];
 
+            $allowed = $this->stock_location->get_allowed_locations('sales');
+            $data['stock_locations']      = $allowed;
+            $data['show_location_filter'] = count($allowed) > 1;
+
             echo view('sales/manage', $data);
         }
     }
@@ -156,9 +160,20 @@ class Sales extends Secure_Controller
         $sort = $this->sanitizeSortColumn(sales_headers(), $this->request->getGet('sort', FILTER_SANITIZE_FULL_SPECIAL_CHARS), 'sale_id');
         $order = $this->request->getGet('order', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
+        $allowed_location_ids = array_keys($this->stock_location->get_allowed_locations('sales'));
+        $selected_location    = $this->request->getGet('location_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?: 'all';
+
+        if ($selected_location !== 'all' && in_array((int)$selected_location, $allowed_location_ids)) {
+            $location_id_filter = (int)$selected_location;
+        } elseif (!empty($allowed_location_ids) && count($allowed_location_ids) === 1) {
+            $location_id_filter = $allowed_location_ids[0];
+        } else {
+            $location_id_filter = 'all';
+        }
+
         $filters = [
             'sale_type'        => 'all',
-            'location_id'      => 'all',
+            'location_id'      => $location_id_filter,
             'start_date'       => $this->request->getGet('start_date', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
             'end_date'         => $this->request->getGet('end_date', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
             'only_invoices'    => $this->config['invoice_enable'] && $this->request->getGet('only_invoices', FILTER_SANITIZE_NUMBER_INT),
@@ -207,7 +222,8 @@ class Sales extends Secure_Controller
             // If a valid receipt or invoice was found the search term will be replaced with a receipt number (POS #)
             $suggestions[] = $receipt;
         }
-        $suggestions = array_merge($suggestions, $this->item->get_search_suggestions($search, ['search_custom' => false, 'is_deleted' => false], true));
+        $location_id = $this->sale_lib->get_sale_location();
+        $suggestions = array_merge($suggestions, $this->item->get_search_suggestions($search, ['search_custom' => false, 'is_deleted' => false], true, 25, $location_id));
         $suggestions = array_merge($suggestions, $this->item_kit->get_search_suggestions($search));
 
         echo json_encode($suggestions);

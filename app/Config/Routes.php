@@ -18,6 +18,9 @@ $routes->get('admin_panel', 'Admin_panel::getIndex');
 $routes->post('admin_panel/createBranch', 'Admin_panel::postCreateBranch');
 $routes->post('admin_panel/deleteBranch', 'Admin_panel::postDeleteBranch');
 $routes->post('admin_panel/toggleAccess', 'Admin_panel::postToggleAccess');
+$routes->get('admin_panel/backupList', 'Admin_panel::getBackupList');
+$routes->post('admin_panel/backupCreate', 'Admin_panel::postBackupCreate');
+$routes->post('admin_panel/backupDelete', 'Admin_panel::postBackupDelete');
 
 $routes->get('backup', 'Backup::getIndex');
 $routes->post('backup/create', 'Backup::postCreate');

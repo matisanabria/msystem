@@ -642,7 +642,7 @@ class Item extends Model
      * @param int $limit
      * @return array
      */
-    public function get_search_suggestions(string $search, array $filters = ['is_deleted' => false, 'search_custom' => false], bool $unique = false, int $limit = 25): array
+    public function get_search_suggestions(string $search, array $filters = ['is_deleted' => false, 'search_custom' => false], bool $unique = false, int $limit = 25, ?int $location_id = null): array
     {
         $suggestions = [];
         $non_kit = [ITEM, ITEM_AMOUNT_ENTRY];
@@ -651,6 +651,7 @@ class Item extends Model
         $builder->select($this->get_search_suggestion_format('item_id, name, pack_name'));
         $builder->where('deleted', $filters['is_deleted']);
         $builder->whereIn('item_type', $non_kit); // Standard, exclude kit items since kits will be picked up later
+        if ($location_id !== null) { $builder->where('location_id', $location_id); }
         $builder->like('name', $search);    // TODO: this and the next 11 lines are duplicated directly below.  We should extract a method here.
         $builder->orderBy('name', 'asc');
 
@@ -662,6 +663,7 @@ class Item extends Model
         $builder->select($this->get_search_suggestion_format('item_id, item_number, pack_name'));
         $builder->where('deleted', $filters['is_deleted']);
         $builder->whereIn('item_type', $non_kit); // Standard, exclude kit items since kits will be picked up later
+        if ($location_id !== null) { $builder->where('location_id', $location_id); }
         $builder->like('item_number', $search);
         $builder->orderBy('item_number', 'asc');
 
@@ -701,6 +703,7 @@ class Item extends Model
             $builder = $this->db->table('items');
             $builder->select($this->get_search_suggestion_format('item_id, name, pack_name, description'));
             $builder->where('deleted', $filters['is_deleted']);
+            if ($location_id !== null) { $builder->where('location_id', $location_id); }
             $builder->like('description', $search);    // TODO: duplicate code, refactor method.
             $builder->orderBy('description', 'asc');
 

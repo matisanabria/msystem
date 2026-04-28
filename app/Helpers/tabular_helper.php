@@ -924,12 +924,13 @@ function get_service_ticket_data_row(object $ticket): array
 function assistance_headers(): array
 {
     return [
-        ['item_name'        => lang('Assistances.item_name')],
-        ['customer_name'    => lang('Assistances.customer')],
-        ['supplier_name'    => lang('Assistances.supplier')],
-        ['status'           => lang('Assistances.status'), 'escape' => false],
-        ['employee_name'    => lang('Assistances.employee')],
-        ['created_at'       => lang('Assistances.created_at')]
+        ['item_name'     => lang('Assistances.item_name')],
+        ['item_barcode'  => lang('Items.item_number')],
+        ['customer_name' => lang('Assistances.customer')],
+        ['supplier_name' => lang('Assistances.supplier')],
+        ['status'        => lang('Assistances.status'), 'escape' => false],
+        ['employee_name' => lang('Assistances.employee')],
+        ['created_at'    => lang('Assistances.created_at')]
     ];
 }
 
@@ -958,12 +959,13 @@ function get_assistance_data_row(object $assistance): array
 
     return [
         'assistances.assistance_id' => $assistance->assistance_id,
-        'item_name'        => $assistance->item_name,
-        'customer_name'    => $assistance->customer_name,
-        'supplier_name'    => $assistance->supplier_name,
-        'status'           => $status_labels[$assistance->status] ?? $assistance->status,
-        'employee_name'    => $assistance->employee_name,
-        'created_at'       => $assistance->created_at,
+        'item_name'     => $assistance->item_name,
+        'item_barcode'  => $assistance->item_barcode ?? '',
+        'customer_name' => $assistance->customer_name,
+        'supplier_name' => $assistance->supplier_name,
+        'status'        => $status_labels[$assistance->status] ?? $assistance->status,
+        'employee_name' => $assistance->employee_name,
+        'created_at'    => $assistance->created_at,
         'edit'             => anchor(
             "$controller/view/$assistance->assistance_id",
             '<span class="glyphicon glyphicon-edit"></span>',

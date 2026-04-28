@@ -50,6 +50,13 @@
             </div>
         </div>
 
+        <!-- Item info panel -->
+        <div id="item_info_panel" class="col-xs-offset-3 col-xs-8" style="display:none; margin-bottom:8px;">
+            <table class="table table-condensed" style="margin-bottom:0; font-size:12px;">
+                <tbody id="item_info_body"></tbody>
+            </table>
+        </div>
+
         <!-- Customer (autocomplete) -->
         <div class="form-group form-group-sm">
             <?= form_label(lang('Assistances.customer'), 'customer_search', ['class' => 'control-label col-xs-3']) ?>
@@ -233,23 +240,50 @@
         toggleDateFields();
         $('#status').on('change', toggleDateFields);
 
-        // Item autocomplete
+        // Item info panel
+        function loadItemInfo(itemId) {
+            if (!itemId) {
+                $('#item_info_panel').hide();
+                return;
+            }
+            $.getJSON('<?= site_url('assistances/itemInfo') ?>/' + itemId, function(info) {
+                var rows = '';
+                if (info.name)          rows += '<tr><td><strong>Nombre</strong></td><td>' + $('<span>').text(info.name).html() + '</td></tr>';
+                if (info.item_number)   rows += '<tr><td><strong>Código de barras</strong></td><td>' + $('<span>').text(info.item_number).html() + '</td></tr>';
+                if (info.category)      rows += '<tr><td><strong>Categoría</strong></td><td>' + $('<span>').text(info.category).html() + '</td></tr>';
+                if (info.supplier_name) rows += '<tr><td><strong>Proveedor</strong></td><td>' + $('<span>').text(info.supplier_name).html() + '</td></tr>';
+                if (info.cost_price)    rows += '<tr><td><strong>Precio costo</strong></td><td>' + $('<span>').text(info.cost_price).html() + '</td></tr>';
+                if (info.unit_price)    rows += '<tr><td><strong>Precio venta</strong></td><td>' + $('<span>').text(info.unit_price).html() + '</td></tr>';
+                if (info.description)   rows += '<tr><td><strong>Descripción</strong></td><td>' + $('<span>').text(info.description).html() + '</td></tr>';
+                $('#item_info_body').html(rows);
+                $('#item_info_panel').show();
+
+                // Auto-fill supplier
+                if (info.supplier_id && info.supplier_name) {
+                    $('#supplier_id').val(info.supplier_id);
+                    $('#supplier_search').val(info.supplier_name);
+                }
+            });
+        }
+
+        // Item autocomplete — filtered by selected branch
+        function getItemSuggestUrl() {
+            return '<?= site_url('assistances/suggestItems') ?>?location_id=' + encodeURIComponent($('[name="location_id"]').val());
+        }
+
         $('#item_search').autocomplete({
-            source: '<?= site_url('items/suggest') ?>',
+            source: function(request, response) {
+                $.getJSON(getItemSuggestUrl(), {term: request.term}, response);
+            },
             minLength: 1,
             select: function(event, ui) {
-                $('#item_search').val(ui.item.label);
+                var label = ui.item.label;
+                // Strip barcode suffix [xxx] from display label to get clean name
+                var name = label.replace(/\s*\[.*?\]$/, '');
+                $('#item_search').val(label);
                 $('#item_id').val(ui.item.value);
-                $('#item_name').val(ui.item.label);
-
-                // Fetch item info to auto-fill supplier
-                $.getJSON('<?= site_url('assistances/itemInfo') ?>/' + ui.item.value, function(info) {
-                    if (info.supplier_id && info.supplier_name) {
-                        $('#supplier_id').val(info.supplier_id);
-                        $('#supplier_search').val(info.supplier_name);
-                    }
-                });
-
+                $('#item_name').val(name);
+                loadItemInfo(ui.item.value);
                 return false;
             }
         });
@@ -258,8 +292,22 @@
             if ($(this).val() === '') {
                 $('#item_id').val('');
                 $('#item_name').val('');
+                $('#item_info_panel').hide();
             }
         });
+
+        // Reload item suggestions when branch changes
+        $('[name="location_id"]').on('change', function() {
+            $('#item_search').val('');
+            $('#item_id').val('');
+            $('#item_name').val('');
+            $('#item_info_panel').hide();
+        });
+
+        // Load item info for existing record
+        <?php if (!empty($assistance_info->item_id)): ?>
+        loadItemInfo(<?= (int)$assistance_info->item_id ?>);
+        <?php endif; ?>
 
         // Customer autocomplete + info panel
         function loadCustomerInfo(personId) {

@@ -50,7 +50,7 @@ use App\Models\Employee;
             <span class="glyphicon glyphicon-trash">&nbsp;</span><?= lang('Common.delete') ?>
         </button>
         <?php if (!empty($show_location_filter) && !empty($stock_locations)): ?>
-            <?= form_dropdown('location_id_filter', array_merge(['all' => lang('Reports.all')], $stock_locations), 'all', ['id' => 'location_id_filter', 'class' => 'form-control input-sm']) ?>
+            <?= form_dropdown('location_id_filter', ['all' => lang('Reports.all')] + $stock_locations, 'all', ['id' => 'location_id_filter', 'class' => 'form-control input-sm']) ?>
         <?php endif; ?>
     </div>
 </div>

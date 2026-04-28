@@ -52,10 +52,11 @@ class Assistance extends Model
     public function get_info(int $assistance_id): object
     {
         $builder = $this->db->table('assistances AS assistances');
-        $builder->select('assistances.*, CONCAT(customer.first_name, " ", customer.last_name) AS customer_name, customer.phone_number AS customer_phone, customer.identification_type AS customer_identification_type, customer.identification AS customer_identification, CONCAT(employee.first_name, " ", employee.last_name) AS employee_name, suppliers.company_name AS supplier_name');
+        $builder->select('assistances.*, CONCAT(customer.first_name, " ", customer.last_name) AS customer_name, customer.phone_number AS customer_phone, customer.identification_type AS customer_identification_type, customer.identification AS customer_identification, CONCAT(employee.first_name, " ", employee.last_name) AS employee_name, suppliers.company_name AS supplier_name, items.item_number AS item_barcode');
         $builder->join('people AS customer', 'customer.person_id = assistances.customer_id', 'left');
         $builder->join('people AS employee', 'employee.person_id = assistances.employee_id', 'left');
         $builder->join('suppliers', 'suppliers.person_id = assistances.supplier_id', 'left');
+        $builder->join('items', 'items.item_id = assistances.item_id', 'left');
         $builder->where('assistance_id', $assistance_id);
 
         $query = $builder->get();
@@ -187,12 +188,13 @@ class Assistance extends Model
         if ($count_only) {
             $builder->select('COUNT(assistances.assistance_id) as count');
         } else {
-            $builder->select('assistances.*, CONCAT(customer.first_name, " ", customer.last_name) AS customer_name, CONCAT(employee.first_name, " ", employee.last_name) AS employee_name, suppliers.company_name AS supplier_name');
+            $builder->select('assistances.*, CONCAT(customer.first_name, " ", customer.last_name) AS customer_name, CONCAT(employee.first_name, " ", employee.last_name) AS employee_name, suppliers.company_name AS supplier_name, items.item_number AS item_barcode');
         }
 
         $builder->join('people AS customer', 'customer.person_id = assistances.customer_id', 'left');
         $builder->join('people AS employee', 'employee.person_id = assistances.employee_id', 'left');
         $builder->join('suppliers', 'suppliers.person_id = assistances.supplier_id', 'left');
+        $builder->join('items', 'items.item_id = assistances.item_id', 'left');
         $builder->groupStart();
         $builder->like('assistances.item_name', $search);
         $builder->orLike('customer.first_name', $search);

@@ -15,7 +15,8 @@ class Admin_panel extends Secure_Controller
     private Employee $employee_model;
     private BaseConnection $db;
 
-    private const MODULES = ['items', 'sales', 'receivings', 'expenses', 'service_tickets'];
+    private const MODULES      = ['items', 'sales', 'receivings', 'expenses', 'service_tickets'];
+    private const BACKUP_PATH  = 'D:\\Backups\\';
 
     public function __construct()
     {
@@ -136,6 +137,97 @@ class Admin_panel extends Secure_Controller
                 ]);
             }
         }
+    }
+
+    public function getBackupList(): void
+    {
+        echo json_encode(['backups' => $this->_get_backups()]);
+    }
+
+    public function postBackupCreate(): void
+    {
+        if (!is_dir(self::BACKUP_PATH)) {
+            mkdir(self::BACKUP_PATH, 0755, true);
+        }
+
+        $db_config = config('Database')->default;
+        $mysqli    = new \mysqli($db_config['hostname'], $db_config['username'], $db_config['password'], $db_config['database'], (int)($db_config['port'] ?? 3306));
+        $mysqli->set_charset('utf8mb4');
+
+        $output  = "-- OSPOS Backup\n-- Generated: " . date('Y-m-d H:i:s') . "\n-- Database: " . $db_config['database'] . "\n\n";
+        $output .= "SET FOREIGN_KEY_CHECKS=0;\nSET SQL_MODE='NO_AUTO_VALUE_ON_ZERO';\nSET NAMES utf8mb4;\n\n";
+
+        $tables = [];
+        $res = $mysqli->query('SHOW TABLES');
+        while ($row = $res->fetch_row()) { $tables[] = $row[0]; }
+
+        foreach ($tables as $table) {
+            $output .= "DROP TABLE IF EXISTS `$table`;\n";
+            $cr = $mysqli->query("SHOW CREATE TABLE `$table`")->fetch_row();
+            $output .= $cr[1] . ";\n\n";
+
+            $rows = $mysqli->query("SELECT * FROM `$table`");
+            if ($rows->num_rows > 0) {
+                $cols = [];
+                $mc = $mysqli->query("SHOW COLUMNS FROM `$table`");
+                while ($c = $mc->fetch_assoc()) { $cols[] = '`' . $c['Field'] . '`'; }
+                $cols_str = implode(', ', $cols);
+                $batch = [];
+                while ($r = $rows->fetch_row()) {
+                    $vals = array_map(fn($v) => $v === null ? 'NULL' : "'" . $mysqli->real_escape_string($v) . "'", $r);
+                    $batch[] = '(' . implode(', ', $vals) . ')';
+                    if (count($batch) >= 100) {
+                        $output .= "INSERT INTO `$table` ($cols_str) VALUES\n" . implode(",\n", $batch) . ";\n";
+                        $batch = [];
+                    }
+                }
+                if (!empty($batch)) {
+                    $output .= "INSERT INTO `$table` ($cols_str) VALUES\n" . implode(",\n", $batch) . ";\n";
+                }
+                $output .= "\n";
+            }
+        }
+        $output .= "SET FOREIGN_KEY_CHECKS=1;\n";
+        $mysqli->close();
+
+        $filename = 'backup_' . date('Y-m-d_H-i-s') . '.sql';
+        file_put_contents(self::BACKUP_PATH . $filename, $output);
+
+        echo json_encode(['success' => true, 'message' => lang('Backup.backup_created'), 'backups' => $this->_get_backups()]);
+    }
+
+    public function postBackupDelete(): void
+    {
+        $filename = $this->request->getPost('filename');
+        if (!preg_match('/^[a-zA-Z0-9_\-\.]+\.sql$/', $filename)) {
+            echo json_encode(['success' => false, 'message' => 'Archivo inválido.']);
+            return;
+        }
+
+        $filepath = self::BACKUP_PATH . $filename;
+        if (file_exists($filepath)) {
+            unlink($filepath);
+            echo json_encode(['success' => true, 'message' => lang('Backup.backup_deleted'), 'backups' => $this->_get_backups()]);
+        } else {
+            echo json_encode(['success' => false, 'message' => lang('Backup.backup_failed')]);
+        }
+    }
+
+    private function _get_backups(): array
+    {
+        $backups = [];
+        if (is_dir(self::BACKUP_PATH)) {
+            foreach (glob(self::BACKUP_PATH . 'backup_*.sql') as $file) {
+                $size  = filesize($file);
+                $backups[] = [
+                    'filename' => basename($file),
+                    'date'     => date('Y-m-d H:i:s', filemtime($file)),
+                    'size'     => $size >= 1048576 ? round($size / 1048576, 2) . ' MB' : round($size / 1024, 2) . ' KB',
+                ];
+            }
+            usort($backups, fn($a, $b) => strcmp($b['date'], $a['date']));
+        }
+        return $backups;
     }
 
     private function _revoke_access(int $person_id, int $location_id): void

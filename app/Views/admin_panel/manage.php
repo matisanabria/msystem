@@ -38,6 +38,7 @@ $logged_in_id = $emp_model->get_logged_in_employee_info()->person_id;
     <li class="active"><a href="#tab_branches"  data-toggle="tab">Sucursales</a></li>
     <li>              <a href="#tab_employees"  data-toggle="tab">Empleados</a></li>
     <li>              <a href="#tab_access"     data-toggle="tab">Accesos</a></li>
+    <li>              <a href="#tab_backup"     data-toggle="tab">Respaldo</a></li>
 </ul>
 
 <div class="tab-content" style="padding-top:16px;">
@@ -147,6 +148,21 @@ $logged_in_id = $emp_model->get_logged_in_employee_info()->person_id;
         <?php endif; ?>
     </div>
 
+    <!-- ========================== RESPALDO ========================== -->
+    <div class="tab-pane" id="tab_backup">
+        <div class="row" style="margin-bottom:12px;">
+            <div class="col-xs-12">
+                <button id="btn_create_backup" class="btn btn-primary btn-sm">
+                    <span class="glyphicon glyphicon-download-alt"></span> <?= lang('Backup.create_backup') ?>
+                </button>
+                <span id="backup_spinner" style="display:none; margin-left:8px;" class="text-muted">Generando...</span>
+            </div>
+        </div>
+        <div id="backup_list_container">
+            <p class="text-muted"><?= lang('Backup.no_backups') ?></p>
+        </div>
+    </div>
+
 </div>
 
 <script type="text/javascript">
@@ -154,12 +170,17 @@ $(document).ready(function() {
     <?= view('partial/bootstrap_tables_locale', ['controller_name' => 'employees']) ?>
 
     var empTableReady = false;
+    var backupTabReady = false;
 
     // ---- Tab switching ----
     $('#admin_tabs a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
         var target = $(e.target).attr('href');
         if (target === '#tab_employees' && !empTableReady) {
             initEmpTable();
+        }
+        if (target === '#tab_backup' && !backupTabReady) {
+            backupTabReady = true;
+            loadBackupList();
         }
     });
 
@@ -287,6 +308,101 @@ $(document).ready(function() {
                 $.notify({message: 'Error de conexión.'}, {type: 'danger'});
             },
             complete: function() { $cb.prop('disabled', false); }
+        });
+    });
+
+    // ---- RESPALDO ----
+    function renderBackupList(backups) {
+        var $container = $('#backup_list_container');
+        if (!backups || backups.length === 0) {
+            $container.html('<p class="text-muted"><?= lang('Backup.no_backups') ?></p>');
+            return;
+        }
+        var rows = '';
+        $.each(backups, function(i, b) {
+            rows += '<tr>' +
+                '<td>' + $('<span>').text(b.filename).html() + '</td>' +
+                '<td>' + b.date + '</td>' +
+                '<td>' + b.size + '</td>' +
+                '<td>' +
+                    '<a href="<?= site_url('backup/download') ?>/' + encodeURIComponent(b.filename) + '" class="btn btn-default btn-xs" title="<?= lang('Common.download') ?>">' +
+                        '<span class="glyphicon glyphicon-download-alt"></span>' +
+                    '</a> ' +
+                    '<button class="btn btn-danger btn-xs btn-delete-backup" data-filename="' + $('<span>').text(b.filename).html() + '">' +
+                        '<span class="glyphicon glyphicon-trash"></span>' +
+                    '</button>' +
+                '</td>' +
+            '</tr>';
+        });
+        $container.html(
+            '<table class="table table-condensed table-striped">' +
+                '<thead><tr>' +
+                    '<th>Archivo</th><th>Fecha</th><th>Tamaño</th><th style="width:80px;"></th>' +
+                '</tr></thead>' +
+                '<tbody>' + rows + '</tbody>' +
+            '</table>'
+        );
+    }
+
+    function loadBackupList() {
+        $.getJSON('<?= site_url('admin_panel/backupList') ?>', function(res) {
+            renderBackupList(res.backups || []);
+        });
+    }
+
+    $('#btn_create_backup').on('click', function() {
+        var $btn = $(this);
+        $btn.prop('disabled', true);
+        $('#backup_spinner').show();
+        $.ajax({
+            url: '<?= site_url('admin_panel/backupCreate') ?>',
+            type: 'POST',
+            dataType: 'json',
+            success: function(res) {
+                if (res.success) {
+                    $.notify({message: res.message}, {type: 'success'});
+                    renderBackupList(res.backups || []);
+                } else {
+                    $.notify({message: res.message || 'Error al crear respaldo.'}, {type: 'danger'});
+                }
+            },
+            error: function() {
+                $.notify({message: 'Error de conexión.'}, {type: 'danger'});
+            },
+            complete: function() {
+                $btn.prop('disabled', false);
+                $('#backup_spinner').hide();
+            }
+        });
+    });
+
+    $(document).on('click', '.btn-delete-backup', function() {
+        var filename = $(this).data('filename');
+        BootstrapDialog.confirm({
+            title: 'Eliminar Respaldo',
+            message: '¿Eliminar <strong>' + $('<span>').text(filename).html() + '</strong>?',
+            type: BootstrapDialog.TYPE_DANGER,
+            btnOKLabel: 'Eliminar', btnOKClass: 'btn-danger',
+            callback: function(ok) {
+                if (!ok) return;
+                $.ajax({
+                    url: '<?= site_url('admin_panel/backupDelete') ?>',
+                    type: 'POST',
+                    data: {filename: filename},
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.success) {
+                            $.notify({message: res.message}, {type: 'success'});
+                            renderBackupList(res.backups || []);
+                        } else {
+                            $.notify({message: res.message || 'Error.'}, {type: 'danger'});
+                        }
+                    },
+                    error: function() {
+                        $.notify({message: 'Error de conexión.'}, {type: 'danger'});
+                    }
+                });
+            }
         });
     });
 

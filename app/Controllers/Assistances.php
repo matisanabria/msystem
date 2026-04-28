@@ -113,25 +113,24 @@ class Assistances extends Secure_Controller
             $selected_employee = $this->employee->get_logged_in_employee_info()->person_id;
         }
 
-        // Location selector
+        // Location selector — get_allowed_locations() returns [id => name] directly
         $allowed_locations = $this->stock_location->get_allowed_locations('items');
-        $location_options  = array_map(fn($loc) => $loc['location_name'], $allowed_locations);
         if ($assistance_id === NEW_ENTRY) {
             $assistance_location_id = (int)array_key_first($allowed_locations);
         } else {
             $assistance_location_id = (int)($assistance_info->location_id ?? array_key_first($allowed_locations));
         }
 
-        $data['assistance_info']       = $assistance_info;
-        $data['employees']             = $employees;
-        $data['statuses']              = $statuses;
-        $data['selected_customer']     = $assistance_info->customer_id ?? '';
-        $data['selected_supplier']     = $assistance_info->supplier_id ?? '';
-        $data['selected_employee']     = $selected_employee;
-        $data['selected_status']       = $assistance_info->status ?? 'received';
-        $data['stock_locations']       = $location_options;
+        $data['assistance_info']        = $assistance_info;
+        $data['employees']              = $employees;
+        $data['statuses']               = $statuses;
+        $data['selected_customer']      = $assistance_info->customer_id ?? '';
+        $data['selected_supplier']      = $assistance_info->supplier_id ?? '';
+        $data['selected_employee']      = $selected_employee;
+        $data['selected_status']        = $assistance_info->status ?? 'received';
+        $data['stock_locations']        = $allowed_locations;
         $data['assistance_location_id'] = $assistance_location_id;
-        $data['show_location_select']  = count($allowed_locations) > 1;
+        $data['show_location_select']   = count($allowed_locations) >= 1;
 
         echo view('assistances/form', $data);
     }
@@ -267,6 +266,11 @@ class Assistances extends Secure_Controller
         $result = [
             'item_id'       => $item_id,
             'name'          => $item_info->name ?? '',
+            'item_number'   => $item_info->item_number ?? '',
+            'category'      => $item_info->category ?? '',
+            'cost_price'    => $item_info->cost_price ?? '',
+            'unit_price'    => $item_info->unit_price ?? '',
+            'description'   => $item_info->description ?? '',
             'supplier_id'   => $item_info->supplier_id ?? null,
             'supplier_name' => '',
         ];
@@ -277,5 +281,35 @@ class Assistances extends Secure_Controller
         }
 
         echo json_encode($result);
+    }
+
+    public function getSuggestItems(): void
+    {
+        $search      = $this->request->getGet('term');
+        $location_id = (int)$this->request->getGet('location_id', FILTER_SANITIZE_NUMBER_INT);
+
+        $suggestions = [];
+        $db          = db_connect();
+
+        $builder = $db->table('items');
+        $builder->select('item_id, name, item_number');
+        $builder->where('deleted', 0);
+        $builder->where('location_id', $location_id);
+        $builder->groupStart();
+        $builder->like('name', $search);
+        $builder->orLike('item_number', $search);
+        $builder->groupEnd();
+        $builder->orderBy('name', 'asc');
+        $builder->limit(25);
+
+        foreach ($builder->get()->getResult() as $row) {
+            $label = $row->name;
+            if (!empty($row->item_number)) {
+                $label .= ' [' . $row->item_number . ']';
+            }
+            $suggestions[] = ['value' => $row->item_id, 'label' => $label];
+        }
+
+        echo json_encode($suggestions);
     }
 }
