@@ -115,7 +115,7 @@ return [
     "sold_by"                                 => "Vendido por",
     "sold_items"                              => "",
     "sold_to"                                 => "Vendido a",
-    "stock_location"                          => "Ubicación de Stock",
+    "stock_location"                          => "Ubicación de Inventario/Sucursal",
     "sub_total_value"                         => "Subtotal",
     "subtotal"                                => "Subtotal",
     "summary_reports"                         => "Reportes Resumidos",

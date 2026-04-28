@@ -40,7 +40,8 @@ class Item extends Model
         'qty_per_pack',
         'pack_name',
         'low_sell_item_id',
-        'hsn_code'
+        'hsn_code',
+        'location_id'
     ];
 
 
@@ -63,7 +64,7 @@ class Item extends Model
     /**
      * Determines if a given item_number exists
      */
-    public function item_number_exists(string $item_number, string $item_id = ''): bool
+    public function item_number_exists(string $item_number, string $item_id = '', ?int $location_id = null): bool
     {
         $config = config(OSPOS::class)->settings;
 
@@ -74,13 +75,17 @@ class Item extends Model
         $builder = $this->db->table('items');
         $builder->where('item_number', $item_number);
         $builder->where('deleted !=', 1);
-        $builder->where('item_id !=', intval($item_id));
 
-        // Check if $item_id is a number and not a string starting with 0
-        // because cases like 00012345 will be seen as a number where it is a barcode
-        if (ctype_digit($item_id) && !str_starts_with($item_id, '0')) {
-            $builder->where('item_id !=', intval($item_id));
+        if ($location_id !== null) {
+            $builder->where('location_id', $location_id);
         }
+
+        if ($item_id !== '') {
+            if (ctype_digit($item_id) && !str_starts_with($item_id, '0')) {
+                $builder->where('item_id !=', intval($item_id));
+            }
+        }
+
         return ($builder->get()->getNumRows()) >= 1;
     }
 
@@ -176,19 +181,19 @@ class Item extends Model
             $builder->select('MAX(inventory.trans_location) AS trans_location');
             $builder->select('MAX(inventory.trans_inventory) AS trans_inventory');
 
-            if ($filters['stock_location_id'] > -1) {
-                $builder->select('MAX(item_quantities.item_id) AS qty_item_id');
-                $builder->select('MAX(item_quantities.location_id) AS location_id');
-                $builder->select('MAX(item_quantities.quantity) AS quantity');
-            }
+            $builder->select('MAX(item_quantities.item_id) AS qty_item_id');
+            $builder->select('MAX(items.location_id) AS location_id');
+            $builder->select('MAX(item_quantities.quantity) AS quantity');
         }
 
         $builder->join('suppliers AS suppliers', 'suppliers.person_id = items.supplier_id', 'left');
         $builder->join('inventory AS inventory', 'inventory.trans_items = items.item_id');
+        $builder->join('item_quantities AS item_quantities', 'item_quantities.item_id = items.item_id AND item_quantities.location_id = items.location_id', 'left');
 
         if ($filters['stock_location_id'] > -1) {
-            $builder->join('item_quantities AS item_quantities', 'item_quantities.item_id = items.item_id');
-            $builder->where('location_id', $filters['stock_location_id']);
+            $builder->where('items.location_id', $filters['stock_location_id']);
+        } elseif (!empty($filters['allowed_location_ids'])) {
+            $builder->whereIn('items.location_id', $filters['allowed_location_ids']);
         }
 
         $where = empty($config['date_or_time_format'])
@@ -278,8 +283,7 @@ class Item extends Model
         $builder = $this->db->table('items');
 
         if ($stock_location_id > -1) {
-            $builder->join('item_quantities', 'item_quantities.item_id = items.item_id');
-            $builder->where('location_id', $stock_location_id);
+            $builder->where('items.location_id', $stock_location_id);
         }
 
         $builder->where('items.deleted', 0);
@@ -421,7 +425,7 @@ class Item extends Model
         $builder->join('attribute_links', 'attribute_links.item_id = items.item_id AND sale_id IS NULL AND receiving_id IS NULL', 'left');
         $builder->join('attribute_values', 'attribute_links.attribute_id = attribute_values.attribute_id', 'left');
 
-        $builder->where('location_id', $location_id);
+        $builder->where('item_quantities.location_id', $location_id);
         $builder->whereIn('items.item_id', $item_ids);
 
         $builder->groupBy('items.item_id');

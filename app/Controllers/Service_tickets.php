@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Customer;
 use App\Models\Service_ticket;
+use App\Models\Stock_location;
 
 use Config\OSPOS;
 
@@ -13,6 +14,7 @@ class Service_tickets extends Secure_Controller
 {
     private Service_ticket $service_ticket;
     private Customer $customer;
+    private Stock_location $stock_location;
     private array $config;
 
     public function __construct()
@@ -21,6 +23,7 @@ class Service_tickets extends Secure_Controller
 
         $this->service_ticket = model(Service_ticket::class);
         $this->customer = model(Customer::class);
+        $this->stock_location = model(Stock_location::class);
         $this->config = config(OSPOS::class)->settings;
     }
 
@@ -30,6 +33,10 @@ class Service_tickets extends Secure_Controller
     public function getIndex(): void
     {
         $data['table_headers'] = get_service_tickets_manage_table_headers();
+
+        $allowed = $this->stock_location->get_allowed_locations('service_tickets');
+        $data['stock_locations'] = $allowed;
+        $data['show_location_filter'] = count($allowed) > 1;
 
         echo view('service_tickets/manage', $data);
     }
@@ -46,8 +53,17 @@ class Service_tickets extends Secure_Controller
         $sort = $this->sanitizeSortColumn(service_ticket_headers(), $this->request->getGet('sort', FILTER_SANITIZE_FULL_SPECIAL_CHARS), 'service_tickets.ticket_id');
         $order = $this->request->getGet('order', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-        $tickets = $this->service_ticket->search($search, $limit, $offset, $sort, $order);
-        $total_rows = $this->service_ticket->get_found_rows($search);
+        $allowed_location_ids = array_keys($this->stock_location->get_allowed_locations('service_tickets'));
+        $selected_location    = $this->request->getGet('location_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?: 'all';
+
+        if ($selected_location !== 'all' && in_array((int)$selected_location, $allowed_location_ids)) {
+            $location_ids = [(int)$selected_location];
+        } else {
+            $location_ids = $allowed_location_ids ?: null;
+        }
+
+        $tickets = $this->service_ticket->search($search, $limit, $offset, $sort, $order, false, $location_ids);
+        $total_rows = $this->service_ticket->get_found_rows($search, $location_ids);
         $data_rows = [];
 
         foreach ($tickets->getResult() as $ticket) {
@@ -105,13 +121,24 @@ class Service_tickets extends Secure_Controller
             'repaired'  => lang('Service_tickets.status_repaired'),
         ];
 
-        $data['ticket_info'] = $ticket_info;
-        $data['employees'] = $employees;
-        $data['statuses'] = $statuses;
-        $data['selected_customer'] = $ticket_info->customer_id ?? '';
-        $data['selected_receiver'] = $ticket_info->employee_id_receiver ?? '';
-        $data['selected_technician'] = $ticket_info->employee_id_technician ?? '';
-        $data['selected_status'] = $ticket_info->status ?? 'received';
+        $allowed = $this->stock_location->get_allowed_locations('service_tickets');
+
+        if ($ticket_id === NEW_ENTRY) {
+            $ticket_location_id = (int)array_key_first($allowed);
+        } else {
+            $ticket_location_id = (int)($ticket_info->location_id ?? array_key_first($allowed));
+        }
+
+        $data['ticket_info']          = $ticket_info;
+        $data['employees']            = $employees;
+        $data['statuses']             = $statuses;
+        $data['selected_customer']    = $ticket_info->customer_id ?? '';
+        $data['selected_receiver']    = $ticket_info->employee_id_receiver ?? '';
+        $data['selected_technician']  = $ticket_info->employee_id_technician ?? '';
+        $data['selected_status']      = $ticket_info->status ?? 'received';
+        $data['stock_locations']      = $allowed;
+        $data['show_location_select'] = count($allowed) > 1;
+        $data['ticket_location_id']   = $ticket_location_id;
 
         echo view('service_tickets/form', $data);
     }
@@ -122,15 +149,28 @@ class Service_tickets extends Secure_Controller
      */
     public function postSave(int $ticket_id = NEW_ENTRY): void
     {
+        $allowed = $this->stock_location->get_allowed_locations('service_tickets');
+        $post_location = $this->request->getPost('location_id', FILTER_SANITIZE_NUMBER_INT);
+
+        if ($ticket_id !== NEW_ENTRY) {
+            $existing = $this->service_ticket->get_info($ticket_id);
+            $location_id = (int)($existing->location_id ?? array_key_first($allowed));
+        } else {
+            $location_id = ($post_location !== null && isset($allowed[(int)$post_location]))
+                ? (int)$post_location
+                : (int)array_key_first($allowed);
+        }
+
         $ticket_data = [
-            'customer_id'           => empty($this->request->getPost('customer_id')) ? null : intval($this->request->getPost('customer_id')),
-            'employee_id_receiver'  => intval($this->request->getPost('employee_id_receiver')),
+            'customer_id'            => empty($this->request->getPost('customer_id')) ? null : intval($this->request->getPost('customer_id')),
+            'employee_id_receiver'   => intval($this->request->getPost('employee_id_receiver')),
             'employee_id_technician' => empty($this->request->getPost('employee_id_technician')) ? null : intval($this->request->getPost('employee_id_technician')),
-            'device_name'           => $this->request->getPost('device_name'),
-            'issue_description'     => $this->request->getPost('issue_description'),
-            'status'                => $this->request->getPost('status'),
-            'notes'                 => $this->request->getPost('notes'),
-            'estimated_price'       => parse_decimals($this->request->getPost('estimated_price')),
+            'device_name'            => $this->request->getPost('device_name'),
+            'issue_description'      => $this->request->getPost('issue_description'),
+            'status'                 => $this->request->getPost('status'),
+            'notes'                  => $this->request->getPost('notes'),
+            'estimated_price'        => parse_decimals($this->request->getPost('estimated_price')),
+            'location_id'            => $location_id,
         ];
 
         if ($this->service_ticket->save_value($ticket_data, $ticket_id)) {

@@ -107,7 +107,7 @@
 
                 <ul id="permission_list">
                     <?php
-                    $hidden_modules = ['config', 'attributes', 'item_kits', 'taxes', 'messages', 'giftcards', 'cashups', 'timeclocks', 'timeclocks_categories', 'migrate'];
+                    $hidden_modules = ['attributes', 'item_kits', 'taxes', 'messages', 'giftcards', 'cashups', 'timeclocks', 'timeclocks_categories', 'migrate'];
                     $hidden_subpermissions = ['reports_discounts', 'reports_taxes'];
                     ?>
                     <?php foreach ($all_modules as $module) {
@@ -115,16 +115,7 @@
                     ?>
                         <li>
                             <?= form_checkbox("grant_$module->module_id", $module->module_id, $module->grant == 1, 'class="module"') ?>
-                            <?= form_dropdown(
-                                "menu_group_$module->module_id",
-                                [
-                                    'home'   => lang('Module.home'),
-                                    'office' => lang('Module.office'),
-                                    'both'   => lang('Module.both')
-                                ],
-                                $module->menu_group,
-                                'class="module"'
-                            ) ?>
+                            <?= form_hidden("menu_group_$module->module_id", 'home') ?>
 
                             <span class="medium"><?= lang("Module.$module->module_id") ?>:</span>
                             <span class="small"><?= lang("Module.$module->module_id" . '_desc') ?></span>

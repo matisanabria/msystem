@@ -101,20 +101,24 @@ class Items extends Secure_Controller
 
         $definition_names = $this->attribute->get_definitions_by_flags(Attribute::SHOW_IN_ITEMS);
 
+        $allowed_location_ids = array_keys($this->stock_location->get_allowed_locations('items'));
+        $stock_location_id    = $this->item_lib->get_item_location();
+
         $filters = [
-            'start_date'        => $this->request->getGet('start_date'),
-            'end_date'          => $this->request->getGet('end_date'),
-            'stock_location_id' => $this->item_lib->get_item_location(),
-            'empty_upc'         => false,
-            'has_stock'         => false,
-            'low_inventory'     => false,
-            'is_serialized'     => false,
-            'no_description'    => false,
-            'search_custom'     => false,
-            'is_deleted'        => false,
-            'temporary'         => false,
-            'category'          => $this->request->getGet('category', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? 'all',
-            'definition_ids'    => array_keys($definition_names)
+            'start_date'           => $this->request->getGet('start_date'),
+            'end_date'             => $this->request->getGet('end_date'),
+            'stock_location_id'    => $stock_location_id,
+            'allowed_location_ids' => $allowed_location_ids,
+            'empty_upc'            => false,
+            'has_stock'            => false,
+            'low_inventory'        => false,
+            'is_serialized'        => false,
+            'no_description'       => false,
+            'search_custom'        => false,
+            'is_deleted'           => false,
+            'temporary'            => false,
+            'category'             => $this->request->getGet('category', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? 'all',
+            'definition_ids'       => array_keys($definition_names)
         ];
 
         // Check if any filter is set in the multiselect dropdown
@@ -342,14 +346,24 @@ class Items extends Secure_Controller
             $data['image_path']    = '';
         }
 
-        $stock_locations = $this->stock_location->get_undeleted_all()->getResultArray();
+        $allowed_locations = $this->stock_location->get_allowed_locations('items');
 
-        foreach ($stock_locations as $location) {
-            $quantity = $this->item_quantity->get_item_quantity($item_id, $location['location_id'])->quantity;
-            $quantity = ($item_id === NEW_ENTRY) ? 1 : $quantity;
-            $location_array[$location['location_id']] = ['location_name' => $location['location_name'], 'quantity' => $quantity];
-            $data['stock_locations'] = $location_array;
+        if ($item_id === NEW_ENTRY) {
+            $item_location_id = (int)array_key_first($allowed_locations);
+        } else {
+            $item_location_id = (int)($item_info->location_id ?? array_key_first($allowed_locations));
+            $loc_name = $allowed_locations[$item_location_id] ?? $this->stock_location->get_location_name($item_location_id);
         }
+
+        $quantity = ($item_id === NEW_ENTRY) ? 1 : $this->item_quantity->get_item_quantity($item_id, $item_location_id)->quantity;
+        $location_array[$item_location_id] = [
+            'location_name' => $allowed_locations[$item_location_id] ?? ($loc_name ?? ''),
+            'quantity'      => $quantity
+        ];
+        $data['stock_locations']      = $location_array;
+        $data['item_location_id']     = $item_location_id;
+        $data['allowed_locations']    = $allowed_locations;
+        $data['show_location_select'] = $item_id === NEW_ENTRY && count($allowed_locations) > 1;
 
         $data['selected_low_sell_item_id'] = $item_info->low_sell_item_id;
 
@@ -573,6 +587,18 @@ class Items extends Secure_Controller
         $reorder_level = parse_quantity($this->request->getPost('reorder_level'));
         $qty_per_pack = parse_quantity($this->request->getPost('qty_per_pack') ?? '');
 
+        // Determine location_id: POST for new items, existing for edits
+        $allowed_locations = $this->stock_location->get_allowed_locations('items');
+        if ($item_id === NEW_ENTRY) {
+            $post_location = $this->request->getPost('location_id', FILTER_SANITIZE_NUMBER_INT);
+            $location_id = ($post_location !== null && isset($allowed_locations[(int)$post_location]))
+                ? (int)$post_location
+                : (int)array_key_first($allowed_locations);
+        } else {
+            $existing = $this->item->get_info($item_id);
+            $location_id = (int)($existing->location_id ?? array_key_first($allowed_locations));
+        }
+
         // Save item data
         $item_data = [
             'name'                  => $this->request->getPost('name'),
@@ -592,7 +618,8 @@ class Items extends Secure_Controller
             'pack_name'             => $this->request->getPost('pack_name') == null ? $default_pack_name : $this->request->getPost('pack_name'),
             'low_sell_item_id'      => $this->request->getPost('low_sell_item_id') === null ? $item_id : intval($this->request->getPost('low_sell_item_id')),
             'deleted'               => $this->request->getPost('is_deleted') != null,
-            'hsn_code'              => $this->request->getPost('hsn_code') === null ? '' : $this->request->getPost('hsn_code')
+            'hsn_code'              => $this->request->getPost('hsn_code') === null ? '' : $this->request->getPost('hsn_code'),
+            'location_id'           => $location_id,
         ];
 
         if ($item_data['item_type'] == ITEM_TEMP) {
@@ -618,37 +645,34 @@ class Items extends Secure_Controller
                 $new_item = true;
             }
 
-            // Save item quantity
-            $stock_locations = $this->stock_location->get_undeleted_all()->getResultArray();
-            foreach ($stock_locations as $location) {
-                $updated_quantity = parse_quantity($this->request->getPost('quantity_' . $location['location_id']));
+            // Save item quantity only for the item's own location
+            $updated_quantity = parse_quantity($this->request->getPost('quantity_' . $location_id));
 
-                if ($item_data['item_type'] == ITEM_TEMP) {
-                    $updated_quantity = 0;
-                }
+            if ($item_data['item_type'] == ITEM_TEMP) {
+                $updated_quantity = 0;
+            }
 
-                $location_detail = [
-                    'item_id'     => $item_id,
-                    'location_id' => $location['location_id'],
-                    'quantity'    => $updated_quantity
+            $location_detail = [
+                'item_id'     => $item_id,
+                'location_id' => $location_id,
+                'quantity'    => $updated_quantity
+            ];
+
+            $item_quantity = $this->item_quantity->get_item_quantity($item_id, $location_id);
+
+            if ($item_quantity->quantity != $updated_quantity || $new_item) {
+                $success &= $this->item_quantity->save_value($location_detail, $item_id, $location_id);
+
+                $inv_data = [
+                    'trans_date'      => date('Y-m-d H:i:s'),
+                    'trans_items'     => $item_id,
+                    'trans_user'      => $employee_id,
+                    'trans_location'  => $location_id,
+                    'trans_comment'   => lang('Items.manually_editing_of_quantity'),
+                    'trans_inventory' => $updated_quantity - $item_quantity->quantity
                 ];
 
-                $item_quantity = $this->item_quantity->get_item_quantity($item_id, $location['location_id']);
-
-                if ($item_quantity->quantity != $updated_quantity || $new_item) {
-                    $success &= $this->item_quantity->save_value($location_detail, $item_id, $location['location_id']);
-
-                    $inv_data = [
-                        'trans_date'      => date('Y-m-d H:i:s'),
-                        'trans_items'     => $item_id,
-                        'trans_user'      => $employee_id,
-                        'trans_location'  => $location['location_id'],
-                        'trans_comment'   => lang('Items.manually_editing_of_quantity'),
-                        'trans_inventory' => $updated_quantity - $item_quantity->quantity
-                    ];
-
-                    $success &= $this->inventory->insert($inv_data, false);
-                }
+                $success &= $this->inventory->insert($inv_data, false);
             }
             $this->saveItemAttributes($item_id);
 
@@ -720,7 +744,12 @@ class Items extends Secure_Controller
      */
     public function postCheckItemNumber(): void
     {
-        $exists = $this->item->item_number_exists($this->request->getPost('item_number'), $this->request->getPost('item_id'));
+        $item_number = $this->request->getPost('item_number');
+        $item_id     = $this->request->getPost('item_id') ?? '';
+        $location_id = $this->request->getPost('location_id', FILTER_SANITIZE_NUMBER_INT);
+        $location_id = ($location_id !== null && $location_id !== '') ? (int)$location_id : null;
+
+        $exists = $this->item->item_number_exists($item_number, $item_id, $location_id);
 
         echo !$exists ? 'true' : 'false';
     }

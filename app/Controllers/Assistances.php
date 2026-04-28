@@ -113,13 +113,25 @@ class Assistances extends Secure_Controller
             $selected_employee = $this->employee->get_logged_in_employee_info()->person_id;
         }
 
-        $data['assistance_info'] = $assistance_info;
-        $data['employees'] = $employees;
-        $data['statuses'] = $statuses;
-        $data['selected_customer'] = $assistance_info->customer_id ?? '';
-        $data['selected_supplier'] = $assistance_info->supplier_id ?? '';
-        $data['selected_employee'] = $selected_employee;
-        $data['selected_status'] = $assistance_info->status ?? 'received';
+        // Location selector
+        $allowed_locations = $this->stock_location->get_allowed_locations('items');
+        $location_options  = array_map(fn($loc) => $loc['location_name'], $allowed_locations);
+        if ($assistance_id === NEW_ENTRY) {
+            $assistance_location_id = (int)array_key_first($allowed_locations);
+        } else {
+            $assistance_location_id = (int)($assistance_info->location_id ?? array_key_first($allowed_locations));
+        }
+
+        $data['assistance_info']       = $assistance_info;
+        $data['employees']             = $employees;
+        $data['statuses']              = $statuses;
+        $data['selected_customer']     = $assistance_info->customer_id ?? '';
+        $data['selected_supplier']     = $assistance_info->supplier_id ?? '';
+        $data['selected_employee']     = $selected_employee;
+        $data['selected_status']       = $assistance_info->status ?? 'received';
+        $data['stock_locations']       = $location_options;
+        $data['assistance_location_id'] = $assistance_location_id;
+        $data['show_location_select']  = count($allowed_locations) > 1;
 
         echo view('assistances/form', $data);
     }
@@ -129,7 +141,12 @@ class Assistances extends Secure_Controller
         $affects_stock = $this->request->getPost('affects_stock') ? 1 : 0;
         $new_status = $this->request->getPost('status');
         $item_id = empty($this->request->getPost('item_id')) ? null : intval($this->request->getPost('item_id'));
-        $location_id = $this->stock_location->get_default_location_id('items');
+
+        $allowed_locations  = $this->stock_location->get_allowed_locations('items');
+        $post_location      = $this->request->getPost('location_id', FILTER_SANITIZE_NUMBER_INT);
+        $location_id        = ($post_location !== null && isset($allowed_locations[(int)$post_location]))
+            ? (int)$post_location
+            : (int)array_key_first($allowed_locations);
 
         $assistance_data = [
             'item_id'             => $item_id,

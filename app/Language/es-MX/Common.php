@@ -48,6 +48,7 @@ return [
     "last_page"                      => "Último",
     "learn_about_project"            => "para conocer la última información sobre el proyecto.",
     "list_of"                        => "Lista de",
+    "location"                       => "Sucursal",
     "logo"                           => "Logo",
     "logo_mark"                      => "Marca",
     "logout"                         => "Cerrar Sesión",

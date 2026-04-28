@@ -24,6 +24,7 @@ class Service_ticket extends Model
         'status',
         'notes',
         'estimated_price',
+        'location_id',
         'deleted'
     ];
 
@@ -189,15 +190,15 @@ class Service_ticket extends Model
     /**
      * Gets found rows for search
      */
-    public function get_found_rows(string $search): int
+    public function get_found_rows(string $search, ?array $location_ids = null): int
     {
-        return $this->search($search, 0, 0, 'service_tickets.ticket_id', 'desc', true);
+        return $this->search($search, 0, 0, 'service_tickets.ticket_id', 'desc', true, $location_ids);
     }
 
     /**
      * Performs a search on service tickets
      */
-    public function search(string $search, ?int $rows = 0, ?int $limit_from = 0, ?string $sort = 'service_tickets.ticket_id', ?string $order = 'desc', ?bool $count_only = false)
+    public function search(string $search, ?int $rows = 0, ?int $limit_from = 0, ?string $sort = 'service_tickets.ticket_id', ?string $order = 'desc', ?bool $count_only = false, ?array $location_ids = null)
     {
         if ($rows == null) $rows = 0;
         if ($limit_from == null) $limit_from = 0;
@@ -225,6 +226,10 @@ class Service_ticket extends Model
         $builder->orLike('service_tickets.ticket_id', $search);
         $builder->groupEnd();
         $builder->where('service_tickets.deleted', 0);
+
+        if (!empty($location_ids)) {
+            $builder->whereIn('service_tickets.location_id', $location_ids);
+        }
 
         if ($count_only) {
             return $builder->get()->getRow()->count;

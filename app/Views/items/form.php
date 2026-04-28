@@ -31,6 +31,17 @@
 <?= form_open("items/save/$item_info->item_id", ['id' => 'item_form', 'enctype' => 'multipart/form-data', 'class' => 'form-horizontal']) ?>
     <fieldset id="item_basic_info">
 
+        <?php if (!empty($show_location_select) && count($allowed_locations) > 1): ?>
+        <div class="form-group form-group-sm">
+            <?= form_label(lang('Common.location'), 'location_id', ['class' => 'control-label col-xs-3']) ?>
+            <div class="col-xs-8">
+                <?= form_dropdown('location_id', $allowed_locations, (string)$item_location_id, ['id' => 'location_id', 'class' => 'form-control']) ?>
+            </div>
+        </div>
+        <?php else: ?>
+            <?= form_hidden('location_id', (string)($item_location_id ?? (string)array_key_first($allowed_locations ?? []))) ?>
+        <?php endif; ?>
+
         <div class="form-group form-group-sm">
             <?= form_label(lang('Items.item_number'), 'item_number', ['class' => 'control-label col-xs-3']) ?>
             <div class="col-xs-8">
@@ -321,6 +332,7 @@
 
         var init_validation = function() {
             $('#item_form').validate($.extend({
+                onkeyup: false,
                 submitHandler: function(form, event) { // Event is not used as a parameter here
                     $(form).ajaxSubmit({
                         success: function(response) {
@@ -354,8 +366,8 @@
                             url: "<?= esc("$controller_name/checkItemNumber") ?>",
                             type: 'POST',
                             data: {
-                                'item_id': "<?= $item_info->item_id ?>"
-                                // item_number should be passed into the function by default
+                                'item_id': "<?= $item_info->item_id ?>",
+                                'location_id': function() { return $('[name="location_id"]').val(); }
                             }
                         }
                     },

@@ -3,6 +3,8 @@
 return [
     "admin_cashups"              => "",
     "admin_cashups_desc"         => "",
+    "admin_panel"                => "Administration",
+    "admin_panel_desc"           => "Manage branches and employee access.",
     "assistances"                => "Assistances",
     "assistances_desc"           => "Track products sent to suppliers for warranty repair.",
     "backup"                     => "Backup",

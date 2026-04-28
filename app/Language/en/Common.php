@@ -48,6 +48,7 @@ return [
     "last_page"                      => "Last",
     "learn_about_project"            => "to learn the latest information about the project.",
     "list_of"                        => "List of",
+    "location"                       => "Location",
     "logo"                           => "Logo",
     "logo_mark"                      => "Mark",
     "logout"                         => "",

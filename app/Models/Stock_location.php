@@ -153,7 +153,7 @@ class Stock_location extends Model
         $builder = $this->db->table('stock_locations');
         $builder->where('location_id', $location_id);
 
-        return $builder->get()->getRow()->location_name;
+        return $builder->get()->getRow()?->location_name ?? '';
     }
 
     /**
@@ -190,20 +190,7 @@ class Stock_location extends Model
             $this->_insert_new_permission('sales', $location_id, $location_name);
             $this->_insert_new_permission('receivings', $location_id, $location_name);
             $this->_insert_new_permission('expenses', $location_id, $location_name);
-
-            // Insert quantities for existing items
-            $item = model(Item::class);
-            $builder = $this->db->table('item_quantities');
-            $items = $item->get_all();
-
-            foreach ($items->getResultArray() as $item) {
-                $quantity_data = [
-                    'item_id'     => $item['item_id'],
-                    'location_id' => $location_id,
-                    'quantity'    => 0
-                ];
-                $builder->insert($quantity_data);
-            }
+            $this->_insert_new_permission('service_tickets', $location_id, $location_name);
 
             $this->db->transComplete();
 
@@ -220,6 +207,7 @@ class Stock_location extends Model
             $this->_insert_new_permission('sales', $location_id, $location_name);
             $this->_insert_new_permission('receivings', $location_id, $location_name);
             $this->_insert_new_permission('expenses', $location_id, $location_name);
+            $this->_insert_new_permission('service_tickets', $location_id, $location_name);
         }
 
         $builder = $this->db->table('stock_locations');

@@ -10,6 +10,9 @@
  * @var int|string $selected_supplier
  * @var int|string $selected_employee
  * @var string $selected_status
+ * @var array $stock_locations
+ * @var int $assistance_location_id
+ * @var bool $show_location_select
  */
 ?>
 
@@ -18,6 +21,17 @@
 
 <?= form_open("$controller_name/save/$assistance_info->assistance_id", ['id' => 'assistance_form', 'class' => 'form-horizontal']) ?>
     <fieldset id="assistance_info">
+
+        <?php if (!empty($show_location_select) && !empty($stock_locations)): ?>
+        <div class="form-group form-group-sm">
+            <?= form_label(lang('Common.location'), 'location_id', ['class' => 'control-label col-xs-3']) ?>
+            <div class="col-xs-8">
+                <?= form_dropdown('location_id', $stock_locations, (string)$assistance_location_id, ['id' => 'location_id', 'class' => 'form-control']) ?>
+            </div>
+        </div>
+        <?php else: ?>
+            <?= form_hidden('location_id', (string)($assistance_location_id ?? (string)array_key_first($stock_locations ?? []))) ?>
+        <?php endif; ?>
 
         <!-- Product (autocomplete) -->
         <div class="form-group form-group-sm">

@@ -9,6 +9,9 @@
  * @var string $selected_receiver
  * @var string $selected_technician
  * @var string $selected_status
+ * @var array $stock_locations
+ * @var bool $show_location_select
+ * @var int $ticket_location_id
  */
 ?>
 
@@ -91,6 +94,17 @@
                 <?= form_dropdown('status', $statuses, $selected_status, ['class' => 'form-control', 'id' => 'status']) ?>
             </div>
         </div>
+
+        <?php if (!empty($show_location_select) && !empty($stock_locations)): ?>
+        <div class="form-group form-group-sm">
+            <?= form_label(lang('Common.location'), 'location_id', ['class' => 'control-label col-xs-3']) ?>
+            <div class="col-xs-8">
+                <?= form_dropdown('location_id', $stock_locations, (string)$ticket_location_id, ['id' => 'location_id', 'class' => 'form-control']) ?>
+            </div>
+        </div>
+        <?php else: ?>
+            <?= form_hidden('location_id', (string)($ticket_location_id ?? (string)array_key_first($stock_locations ?? []))) ?>
+        <?php endif; ?>
 
         <div class="form-group form-group-sm">
             <?= form_label(lang('Service_tickets.estimated_price'), 'estimated_price', ['class' => 'control-label col-xs-3']) ?>

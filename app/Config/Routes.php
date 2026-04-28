@@ -14,6 +14,11 @@ $routes->post('login', 'Login::index');
 $routes->add('no_access/index/(:segment)', 'No_access::index/$1');
 $routes->add('no_access/index/(:segment)/(:segment)', 'No_access::index/$1/$2');
 
+$routes->get('admin_panel', 'Admin_panel::getIndex');
+$routes->post('admin_panel/createBranch', 'Admin_panel::postCreateBranch');
+$routes->post('admin_panel/deleteBranch', 'Admin_panel::postDeleteBranch');
+$routes->post('admin_panel/toggleAccess', 'Admin_panel::postToggleAccess');
+
 $routes->get('backup', 'Backup::getIndex');
 $routes->post('backup/create', 'Backup::postCreate');
 $routes->get('backup/download/(:segment)', 'Backup::getDownload/$1');

@@ -3,6 +3,8 @@
 return [
     "admin_cashups"              => "",
     "admin_cashups_desc"         => "",
+    "admin_panel"                => "Administración",
+    "admin_panel_desc"           => "Gestionar sucursales y accesos de empleados.",
     "assistances"                => "Asistencias",
     "assistances_desc"           => "Rastrear productos enviados al proveedor para reparación en garantía.",
     "backup"                     => "Respaldo",
