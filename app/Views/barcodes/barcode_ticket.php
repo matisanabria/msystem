@@ -64,17 +64,16 @@ $barcode_lib = new Barcode_lib();
         }
 
         .ticket-logo {
-            width: 13mm;
+            width: 16mm;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
         }
 
         .ticket-logo img {
-            max-width: 12mm;
-            max-height: 11mm;
+            max-width: 15mm;
+            max-height: 14mm;
             object-fit: contain;
         }
 
@@ -94,24 +93,17 @@ $barcode_lib = new Barcode_lib();
         }
 
         .ticket-qr {
-            width: 13mm;
+            width: 16mm;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
         }
 
         .ticket-qr img {
-            width: 11mm;
-            height: 11mm;
+            width: 14mm;
+            height: 14mm;
             object-fit: contain;
-        }
-
-        .ticket-qr .qr-label {
-            font-size: 4pt;
-            text-align: center;
-            margin-top: 0.3mm;
         }
 
         .ticket-barcode {
@@ -121,12 +113,12 @@ $barcode_lib = new Barcode_lib();
 
         .ticket-barcode svg {
             height: 6mm;
-            width: 56mm;
+            width: 57mm;
         }
 
         .ticket-barcode .barcode-number {
-            font-size: 5pt;
-            letter-spacing: 0.5px;
+            font-size: 8.5pt;
+            letter-spacing: 1px;
             margin-top: 0.3mm;
         }
 
@@ -173,8 +165,7 @@ $barcode_lib = new Barcode_lib();
                 <span class="product-name"><?= esc($name) ?></span>
             </div>
             <div class="ticket-qr">
-                <img src="<?= base_url('images/ticket_qr.png') ?>" alt="QR WhatsApp">
-                <div class="qr-label">WhatsApp</div>
+                <img src="<?= base_url('images/ticket_qr.png') ?>" alt="QR">
             </div>
         </div>
         <div class="ticket-barcode">
