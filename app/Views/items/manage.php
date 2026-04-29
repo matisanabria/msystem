@@ -18,7 +18,7 @@ use App\Models\Employee;
     $(document).ready(function() {
         $('#generate_barcodes').click(function() {
             window.open(
-                'index.php/items/generateBarcodes/' + table_support.selected_ids().join(':'),
+                'index.php/items/generateTickets/' + table_support.selected_ids().join(':'),
                 '_blank'
             );
         });

@@ -460,6 +460,23 @@ class Items extends Secure_Controller
     }
 
     /**
+     * Generates custom product tickets (logo + product name + barcode + QR) for selected items.
+     *
+     * @param string $item_ids Colon separated list of item_id values.
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function getGenerateTickets(string $item_ids): void
+    {
+        $item_ids = explode(':', $item_ids);
+        $result = $this->item->get_multiple_info($item_ids, $this->item_lib->get_item_location())->getResultArray();
+        $data['barcode_config'] = $this->barcode_lib->get_barcode_config();
+        $data['items'] = $result;
+
+        echo view('barcodes/barcode_ticket', $data);
+    }
+
+    /**
      * Gathers attribute value information for an item and returns it in a view.
      *
      * @param int $item_id
