@@ -1,3 +1,6 @@
+PLAN_MULTI_SUCURSAL.md
+CONTEXT_MULTI_SUCURSAL.md
+
 # Dependency directories
 node_modules
 vendor
@@ -90,3 +93,12 @@ auth.json
 /.claude/
 CLAUDE.md
 NUL
+CONTEXT_MULTI_SUCURSAL.md
+PLAN_MULTI_SUCURSAL.md
+claudio.bat
+*.PDF
+# Added by code-review-graph
+.code-review-graph/
+
+.mcp.json
+.opencode.json
