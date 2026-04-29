@@ -3,6 +3,8 @@
  * @var string $controller_name
  * @var string $table_headers
  * @var array $config
+ * @var array $stock_locations
+ * @var bool $show_location_filter
  */
 
 use App\Models\Employee;
@@ -23,6 +25,14 @@ use App\Models\Employee;
             headers: <?= $table_headers ?>,
             pageSize: <?= $config['lines_per_page'] ?>,
             uniqueId: 'assistances.assistance_id',
+            queryParams: function(params) {
+                params.location_id = $('#location_id_filter').val() || 'all';
+                return params;
+            }
+        });
+
+        $('#location_id_filter').on('change', function() {
+            table_support.refresh();
         });
     });
 </script>
@@ -38,6 +48,9 @@ use App\Models\Employee;
         <button id="delete" class="btn btn-default btn-sm print_hide">
             <span class="glyphicon glyphicon-trash">&nbsp;</span><?= lang('Common.delete') ?>
         </button>
+        <?php if (!empty($show_location_filter) && !empty($stock_locations)): ?>
+            <?= form_dropdown('location_id_filter', ['all' => lang('Reports.all')] + $stock_locations, 'all', ['id' => 'location_id_filter', 'class' => 'form-control input-sm']) ?>
+        <?php endif; ?>
     </div>
 </div>
 

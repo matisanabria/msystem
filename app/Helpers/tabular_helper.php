@@ -71,7 +71,8 @@ function sales_headers(): array
         ['amount_tendered' => lang('Sales.amount_tendered')],
         ['change_due'      => lang('Sales.change_due')],
         ['payment_type'    => lang('Sales.payment_type')],
-        ['sale_channel'    => lang('Sales.sale_channel')]
+        ['sale_channel'    => lang('Sales.sale_channel')],
+        ['location_name'   => lang('Common.location')]
     ];
 }
 
@@ -111,7 +112,8 @@ function get_sale_data_row(object $sale): array
         'sale_channel'    => lang('Sales.sale_channel_' . ($sale->sale_channel ?? 'store')),
         'items_sold'      => $sale->items_sold ?? '',
         'barcodes'        => $sale->barcodes ?? '',
-        'supplier_name'   => $sale->supplier_name ?? ''
+        'supplier_name'   => $sale->supplier_name ?? '',
+        'location_name'   => $sale->location_name ?? ''
     ];
 
     $config = config(OSPOS::class)->settings;
@@ -930,6 +932,7 @@ function assistance_headers(): array
         ['supplier_name' => lang('Assistances.supplier')],
         ['status'        => lang('Assistances.status'), 'escape' => false],
         ['employee_name' => lang('Assistances.employee')],
+        ['location_name' => lang('Common.location')],
         ['created_at'    => lang('Assistances.created_at')]
     ];
 }
@@ -965,6 +968,7 @@ function get_assistance_data_row(object $assistance): array
         'supplier_name' => $assistance->supplier_name,
         'status'        => $status_labels[$assistance->status] ?? $assistance->status,
         'employee_name' => $assistance->employee_name,
+        'location_name' => $assistance->location_name ?? '',
         'created_at'    => $assistance->created_at,
         'edit'             => anchor(
             "$controller/view/$assistance->assistance_id",

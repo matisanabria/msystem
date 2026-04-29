@@ -38,7 +38,10 @@ class Assistances extends Secure_Controller
 
     public function getIndex(): void
     {
-        $data['table_headers'] = get_assistances_manage_table_headers();
+        $allowed_locations = $this->stock_location->get_allowed_locations('items');
+        $data['table_headers']      = get_assistances_manage_table_headers();
+        $data['stock_locations']    = $allowed_locations;
+        $data['show_location_filter'] = count($allowed_locations) > 1;
 
         echo view('assistances/manage', $data);
     }
@@ -52,8 +55,15 @@ class Assistances extends Secure_Controller
         $order = $this->request->getGet('order', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         $allowed_location_ids = array_keys($this->stock_location->get_allowed_locations('items'));
-        $assistances = $this->assistance->search($search, $limit, $offset, $sort, $order, false, $allowed_location_ids ?: null);
-        $total_rows = $this->assistance->get_found_rows($search, $allowed_location_ids ?: null);
+        $selected_location = $this->request->getGet('location_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?: 'all';
+        if ($selected_location !== 'all' && in_array((int)$selected_location, $allowed_location_ids)) {
+            $location_filter = [(int)$selected_location];
+        } else {
+            $location_filter = $allowed_location_ids ?: null;
+        }
+
+        $assistances = $this->assistance->search($search, $limit, $offset, $sort, $order, false, $location_filter ?: null);
+        $total_rows = $this->assistance->get_found_rows($search, $location_filter ?: null);
         $data_rows = [];
 
         foreach ($assistances->getResult() as $assistance) {

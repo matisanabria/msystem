@@ -188,13 +188,14 @@ class Assistance extends Model
         if ($count_only) {
             $builder->select('COUNT(assistances.assistance_id) as count');
         } else {
-            $builder->select('assistances.*, CONCAT(customer.first_name, " ", customer.last_name) AS customer_name, CONCAT(employee.first_name, " ", employee.last_name) AS employee_name, suppliers.company_name AS supplier_name, items.item_number AS item_barcode');
+            $builder->select('assistances.*, CONCAT(customer.first_name, " ", customer.last_name) AS customer_name, CONCAT(employee.first_name, " ", employee.last_name) AS employee_name, suppliers.company_name AS supplier_name, items.item_number AS item_barcode, stock_locations.location_name AS location_name');
         }
 
         $builder->join('people AS customer', 'customer.person_id = assistances.customer_id', 'left');
         $builder->join('people AS employee', 'employee.person_id = assistances.employee_id', 'left');
         $builder->join('suppliers', 'suppliers.person_id = assistances.supplier_id', 'left');
         $builder->join('items', 'items.item_id = assistances.item_id', 'left');
+        $builder->join('stock_locations', 'stock_locations.location_id = assistances.location_id', 'left');
         $builder->groupStart();
         $builder->like('assistances.item_name', $search);
         $builder->orLike('customer.first_name', $search);

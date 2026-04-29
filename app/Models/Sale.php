@@ -189,7 +189,8 @@ class Sale extends Model
                 'MAX(`' . $db_prefix . 'sales`.`sale_channel`) AS sale_channel',
                 'GROUP_CONCAT(DISTINCT `sale_items_ref`.`name` ORDER BY `sale_items_ref`.`name` SEPARATOR \', \') AS items_sold',
                 'GROUP_CONCAT(DISTINCT NULLIF(`sale_items_ref`.`item_number`, \'\') ORDER BY `sale_items_ref`.`item_number` SEPARATOR \', \') AS barcodes',
-                'GROUP_CONCAT(DISTINCT `sale_supplier`.`company_name` ORDER BY `sale_supplier`.`company_name` SEPARATOR \', \') AS supplier_name'
+                'GROUP_CONCAT(DISTINCT `sale_supplier`.`company_name` ORDER BY `sale_supplier`.`company_name` SEPARATOR \', \') AS supplier_name',
+                'MAX(`sale_location`.`location_name`) AS location_name'
             ], false);
         }
 
@@ -198,6 +199,7 @@ class Sale extends Model
         $builder->join('suppliers AS sale_supplier', '`sale_items_ref`.`supplier_id` = `sale_supplier`.`person_id`', 'LEFT');
         $builder->join('people AS customer_p', '`' . $db_prefix . 'sales`.`customer_id` = `customer_p`.`person_id`', 'LEFT');
         $builder->join('customers AS customer', '`' . $db_prefix . 'sales`.`customer_id` = `customer`.`person_id`', 'LEFT');
+        $builder->join('stock_locations AS sale_location', '`sales_items`.`item_location` = `sale_location`.`location_id`', 'LEFT');
         $builder->join('sales_payments_temp AS payments', '`' . $db_prefix . 'sales`.`sale_id` = `payments`.`sale_id`', 'LEFT OUTER');
         $builder->join(
             'sales_items_taxes_temp AS sales_items_taxes',
