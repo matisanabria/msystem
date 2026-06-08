@@ -21,10 +21,6 @@
 <div id="page_subtitle"><?= esc($subtitle) ?></div>
 
 
-<div id="table_holder">
-    <table id="table"></table>
-</div>
-
 <?php if (!empty($server_export_url)): ?>
 <div id="server_export" style="margin-bottom:8px">
     <a href="<?= esc($server_export_url) ?>" class="btn btn-success btn-sm">
@@ -32,6 +28,10 @@
     </a>
 </div>
 <?php endif ?>
+
+<div id="table_holder">
+    <table id="table"></table>
+</div>
 
 <div id="report_summary">
     <?php
