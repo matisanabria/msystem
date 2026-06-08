@@ -2258,7 +2258,7 @@ class Reports extends Secure_Controller
             $date = $row['date_registered'] ? date('Y-m-d', strtotime($row['date_registered'])) : '';
             echo '<tr>';
             echo '<td>' . esc($row['name'])                 . '</td>';
-            echo '<td>' . esc($row['item_number'])          . '</td>';
+            echo '<td style="mso-number-format:\'@\'">' . esc($row['item_number']) . '</td>';
             echo '<td>' . esc($row['category'])             . '</td>';
             echo '<td>' . esc($row['supplier_name'] ?? '')  . '</td>';
             echo '<td>' . esc($row['quantity'])             . '</td>';
