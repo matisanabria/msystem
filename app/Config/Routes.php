@@ -50,6 +50,7 @@ $routes->add('reports/inventory_(:any)/(:any)', 'Reports::Inventory_$1/$2');
 $routes->add('reports/inventory_low', 'Reports::inventory_low');
 $routes->add('reports/inventory_summary', 'Reports::inventory_summary_input');
 $routes->add('reports/inventory_summary/(:any)/(:any)/(:any)', 'Reports::inventory_summary/$1/$2/$3');
+$routes->add('reports/inventory_summary_export/(:any)/(:any)', 'Reports::inventory_summary_export/$1/$2');
 
 $routes->add('reports/detailed_(:any)/(:any)/(:any)/(:any)', 'Reports::Detailed_$1/$2/$3/$4');
 $routes->add('reports/detailed_sales', 'Reports::date_input_sales');

@@ -30,6 +30,7 @@ return [
     "customers_summary_report"                => "Customers Summary Report",
     "date"                                    => "Date",
     "date_registered"                         => "Date Registered",
+    "download_csv"                            => "Download Excel (CSV)",
     "date_range"                              => "Date Range",
     "description"                             => "Description",
     "detailed_receivings_report"              => "Detailed Receivings Report",

@@ -2209,14 +2209,65 @@ class Reports extends Secure_Controller
         }
 
         $data = [
-            'title'        => lang('Reports.inventory_summary_report'),
-            'subtitle'     => '',
-            'headers'      => $this->inventory_summary->getDataColumns(),
-            'data'         => $tabular_data,
-            'summary_data' => $this->inventory_summary->getSummaryData($report_data)
+            'title'             => lang('Reports.inventory_summary_report'),
+            'subtitle'          => '',
+            'headers'           => $this->inventory_summary->getDataColumns(),
+            'data'              => $tabular_data,
+            'summary_data'      => $this->inventory_summary->getSummaryData($report_data),
+            'server_export_url' => base_url("reports/inventory_summary_export/$location_id/$item_count")
         ];
 
         echo view('reports/tabular', $data);
+    }
+
+    /**
+     * @param string $location_id
+     * @param string $item_count
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function inventory_summary_export(string $location_id = 'all', string $item_count = 'all'): void
+    {
+        $inputs = ['location_id' => $location_id, 'item_count' => $item_count];
+        $report_data = $this->inventory_summary->getData($inputs);
+
+        $headers = [
+            lang('Reports.item_name'),
+            lang('Reports.item_number'),
+            lang('Reports.category'),
+            lang('Reports.supplier'),
+            lang('Reports.quantity'),
+            lang('Reports.reorder_level'),
+            lang('Reports.cost_price'),
+            lang('Reports.unit_price'),
+            lang('Reports.date_registered'),
+        ];
+
+        ob_start();
+        $handle = fopen('php://output', 'w');
+        fwrite($handle, "\xEF\xBB\xBF");
+        fputcsv($handle, $headers);
+
+        foreach ($report_data as $row) {
+            fputcsv($handle, [
+                $row['name'],
+                $row['item_number'],
+                $row['category'],
+                $row['supplier_name'] ?? '',
+                $row['quantity'],
+                $row['reorder_level'],
+                $row['cost_price'],
+                $row['unit_price'],
+                $row['date_registered'] ? date('Y-m-d', strtotime($row['date_registered'])) : '',
+            ]);
+        }
+
+        fclose($handle);
+        $csv = ob_get_clean();
+
+        $filename = 'inventario_' . date('Y-m-d') . '.csv';
+        $this->response->download($filename, $csv)->setContentType('text/csv; charset=UTF-8')->send();
+        exit;
     }
 
     /**
