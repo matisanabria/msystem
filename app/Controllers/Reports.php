@@ -2170,8 +2170,12 @@ class Reports extends Secure_Controller
     {
         $this->clearCache();
 
+        $stock_locations = $this->stock_location->get_allowed_locations('items');
+        $stock_locations['all'] = lang('Reports.all');
+
         $data = [];
-        $data['item_count'] = $this->inventory_summary->getItemCountDropdownArray();
+        $data['item_count']      = $this->inventory_summary->getItemCountDropdownArray();
+        $data['stock_locations'] = array_reverse($stock_locations, true);
 
         echo view('reports/inventory_summary_input', $data);
     }
@@ -2192,15 +2196,15 @@ class Reports extends Secure_Controller
         $tabular_data = [];
         foreach ($report_data as $row) {
             $tabular_data[] = [
-                'item_name'         => $row['name'],
-                'item_number'       => $row['item_number'],
-                'category'          => $row['category'],
-                'quantity'          => to_quantity_decimals($row['quantity']),
-                'low_sell_quantity' => to_quantity_decimals($row['low_sell_quantity']),
-                'reorder_level'     => to_quantity_decimals($row['reorder_level']),
-                'cost_price'        => to_currency($row['cost_price']),
-                'unit_price'        => to_currency($row['unit_price']),
-                'subtotal'          => to_currency($row['sub_total_value'])
+                'item_name'       => $row['name'],
+                'item_number'     => $row['item_number'],
+                'category'        => $row['category'],
+                'supplier'        => $row['supplier_name'] ?? '',
+                'quantity'        => to_quantity_decimals($row['quantity']),
+                'reorder_level'   => to_quantity_decimals($row['reorder_level']),
+                'cost_price'      => to_currency($row['cost_price']),
+                'unit_price'      => to_currency($row['unit_price']),
+                'date_registered' => $row['date_registered'] ? date('Y-m-d', strtotime($row['date_registered'])) : ''
             ];
         }
 

@@ -1,6 +1,7 @@
 <?php
 /**
  * @var array $item_count
+ * @var array $stock_locations
  */
 ?>
 
@@ -27,6 +28,15 @@ if (isset($error)) {
         </div>
     </div>
 
+    <?php if (!empty($stock_locations) && count($stock_locations) > 2): ?>
+        <div class="form-group form-group-sm">
+            <?= form_label(lang('Reports.stock_location'), 'reports_stock_location_label', ['class' => 'required control-label col-xs-2']) ?>
+            <div id="report_stock_location" class="col-xs-3">
+                <?= form_dropdown('stock_location', $stock_locations, 'all', ['id' => 'location_id', 'class' => 'form-control']) ?>
+            </div>
+        </div>
+    <?php endif ?>
+
     <?php
     echo form_button([
         'name'    => 'generate_report',
@@ -42,7 +52,8 @@ if (isset($error)) {
 <script type="text/javascript">
     $(document).ready(function() {
         $("#generate_report").click(function() {
-            window.location = [window.location, "all", $("#item_count").val()].join("/");
+            var location_id = $("#location_id").length ? $("#location_id").val() : 'all';
+            window.location = [window.location, location_id, $("#item_count").val()].join("/");
         });
     });
 </script>

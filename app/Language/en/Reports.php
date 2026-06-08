@@ -29,6 +29,7 @@ return [
     "customers"                               => "Customers",
     "customers_summary_report"                => "Customers Summary Report",
     "date"                                    => "Date",
+    "date_registered"                         => "Date Registered",
     "date_range"                              => "Date Range",
     "description"                             => "Description",
     "detailed_receivings_report"              => "Detailed Receivings Report",
