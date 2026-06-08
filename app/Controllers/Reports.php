@@ -2261,10 +2261,10 @@ class Reports extends Secure_Controller
             echo '<td style="mso-number-format:\'@\'">' . esc($row['item_number']) . '</td>';
             echo '<td>' . esc($row['category'])             . '</td>';
             echo '<td>' . esc($row['supplier_name'] ?? '')  . '</td>';
-            echo '<td>' . esc($row['quantity'])             . '</td>';
-            echo '<td>' . esc($row['reorder_level'])        . '</td>';
-            echo '<td>' . esc($row['cost_price'])           . '</td>';
-            echo '<td>' . esc($row['unit_price'])           . '</td>';
+            echo '<td>' . (float)$row['quantity']      . '</td>';
+            echo '<td>' . (float)$row['reorder_level'] . '</td>';
+            echo '<td>' . (float)$row['cost_price']    . '</td>';
+            echo '<td>' . (float)$row['unit_price']    . '</td>';
             echo '<td>' . esc($date)                        . '</td>';
             echo '</tr>';
         }
