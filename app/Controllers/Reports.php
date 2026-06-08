@@ -2231,7 +2231,7 @@ class Reports extends Secure_Controller
         $inputs = ['location_id' => $location_id, 'item_count' => $item_count];
         $report_data = $this->inventory_summary->getData($inputs);
 
-        $headers = [
+        $col_headers = [
             lang('Reports.item_name'),
             lang('Reports.item_number'),
             lang('Reports.category'),
@@ -2243,30 +2243,37 @@ class Reports extends Secure_Controller
             lang('Reports.date_registered'),
         ];
 
+        $title = lang('Reports.inventory_summary_report') . ' — ' . date('Y-m-d');
+
         ob_start();
-        $handle = fopen('php://output', 'w');
-        fwrite($handle, "\xEF\xBB\xBF");
-        fputcsv($handle, $headers);
+        echo '<!DOCTYPE html><html><head><meta charset="UTF-8">';
+        echo '<title>' . esc($title) . '</title></head><body>';
+        echo '<table border="1"><thead><tr>';
+        foreach ($col_headers as $h) {
+            echo '<th>' . esc($h) . '</th>';
+        }
+        echo '</tr></thead><tbody>';
 
         foreach ($report_data as $row) {
-            fputcsv($handle, [
-                $row['name'],
-                $row['item_number'],
-                $row['category'],
-                $row['supplier_name'] ?? '',
-                $row['quantity'],
-                $row['reorder_level'],
-                $row['cost_price'],
-                $row['unit_price'],
-                $row['date_registered'] ? date('Y-m-d', strtotime($row['date_registered'])) : '',
-            ]);
+            $date = $row['date_registered'] ? date('Y-m-d', strtotime($row['date_registered'])) : '';
+            echo '<tr>';
+            echo '<td>' . esc($row['name'])                 . '</td>';
+            echo '<td>' . esc($row['item_number'])          . '</td>';
+            echo '<td>' . esc($row['category'])             . '</td>';
+            echo '<td>' . esc($row['supplier_name'] ?? '')  . '</td>';
+            echo '<td>' . esc($row['quantity'])             . '</td>';
+            echo '<td>' . esc($row['reorder_level'])        . '</td>';
+            echo '<td>' . esc($row['cost_price'])           . '</td>';
+            echo '<td>' . esc($row['unit_price'])           . '</td>';
+            echo '<td>' . esc($date)                        . '</td>';
+            echo '</tr>';
         }
 
-        fclose($handle);
-        $csv = ob_get_clean();
+        echo '</tbody></table></body></html>';
+        $xls = ob_get_clean();
 
-        $filename = 'inventario_' . date('Y-m-d') . '.csv';
-        $this->response->download($filename, $csv)->setContentType('text/csv; charset=UTF-8')->send();
+        $filename = 'inventario_' . date('Y-m-d') . '.xls';
+        $this->response->download($filename, $xls)->setContentType('application/vnd.ms-excel; charset=UTF-8')->send();
         exit;
     }
 

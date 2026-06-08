@@ -30,7 +30,7 @@ return [
     "customers_summary_report"                => "Reporte Resumido de Clientes",
     "date"                                    => "Fecha",
     "date_registered"                         => "Fecha de Registro",
-    "download_csv"                            => "Descargar Excel (CSV)",
+    "download_csv"                            => "Descargar Excel",
     "date_range"                              => "Rango de Fecha",
     "description"                             => "Descripción",
     "detailed_receivings_report"              => "Reporte Detallado de Recepciones",
