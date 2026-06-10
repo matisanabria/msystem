@@ -105,7 +105,7 @@ class Activity_log extends Model
                     inv.trans_date AS log_date,
                     CONCAT(p.first_name, ' ', p.last_name) AS employee_name,
                     COALESCE(loc.location_name, '') AS location_name,
-                    CONCAT(COALESCE(i.name,'?'), ' | ', inv.trans_comment, ' | Cant: ', inv.trans_inventory) AS description,
+                    CONCAT(COALESCE(i.name,'?'), IF(i.item_number IS NOT NULL AND i.item_number != '', CONCAT(' [', i.item_number, ']'), ''), ' | ', inv.trans_comment, ' | Cant: ', inv.trans_inventory) AS description,
                     inv.trans_items AS reference_id,
                     inv.trans_user AS employee_id,
                     inv.trans_location AS location_id,
