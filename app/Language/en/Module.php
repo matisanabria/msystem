@@ -54,4 +54,6 @@ return [
     "timeclocks_categories"      => "",
     "timeclocks_categories_desc" => "",
     "timeclocks_desc"            => "",
+    "logs"                       => "Logs",
+    "logs_desc"                  => "View system activity logs.",
 ];

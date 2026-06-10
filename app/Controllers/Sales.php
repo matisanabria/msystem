@@ -1754,4 +1754,59 @@ class Sales extends Secure_Controller
 
         return null;
     }
+
+    public function getStockConsult(): void
+    {
+        $person_id = $this->session->get('person_id');
+
+        if (!$this->employee->has_grant('sales_consult_stock', $person_id)) {
+            header('Location: ' . base_url('no_access/sales/sales_consult_stock'));
+            exit();
+        }
+
+        $allowed_location_ids = array_keys($this->stock_location->get_allowed_locations('items'));
+        $categories_result = $this->item->get_categories();
+        $categories_raw    = $categories_result ? $categories_result->getResultArray() : [];
+        $category_list = array_filter(array_column($categories_raw, 'category'), fn($c) => $c !== '' && $c !== null);
+
+        $data['allowed_location_ids'] = $allowed_location_ids;
+        $data['categories'] = array_merge(['all' => lang('Sales.stock_consult_all_categories')], array_combine($category_list, $category_list));
+
+        echo view('sales/stock_consult', $data);
+    }
+
+    public function getStockItems(): void
+    {
+        $person_id = $this->session->get('person_id');
+
+        if (!$this->employee->has_grant('sales_consult_stock', $person_id)) {
+            echo json_encode(['total' => 0, 'rows' => []]);
+            return;
+        }
+
+        $search      = $this->request->getGet('search') ?? '';
+        $category    = $this->request->getGet('category', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? 'all';
+        $limit       = (int)($this->request->getGet('limit', FILTER_SANITIZE_NUMBER_INT) ?? 25);
+        $offset      = (int)($this->request->getGet('offset', FILTER_SANITIZE_NUMBER_INT) ?? 0);
+
+        $allowed_location_ids = array_keys($this->stock_location->get_allowed_locations('items'));
+
+        $items = $this->item->get_stock_consult($search, $allowed_location_ids, $category, $limit, $offset);
+        $total = $this->item->get_stock_consult_total($search, $allowed_location_ids, $category);
+
+        $rows = [];
+
+        foreach ($items as $item) {
+            $rows[] = [
+                'name'          => esc($item['name']),
+                'item_number'   => esc($item['item_number'] ?? ''),
+                'category'      => esc($item['category']),
+                'unit_price'    => to_currency($item['unit_price']),
+                'item_add_date' => $item['item_add_date'] ? to_datetime(strtotime($item['item_add_date'])) : '',
+                'quantity'      => (float)$item['quantity'],
+            ];
+        }
+
+        echo json_encode(['total' => $total, 'rows' => $rows]);
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\Activity_log;
 use CodeIgniter\HTTP\RedirectResponse;
 
 class Home extends Secure_Controller
@@ -28,6 +29,12 @@ class Home extends Secure_Controller
      */
     public function getLogout(): RedirectResponse
     {
+        $logged_info = $this->employee->get_logged_in_employee_info();
+        if ($logged_info) {
+            $activity_log = model(Activity_log::class);
+            $activity_log->log('logout', lang('Logs.logout_event'), $logged_info->person_id, null, null, $this->request->getIPAddress());
+        }
+
         $this->employee->logout();
         return redirect()->to('login');
     }

@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Libraries\MY_Migration;
+use App\Models\Activity_log;
 use App\Models\Employee;
 use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\Model;
@@ -66,6 +67,12 @@ class Login extends BaseController
 
                 $migration->setNamespace('App')->latest();
                 return redirect()->to('login');
+            }
+
+            $logged_info = $this->employee->get_logged_in_employee_info();
+            if ($logged_info) {
+                $activity_log = model(Activity_log::class);
+                $activity_log->log('login', lang('Logs.login_event'), $logged_info->person_id, null, null, $this->request->getIPAddress());
             }
         }
 

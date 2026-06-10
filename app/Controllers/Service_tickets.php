@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\Activity_log;
 use App\Models\Customer;
 use App\Models\Service_ticket;
 use App\Models\Stock_location;
@@ -173,7 +174,23 @@ class Service_tickets extends Secure_Controller
             'location_id'            => $location_id,
         ];
 
+        $old_status = null;
+        if ($ticket_id !== NEW_ENTRY) {
+            $existing_for_log = $this->service_ticket->get_info($ticket_id);
+            $old_status = $existing_for_log->status ?? null;
+        }
+
         if ($this->service_ticket->save_value($ticket_data, $ticket_id)) {
+            $new_ticket_id = $ticket_data['ticket_id'] ?? $ticket_id;
+
+            // Log status changes on existing tickets
+            if ($ticket_id !== NEW_ENTRY && $old_status !== null && $old_status !== $ticket_data['status']) {
+                $person_id = $this->session->get('person_id');
+                $activity_log = model(Activity_log::class);
+                $desc = lang('Logs.ticket_status') . ": #{$ticket_id} {$old_status} → {$ticket_data['status']}";
+                $activity_log->log('ticket_status', $desc, $person_id, $location_id, $ticket_id, null);
+            }
+
             $message = $ticket_id == NEW_ENTRY
                 ? lang('Service_tickets.successful_adding')
                 : lang('Service_tickets.successful_updating');

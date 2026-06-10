@@ -588,39 +588,20 @@ helper('url');
                 <button type="button" id="pin_submit_btn" class="btn btn-primary btn-lg">
                     <span class="glyphicon glyphicon-ok"></span>&nbsp;<?= lang('Sales.pin_enter') ?>
                 </button>
-                <button type="button" id="pin_price_check_btn" class="btn btn-default btn-sm" style="display:block; margin:10px auto 0;">
-                    <span class="glyphicon glyphicon-search"></span>&nbsp;<?= lang('Sales.price_check') ?>
+                <?php
+                $_emp_check = model(\App\Models\Employee::class);
+                $_pid_check = session()->get('person_id');
+                if ($_emp_check->has_grant('sales_consult_stock', $_pid_check)):
+                ?>
+                <button type="button" id="pin_stock_consult_btn" class="btn btn-default btn-sm" style="display:block; margin:10px auto 0;">
+                    <span class="glyphicon glyphicon-th-list"></span>&nbsp;<?= lang('Sales.stock_consult') ?>
                 </button>
+                <?php endif; ?>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Price Check Modal -->
-<div class="modal fade" id="price_check_modal" tabindex="-1" role="dialog"
-     data-backdrop="static" data-keyboard="false" aria-labelledby="price_check_modal_label">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="price_check_modal_label">
-                    <span class="glyphicon glyphicon-search"></span>&nbsp;<?= lang('Sales.price_check') ?>
-                </h4>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <input type="text" id="price_check_input" class="form-control input-sm"
-                           placeholder="<?= lang('Sales.start_typing_item_name') ?>">
-                </div>
-                <div id="price_check_results" style="min-height:60px;"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" id="price_check_back_btn" class="btn btn-default">
-                    <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<?= lang('Sales.pin_back') ?>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -1016,51 +997,9 @@ helper('url');
             setTimeout(function() { $('#pin_input').removeClass('has-error'); }, 600);
         }
 
-        // Price check modal
-        $('#pin_price_check_btn').on('click', function() {
-            $('#pin_modal').modal('hide');
-            $('#price_check_results').html('');
-            $('#price_check_input').val('');
-            $('#price_check_modal').modal('show');
-            setTimeout(function() { $('#price_check_input').focus(); }, 400);
-        });
-
-        $('#price_check_back_btn').on('click', function() {
-            $('#price_check_modal').modal('hide');
-            showPinModal();
-        });
-
-        $('#price_check_input').autocomplete({
-            source: '<?= esc(site_url("sales/itemSearch")) ?>',
-            minChars: 1,
-            delay: 300,
-            select: function(event, ui) {
-                $('#price_check_results').html(
-                    '<div class="alert alert-info"><strong>' + ui.item.label + '</strong></div>'
-                );
-                return false;
-            }
-        });
-
-        $('#price_check_input').on('keypress', function(e) {
-            if (e.which === 13) {
-                var term = $(this).val();
-                if (term.length > 0) {
-                    $.getJSON('<?= esc(site_url("sales/itemSearch")) ?>', { term: term }, function(data) {
-                        if (data && data.length > 0) {
-                            var html = '<table class="table table-condensed table-bordered">' +
-                                '<tr><th><?= lang('Sales.item_name') ?></th><th><?= lang('Sales.price') ?></th></tr>';
-                            $.each(data, function(i, item) {
-                                html += '<tr><td>' + item.label + '</td><td>' + (item.price !== undefined ? item.price : '') + '</td></tr>';
-                            });
-                            html += '</table>';
-                            $('#price_check_results').html(html);
-                        } else {
-                            $('#price_check_results').html('<div class="alert alert-warning"><?= lang('Sales.no_items_in_cart') ?></div>');
-                        }
-                    });
-                }
-            }
+        // Stock consultation button
+        $('#pin_stock_consult_btn').on('click', function() {
+            window.location.href = '<?= esc(site_url('sales/stockConsult')) ?>';
         });
     });
 </script>

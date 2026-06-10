@@ -298,6 +298,68 @@ class Item extends Model
         return $builder->get();
     }
 
+    public function get_stock_consult(string $search, array $location_ids, string $category, int $rows, int $offset): array
+    {
+        $prefix = $this->db->getPrefix();
+        $builder = $this->db->table('items AS items');
+        $builder->select('items.item_id, items.name, items.item_number, items.category, items.unit_price');
+        $builder->select("COALESCE(item_quantities.quantity, 0) AS quantity");
+        $builder->select("(SELECT MIN(trans_date) FROM `{$prefix}inventory` WHERE trans_items = items.item_id) AS item_add_date");
+        $builder->join('item_quantities AS item_quantities', 'item_quantities.item_id = items.item_id AND item_quantities.location_id = items.location_id', 'left');
+        $builder->where('items.deleted', 0);
+        $builder->where('items.item_type !=', ITEM_TEMP);
+        $builder->where('item_quantities.quantity >=', 1);
+
+        if (!empty($location_ids)) {
+            $builder->whereIn('items.location_id', $location_ids);
+        }
+
+        if (!empty($search)) {
+            $builder->groupStart();
+            $builder->like('items.name', $search);
+            $builder->orLike('items.item_number', $search);
+            $builder->groupEnd();
+        }
+
+        if (!empty($category) && $category !== 'all') {
+            $builder->where('items.category', $category);
+        }
+
+        $builder->orderBy('items.name', 'asc');
+
+        if ($rows > 0) {
+            $builder->limit($rows, $offset);
+        }
+
+        return $builder->get()->getResultArray();
+    }
+
+    public function get_stock_consult_total(string $search, array $location_ids, string $category): int
+    {
+        $builder = $this->db->table('items AS items');
+        $builder->join('item_quantities AS item_quantities', 'item_quantities.item_id = items.item_id AND item_quantities.location_id = items.location_id', 'left');
+        $builder->where('items.deleted', 0);
+        $builder->where('items.item_type !=', ITEM_TEMP);
+        $builder->where('item_quantities.quantity >=', 1);
+
+        if (!empty($location_ids)) {
+            $builder->whereIn('items.location_id', $location_ids);
+        }
+
+        if (!empty($search)) {
+            $builder->groupStart();
+            $builder->like('items.name', $search);
+            $builder->orLike('items.item_number', $search);
+            $builder->groupEnd();
+        }
+
+        if (!empty($category) && $category !== 'all') {
+            $builder->where('items.category', $category);
+        }
+
+        return $builder->countAllResults();
+    }
+
     /**
      * Gets information about a particular item
      */

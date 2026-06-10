@@ -54,4 +54,6 @@ return [
     "timeclocks_categories"      => "",
     "timeclocks_categories_desc" => "",
     "timeclocks_desc"            => "",
+    "logs"                       => "Registros",
+    "logs_desc"                  => "Ver registros de actividad del sistema.",
 ];
