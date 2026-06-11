@@ -86,7 +86,7 @@ if (isset($error)) {
 
 <div class="row">
     <div class="col-md-4">
-        <?php if (in_array('reports_sales', $permission_ids, true)) { ?>
+        <?php if (in_array('reports_monthly_financial', $permission_ids, true)) { ?>
             <div class="panel panel-warning">
                 <div class="panel-heading">
                     <h3 class="panel-title"><span class="glyphicon glyphicon-usd">&nbsp;</span><?= lang('Reports.monthly_financial_summary_report') ?></h3>
@@ -101,7 +101,7 @@ if (isset($error)) {
     </div>
 
     <div class="col-md-4">
-        <?php if (in_array('reports_sales', $permission_ids, true)) { ?>
+        <?php if (in_array('reports_service_tickets', $permission_ids, true)) { ?>
             <div class="panel panel-info">
                 <div class="panel-heading">
                     <h3 class="panel-title"><span class="glyphicon glyphicon-wrench">&nbsp;</span><?= lang('Reports.service_tickets_stats_report') ?></h3>
@@ -118,7 +118,7 @@ if (isset($error)) {
 
 <div class="row">
     <div class="col-md-4">
-        <?php if (in_array('reports_categories', $permission_ids, true) || in_array('reports_sales', $permission_ids, true)) { ?>
+        <?php if (in_array('reports_graphical', $permission_ids, true)) { ?>
             <div class="panel panel-success">
                 <div class="panel-heading">
                     <h3 class="panel-title"><span class="glyphicon glyphicon-signal">&nbsp;</span><?= lang('Reports.graphical_reports') ?></h3>

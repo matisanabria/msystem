@@ -87,9 +87,17 @@ class Reports extends Secure_Controller
         $this->summary_service_tickets = model(Summary_service_tickets::class);
 
         if (sizeof($exploder) > 1) {
-            preg_match('/(?:inventory)|([^_.]*)(?:_graph|_row)?$/', $method_name, $matches);
-            preg_match('/^(.*?)([sy])?$/', array_pop($matches), $matches);
-            $submodule_id = $matches[1] . ((count($matches) > 2) ? $matches[2] : 's');
+            if ($method_name === 'summary_monthly_sales') {
+                $submodule_id = 'monthly_financial';
+            } elseif ($method_name === 'service_tickets_sales') {
+                $submodule_id = 'service_tickets';
+            } elseif (str_starts_with($method_name, 'graphical_')) {
+                $submodule_id = 'graphical';
+            } else {
+                preg_match('/(?:inventory)|([^_.]*)(?:_graph|_row)?$/', $method_name, $matches);
+                preg_match('/^(.*?)([sy])?$/', array_pop($matches), $matches);
+                $submodule_id = $matches[1] . ((count($matches) > 2) ? $matches[2] : 's');
+            }
 
             // Check access to report submodule
             if (!$this->employee->has_grant('reports_' . $submodule_id, $this->employee->get_logged_in_employee_info()->person_id)) {
