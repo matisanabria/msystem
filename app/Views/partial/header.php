@@ -217,6 +217,7 @@ if ($_emp_model->has_grant('discount_approvals', $_person_id)):
     $('#da_notif_dismiss', $notif_banner).on('click', function() { $notif_banner.slideUp(); });
 
     function check_notif_status() {
+        if (/Mac/.test(navigator.platform)) { return; }
         if (!('Notification' in window)) {
             $('#da_notif_msg').text('Tu navegador no soporta notificaciones de escritorio. Las alertas de descuentos se mostrarán como mensajes en pantalla.');
             $('#da_notif_enable_btn').hide();
@@ -247,6 +248,7 @@ if ($_emp_model->has_grant('discount_approvals', $_person_id)):
 
     // Request notification permission on first user interaction
     function requestNotifPermission() {
+        if (/Mac/.test(navigator.platform)) { return; }
         if ('Notification' in window && Notification.permission === 'default') {
             Notification.requestPermission().then(function(result) {
                 if (result === 'granted') $notif_banner.slideUp();
