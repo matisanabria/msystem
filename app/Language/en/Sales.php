@@ -73,6 +73,7 @@ return [
     "email_receipt"                    => "Email Receipt",
     "employee"                         => "Employee",
     "entry"                            => "Entry",
+    "discount_auth_required"           => "Discount requires authorization — invalid or expired code",
     "error_editing_item"               => "Error editing item",
     "find_or_scan_item"                => "Find or Scan Item",
     "find_or_scan_item_or_receipt"     => "Find or Scan Item or Receipt",

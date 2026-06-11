@@ -54,6 +54,8 @@ return [
     "timeclocks_categories"      => "",
     "timeclocks_categories_desc" => "",
     "timeclocks_desc"            => "",
+    "discount_approvals"         => "Descuentos",
+    "discount_approvals_desc"   => "Revisar y aprobar solicitudes de descuento de los cajeros.",
     "logs"                       => "Registros",
     "logs_desc"                  => "Ver registros de actividad del sistema.",
 ];

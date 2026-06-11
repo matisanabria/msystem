@@ -192,3 +192,151 @@ $request = Services::request();
 
         <div class="container">
             <div class="row">
+
+<?php
+$_emp_model  = model(\App\Models\Employee::class);
+$_person_id  = session()->get('person_id');
+if ($_emp_model->has_grant('discount_approvals', $_person_id)):
+?>
+<div id="discount_toast_container" style="position:fixed; bottom:20px; right:20px; z-index:9999; width:340px;"></div>
+<script>
+(function() {
+    var _knownIds        = [];
+    var _initialized     = false;
+    var _warnedThreshold = false;
+
+    var $notif_banner = $('<div id="da_notif_banner">')
+        .css({position:'fixed', top:'0', left:'0', right:'0', zIndex:10000,
+              background:'#e67e22', color:'#fff', padding:'8px 16px',
+              fontSize:'13px', textAlign:'center', display:'none'})
+        .html('<span class="glyphicon glyphicon-bell"></span>&nbsp;<span id="da_notif_msg"></span>' +
+              '&nbsp;<button type="button" style="margin-left:12px; padding:2px 10px; font-size:12px;" class="btn btn-xs btn-light" id="da_notif_enable_btn" style="display:none;">Habilitar</button>' +
+              '&nbsp;<button type="button" style="margin-left:4px; padding:2px 8px; font-size:12px;" class="btn btn-xs btn-default" id="da_notif_dismiss">&times;</button>');
+
+    $(document).ready(function() { $('body').prepend($notif_banner); check_notif_status(); });
+    $('#da_notif_dismiss', $notif_banner).on('click', function() { $notif_banner.slideUp(); });
+
+    function check_notif_status() {
+        if (!('Notification' in window)) {
+            $('#da_notif_msg').text('Tu navegador no soporta notificaciones de escritorio. Las alertas de descuentos se mostrarán como mensajes en pantalla.');
+            $('#da_notif_enable_btn').hide();
+            $notif_banner.slideDown();
+            return;
+        }
+        if (Notification.permission === 'denied') {
+            $('#da_notif_msg').text('Las notificaciones están bloqueadas. Para recibir alertas de descuentos, habilitálas en Configuración del sitio en tu navegador.');
+            $('#da_notif_enable_btn').hide();
+            $notif_banner.slideDown();
+            return;
+        }
+        if (Notification.permission === 'default') {
+            $('#da_notif_msg').text('Habilitá las notificaciones para recibir alertas de solicitudes de descuento.');
+            $('#da_notif_enable_btn').show().off('click').on('click', function() {
+                Notification.requestPermission().then(function(result) {
+                    if (result === 'granted') {
+                        $notif_banner.slideUp();
+                    } else if (result === 'denied') {
+                        check_notif_status();
+                    }
+                });
+            });
+            $notif_banner.slideDown();
+        }
+        // 'granted' → no banner
+    }
+
+    // Request notification permission on first user interaction
+    function requestNotifPermission() {
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission().then(function(result) {
+                if (result === 'granted') $notif_banner.slideUp();
+                else check_notif_status();
+            });
+        }
+    }
+    $(document).one('click keydown', requestNotifPermission);
+
+    function notify(type, msg, link) {
+        // Try browser notification first
+        if ('Notification' in window && Notification.permission === 'granted') {
+            var title = type === 'warning' ? '⚠️ Descuentos pendientes' : '🔖 Solicitud de descuento';
+            var n = new Notification(title, {
+                body: msg,
+                icon: '<?= base_url('images/menubar/discount_approvals.svg') ?>',
+                tag:  'discount-' + type   // collapse same-type notifs
+            });
+            if (link) n.onclick = function() { window.focus(); window.location.href = link; n.close(); };
+            return;
+        }
+
+        // Fallback: toast
+        var bg   = type === 'warning' ? '#e67e22' : '#2980b9';
+        var icon = type === 'warning' ? 'glyphicon-warning-sign' : 'glyphicon-tag';
+        var $t = $('<div>')
+            .css({background: bg, color: '#fff', borderRadius: '4px', padding: '10px 14px',
+                  marginTop: '8px', boxShadow: '0 2px 8px rgba(0,0,0,.3)', fontSize: '13px',
+                  cursor: 'pointer', position: 'relative'})
+            .html('<span class="glyphicon ' + icon + '"></span>&nbsp;' + msg +
+                  (link ? ' <a href="' + link + '" style="color:#fff; text-decoration:underline; margin-left:8px;">Ver</a>' : '') +
+                  '<span style="position:absolute;top:6px;right:10px;cursor:pointer;font-size:16px;" class="da_toast_close">&times;</span>');
+        $t.find('.da_toast_close').on('click', function() { $t.remove(); });
+        if (link) $t.on('click', function(e) { if (!$(e.target).is('.da_toast_close')) window.location.href = link; });
+        $('#discount_toast_container').append($t);
+        setTimeout(function() { $t.fadeOut(400, function() { $t.remove(); }); }, 8000);
+    }
+
+    function pollDiscountApprovals() {
+        $.ajax({
+            url: '<?= base_url('discount_approvals/pendingCount') ?>',
+            type: 'GET',
+            dataType: 'json',
+            success: function(res) {
+                var count   = res.count  || 0;
+                var ids     = res.ids    || [];
+                var approvalUrl = '<?= base_url('discount_approvals') ?>';
+
+                // First poll: bootstrap silently — don't toast for pre-existing requests
+                if (!_initialized) {
+                    _knownIds    = ids;
+                    _initialized = true;
+                    return;
+                }
+
+                var newIds = ids.filter(function(id) { return _knownIds.indexOf(id) === -1; });
+                newIds.forEach(function(id) {
+                    notify('info', 'Nueva solicitud de descuento pendiente', approvalUrl);
+                });
+                _knownIds = ids;
+
+                if (count >= 3 && !_warnedThreshold) {
+                    _warnedThreshold = true;
+                    notify('warning', 'Hay ' + count + ' solicitudes de descuento pendientes', approvalUrl);
+                }
+                if (count < 3) _warnedThreshold = false;
+
+                // Update menubar badge
+                var $badge = $('#discount_pending_badge');
+                if (count > 0) {
+                    if ($badge.length === 0) {
+                        $badge = $('<span id="discount_pending_badge" class="badge" style="background:#d9534f; position:absolute; top:2px; right:2px; font-size:9px; min-width:16px; padding:2px 4px;">' + count + '</span>');
+                        $('a[href*="discount_approvals"]').first().css('position', 'relative').append($badge);
+                    } else {
+                        $badge.text(count);
+                    }
+                } else {
+                    $badge.remove();
+                }
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        // Run immediately, then every 10s (faster on the approvals page)
+        pollDiscountApprovals();
+        var interval = window.location.href.indexOf('discount_approvals') !== -1 ? 3000 : 10000;
+        setInterval(pollDiscountApprovals, interval);
+    });
+})();
+</script>
+<?php endif; ?>
+

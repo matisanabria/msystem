@@ -10,6 +10,7 @@ use App\Libraries\Token_lib;
 use App\Models\Customer;
 use App\Models\Customer_rewards;
 use App\Models\Dinner_table;
+use App\Models\Discount_approval;
 use App\Models\Employee;
 use App\Models\Giftcard;
 use App\Models\Inventory;
@@ -623,6 +624,26 @@ class Sales extends Secure_Controller
                 ? parse_decimals($this->request->getPost('discounted_total') ?? '')
                 : null;
 
+            if ($discount > 0) {
+                $cart          = $this->sale_lib->get_cart();
+                $current_item  = $cart[$line] ?? null;
+                $current_disc  = $current_item ? (float)$current_item['discount'] : -1.0;
+                $current_type  = $current_item ? (int)$current_item['discount_type'] : -1;
+                $disc_changed  = abs((float)$discount - $current_disc) > 0.005 || (int)$discount_type !== $current_type;
+
+                if ($disc_changed) {
+                    $approval_id = (int)$this->request->getPost('approval_id');
+                    $code        = (string)$this->request->getPost('approval_code');
+                    $person_id   = $this->employee->get_logged_in_employee_info()->person_id;
+
+                    $approval_model = model(Discount_approval::class);
+                    if (!$approval_model->verify($approval_id, $code, (float)$discount, (int)$discount_type, $person_id)) {
+                        $data['error'] = lang('Sales.discount_auth_required');
+                        $this->_reload($data);
+                        return;
+                    }
+                }
+            }
 
             $this->sale_lib->edit_item($line, $description, $serialnumber, $quantity, $discount, $discount_type, $price, $discounted_total);
 
@@ -1808,5 +1829,90 @@ class Sales extends Secure_Controller
         }
 
         echo json_encode(['total' => $total, 'rows' => $rows]);
+    }
+
+    /**
+     * AJAX: cashier submits a discount authorization request.
+     *
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function postDiscountRequest(): void
+    {
+        $person_id = $this->employee->get_logged_in_employee_info()->person_id;
+
+        $discount_type = (int)$this->request->getPost('discount_type');
+        $discount      = $discount_type
+            ? parse_quantity($this->request->getPost('discount'))
+            : parse_decimals($this->request->getPost('discount'));
+        $location_id   = (int)$this->request->getPost('location_id');
+        $item_name     = $this->request->getPost('item_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
+        $item_price    = (float)$this->request->getPost('item_price');
+        $item_quantity = (float)$this->request->getPost('item_quantity');
+
+        if ($discount <= 0 || $location_id <= 0) {
+            echo json_encode(['success' => false, 'message' => 'Datos inválidos']);
+            return;
+        }
+
+        $approval_model = model(Discount_approval::class);
+        $approval_id    = $approval_model->create_request(
+            $location_id, $person_id, $discount, $discount_type,
+            $item_name, $item_price, $item_quantity
+        );
+
+        echo json_encode(['success' => true, 'approval_id' => $approval_id]);
+    }
+
+    /**
+     * AJAX: cashier polls for approval status.
+     *
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function postDiscountPoll(): void
+    {
+        $approval_id    = (int)$this->request->getPost('approval_id');
+        $approval_model = model(Discount_approval::class);
+        $status         = $approval_model->get_poll_status($approval_id);
+
+        if ($status === null) {
+            echo json_encode(['success' => false]);
+            return;
+        }
+
+        echo json_encode(['success' => true, 'status' => $status]);
+    }
+
+    /**
+     * AJAX: cashier pre-checks the auth code (read-only — does not consume it).
+     * The code is consumed later when postEditItem validates it.
+     *
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function postDiscountVerify(): void
+    {
+        $person_id = $this->employee->get_logged_in_employee_info()->person_id;
+
+        $approval_id   = (int)$this->request->getPost('approval_id');
+        $code          = (string)$this->request->getPost('code');
+        $discount_type = (int)$this->request->getPost('discount_type');
+        $discount      = $discount_type
+            ? parse_quantity($this->request->getPost('discount'))
+            : parse_decimals($this->request->getPost('discount'));
+
+        if (!ctype_digit($code) || strlen($code) !== 4) {
+            echo json_encode(['valid' => false, 'message' => 'Código inválido']);
+            return;
+        }
+
+        $approval_model = model(Discount_approval::class);
+        $valid          = $approval_model->check_code($approval_id, $code, $discount, $discount_type, $person_id);
+
+        echo json_encode([
+            'valid'   => $valid,
+            'message' => $valid ? '' : 'Código incorrecto, expirado o descuento no coincide',
+        ]);
     }
 }

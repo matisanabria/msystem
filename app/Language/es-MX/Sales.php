@@ -73,6 +73,7 @@ return [
     "email_receipt"                    => "Enviar ticket",
     "employee"                         => "Empleado",
     "entry"                            => "Entrada",
+    "discount_auth_required"           => "El descuento requiere autorización — código inválido o expirado",
     "error_editing_item"               => "Error editando el artículo",
     "find_or_scan_item"                => "Buscar o escanear artículo",
     "find_or_scan_item_or_receipt"     => "Buscar o escanear artículo o recibo",

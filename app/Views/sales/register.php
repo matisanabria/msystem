@@ -224,7 +224,7 @@ helper('url');
 
                             <td>
                                 <div class="input-group">
-                                    <?= form_input(['name' => 'discount', 'class' => 'form-control input-sm', 'value' => $item['discount_type'] ? to_currency_no_money($item['discount']) : to_decimals($item['discount']), 'tabindex' => ++$tabindex, 'onClick' => 'this.select();']) ?>
+                                    <?= form_input(['name' => 'discount', 'class' => 'form-control input-sm', 'value' => $item['discount_type'] ? to_currency_no_money($item['discount']) : to_decimals($item['discount']), 'tabindex' => ++$tabindex, 'onClick' => 'this.select();', 'data-original' => $item['discount_type'] ? to_currency_no_money($item['discount']) : to_decimals($item['discount']), 'data-original-type' => (string)(int)$item['discount_type']]) ?>
                                     <span class="input-group-btn">
                                         <?= form_checkbox(['id' => 'discount_toggle', 'name' => 'discount_toggle', 'value' => 1, 'data-toggle' => "toggle", 'data-size' => 'small', 'data-onstyle' => 'success', 'data-on' => '<b>' . $config['currency_symbol'] . '</b>', 'data-off' => '<b>%</b>', 'data-line' => $line, 'checked' => $item['discount_type'] == 1]) ?>
                                     </span>
@@ -242,7 +242,7 @@ helper('url');
                             </td>
 
                             <td>
-                                <a href="javascript:document.getElementById('<?= "cart_$line" ?>').submit();" title="<?= lang(ucfirst($controller_name) . '.update') ?>">
+                                <a href="javascript:$('#<?= "cart_$line" ?>').submit();" title="<?= lang(ucfirst($controller_name) . '.update') ?>">
                                     <span class="glyphicon glyphicon-refresh"></span>
                                 </a>
                             </td>
@@ -564,6 +564,131 @@ helper('url');
     </div>
 </div>
 
+<!-- Discount Authorization Modal -->
+<div class="modal fade" id="da_modal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <!-- State 1: Request authorization -->
+            <div id="da_state_request">
+                <div class="modal-header" style="background:#d9534f; color:#fff; border-radius:3px 3px 0 0;">
+                    <h4 class="modal-title">
+                        <span class="glyphicon glyphicon-lock"></span>&nbsp;Autorización de Descuento Requerida
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-condensed" style="margin-bottom:6px;">
+                        <tbody>
+                            <tr style="background:#f9f9f9;">
+                                <td style="width:45%; color:#888;">Cajero</td>
+                                <td><strong><?= esc($current_cashier_name) ?></strong></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"><hr style="margin:4px 0;"></td>
+                            </tr>
+                            <tr>
+                                <td style="color:#888;">Artículo</td>
+                                <td><strong id="da_item_name">—</strong></td>
+                            </tr>
+                            <tr>
+                                <td style="color:#888;">Precio unit.</td>
+                                <td id="da_unit_price">—</td>
+                            </tr>
+                            <tr>
+                                <td style="color:#888;">Cantidad</td>
+                                <td id="da_qty">—</td>
+                            </tr>
+                            <tr>
+                                <td style="color:#888;">Subtotal</td>
+                                <td id="da_subtotal">—</td>
+                            </tr>
+                            <tr>
+                                <td style="color:#888;">Descuento</td>
+                                <td style="color:#c0392b; font-weight:bold;" id="da_discount">—</td>
+                            </tr>
+                            <tr style="border-top:2px solid #ddd;">
+                                <td style="color:#888; font-weight:bold;">Precio final</td>
+                                <td style="color:#27ae60; font-weight:bold; font-size:1.1em;" id="da_final">—</td>
+                            </tr>
+                            <tr>
+                                <td style="color:#888;">Ahorro</td>
+                                <td style="color:#e67e22;" id="da_saving">—</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div id="da_error" class="text-danger" style="min-height:18px; font-size:12px;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button id="da_request_btn" type="button" class="btn btn-warning btn-block">
+                        <span class="glyphicon glyphicon-send"></span>&nbsp;Solicitar Autorización
+                    </button>
+                    <button id="da_cancel_btn" type="button" class="btn btn-default btn-block" style="margin-top:6px;">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+
+            <!-- State 2: Waiting for admin / enter code -->
+            <div id="da_state_waiting" style="display:none;">
+                <div class="modal-header" style="background:#f0ad4e; color:#fff; border-radius:3px 3px 0 0;">
+                    <h4 class="modal-title">
+                        <span class="glyphicon glyphicon-hourglass"></span>&nbsp;Esperando aprobación del administrador...
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div style="background:#f9f9f9; border-radius:4px; padding:10px; margin-bottom:12px;">
+                        <table class="table table-condensed" style="margin:0;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:45%; color:#888;">Artículo</td>
+                                    <td><strong id="da_item_name2"></strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="color:#888;">Descuento</td>
+                                    <td style="color:#c0392b; font-weight:bold;" id="da_discount2">—</td>
+                                </tr>
+                                <tr>
+                                    <td style="color:#888;">Precio final</td>
+                                    <td style="color:#27ae60; font-weight:bold;" id="da_final2">—</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="text-align:center; margin-bottom:12px;">
+                        <div id="da_status_text" style="font-size:14px; color:#888; margin-bottom:8px;">
+                            <span class="glyphicon glyphicon-hourglass"></span> Esperando respuesta del administrador...
+                        </div>
+                        <small style="color:#aaa;">Solicitado hace: <span id="da_elapsed">0s</span></small>
+                    </div>
+                    <div style="text-align:center;">
+                        <p style="color:#555; font-size:13px; margin-bottom:6px;">Código de autorización (4 dígitos):</p>
+                        <div style="display:flex; justify-content:center; gap:8px; margin-bottom:8px;">
+                            <input type="text" class="da_digit form-control" inputmode="numeric" maxlength="1"
+                                   style="width:48px; height:48px; text-align:center; font-size:1.6em; font-weight:bold;" disabled>
+                            <input type="text" class="da_digit form-control" inputmode="numeric" maxlength="1"
+                                   style="width:48px; height:48px; text-align:center; font-size:1.6em; font-weight:bold;" disabled>
+                            <input type="text" class="da_digit form-control" inputmode="numeric" maxlength="1"
+                                   style="width:48px; height:48px; text-align:center; font-size:1.6em; font-weight:bold;" disabled>
+                            <input type="text" class="da_digit form-control" inputmode="numeric" maxlength="1"
+                                   style="width:48px; height:48px; text-align:center; font-size:1.6em; font-weight:bold;" disabled>
+                        </div>
+                        <div id="da_code_error" class="text-danger" style="min-height:18px; font-size:12px;"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="da_apply_btn" type="button" class="btn btn-success btn-block" disabled>
+                        <span class="glyphicon glyphicon-ok"></span>&nbsp;Aplicar Código
+                    </button>
+                    <button id="da_cancel_wait_btn" type="button" class="btn btn-default btn-block" style="margin-top:6px;">
+                        Cancelar solicitud
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <!-- PIN Identification Modal -->
 <div class="modal fade" id="pin_modal" tabindex="-1" role="dialog"
      data-backdrop="static" data-keyboard="false" aria-labelledby="pin_modal_label">
@@ -838,14 +963,52 @@ helper('url');
             }
         }
 
-        $('[name="price"],[name="quantity"],[name="discount"],[name="description"],[name="serialnumber"],[name="discounted_total"]').change(function() {
+        $('[name="price"],[name="quantity"],[name="description"],[name="serialnumber"],[name="discounted_total"]').change(function() {
             $(this).parents('tr').prevAll('form:first').submit()
         });
 
+        // Discount field: Enter key triggers auth or submit (no auto-submit on blur)
+        $('[name="discount"]').keydown(function(e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                $(this).closest('tr').prevAll('form:first').submit();
+            }
+        });
+
         $('[name="discount_toggle"]').change(function() {
-            var input = $('<input>').attr('type', 'hidden').attr('name', 'discount_type').val(($(this).prop('checked')) ? 1 : 0);
-            $('#cart_' + $(this).attr('data-line')).append($(input));
-            $('#cart_' + $(this).attr('data-line')).submit();
+            var line  = $(this).attr('data-line');
+            var $form = $('#cart_' + line);
+            var input = $('<input>').attr('type', 'hidden').attr('name', 'discount_type').val($(this).prop('checked') ? 1 : 0);
+            $form.find('[name="discount_type"]').remove();
+            $form.append(input);
+            $form.submit();
+        });
+
+        // Cart form submit interceptor — shows auth modal when discount changed
+        $(document).on('submit', '[id^="cart_"]', function(e) {
+            var $form = $(this);
+            if ($form.find('[name="approval_id"]').val() > 0) return true;
+
+            var $row       = $form.nextAll('tr:first');
+            var $discInput = $row.find('[name="discount"]');
+            if (!$discInput.length) return true;
+
+            var discountVal  = discountParseFloat($discInput.val());
+            var originalVal  = discountParseFloat($discInput.data('original') || '0');
+            var discountType = $row.find('[name="discount_toggle"]').prop('checked') ? 1 : 0;
+            var dtHidden     = $form.find('[name="discount_type"]');
+            if (dtHidden.length && dtHidden.val() !== undefined) {
+                discountType = parseInt(dtHidden.val(), 10) || discountType;
+            }
+            var originalType = parseInt($discInput.data('original-type') || '0', 10);
+            var changed = Math.abs(discountVal - originalVal) > 0.005 || discountType !== originalType;
+
+            if (discountVal > 0 && changed) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                discountAuthOpen($form, $row, $discInput.val(), discountVal, discountType);
+                return false;
+            }
         });
     });
 
@@ -919,6 +1082,244 @@ helper('url');
                 break;
         }
     }
+
+    // ─── Discount Authorization ────────────────────────────────────────────────
+    var _daApprovalId  = null;
+    var _daPendingForm = null;
+    var _daPollTimer   = null;
+    var _daElapsedTimer = null;
+    var _daElapsed     = 0;
+    var _daRawDiscount = '';
+
+    function discountParseFloat(s) {
+        if (!s) return 0;
+        s = String(s).trim();
+        var commaPos = s.lastIndexOf(',');
+        var dotPos   = s.lastIndexOf('.');
+        if (commaPos > dotPos) {
+            // Comma is decimal separator (e.g. "1.000,50" or "500,00")
+            s = s.replace(/\./g, '').replace(',', '.');
+        } else if (dotPos > commaPos) {
+            var afterDot = s.substring(dotPos + 1);
+            var dotCount = (s.match(/\./g) || []).length;
+            if (dotCount > 1 || afterDot.length === 3) {
+                // Dots are thousands separators (e.g. "1.000.000")
+                s = s.replace(/\./g, '');
+            } else {
+                // Single dot is decimal separator (e.g. "1000.50")
+                s = s.replace(/,/g, '');
+            }
+        }
+        return parseFloat(s) || 0;
+    }
+
+    function discountFmtNum(n) {
+        return Math.round(n).toLocaleString();
+    }
+
+    function discountFmtMoney(n) {
+        return '<?= esc($config['currency_symbol']) ?> ' + discountFmtNum(n);
+    }
+
+    function discountAuthOpen($form, $row, rawDiscount, discountVal, discountType) {
+        _daPendingForm = $form;
+        _daApprovalId  = null;
+        _daRawDiscount = rawDiscount;
+
+        var itemName   = $row.find('td:nth-child(3)').text().split('[')[0].trim().replace(/\s+/g, ' ');
+        var itemPrice  = discountParseFloat($row.find('[name="price"]').val());
+        var itemQty    = discountParseFloat($row.find('[name="quantity"]').val()) || 1;
+        var locationId = parseInt($row.find('[name="location"]').val(), 10) || 0;
+
+        var subtotal   = itemPrice * itemQty;
+        var discAmount, discLabel;
+        if (discountType === 1) {
+            discAmount = discountVal * itemQty;
+            discLabel  = discountFmtMoney(discountVal) + ' c/u';
+        } else {
+            discAmount = subtotal * discountVal / 100;
+            discLabel  = discountVal.toFixed(1) + '%';
+        }
+        var finalPrice = subtotal - discAmount;
+
+        $('#da_item_name').text(itemName || '—');
+        $('#da_unit_price').text(discountFmtMoney(itemPrice));
+        $('#da_qty').text(itemQty % 1 === 0 ? itemQty : itemQty.toFixed(2));
+        $('#da_subtotal').text(discountFmtMoney(subtotal));
+        $('#da_discount').text('−' + discountFmtMoney(discAmount) + ' (' + discLabel + ')');
+        $('#da_final').text(discountFmtMoney(finalPrice));
+        $('#da_saving').text(discountFmtMoney(discAmount));
+
+        $('#da_item_name2').text(itemName || '—');
+        $('#da_discount2').text('−' + discountFmtMoney(discAmount) + ' (' + discLabel + ')');
+        $('#da_final2').text(discountFmtMoney(finalPrice));
+
+        $('#da_modal')
+            .data('discount_raw', rawDiscount)
+            .data('discount_type', discountType)
+            .data('location_id', locationId)
+            .data('item_name', itemName)
+            .data('item_price', itemPrice)
+            .data('item_qty', itemQty);
+
+        $('#da_state_request').show();
+        $('#da_state_waiting').hide();
+        $('#da_error').text('');
+        $('#da_code_error').text('');
+        $('#da_status_text').html('<span class="glyphicon glyphicon-hourglass"></span> Esperando respuesta del administrador...');
+        $('#da_status_text').css('color', '#888');
+        $('.da_digit').val('').prop('disabled', true);
+        $('#da_apply_btn').prop('disabled', true).html('<span class="glyphicon glyphicon-ok"></span>&nbsp;Aplicar Código');
+        $('#da_request_btn').prop('disabled', false).html('<span class="glyphicon glyphicon-send"></span>&nbsp;Solicitar Autorización');
+        $('#da_elapsed').text('0s');
+
+        $('#da_modal').modal('show');
+    }
+
+    function discountAuthStopTimers() {
+        if (_daPollTimer)    clearInterval(_daPollTimer);
+        if (_daElapsedTimer) clearInterval(_daElapsedTimer);
+        _daElapsed = 0;
+    }
+
+    function discountAuthStartPolling() {
+        discountAuthStopTimers();
+        _daElapsedTimer = setInterval(function() {
+            _daElapsed++;
+            var m = Math.floor(_daElapsed / 60), s = _daElapsed % 60;
+            $('#da_elapsed').text((m > 0 ? m + 'm ' : '') + s + 's');
+        }, 1000);
+        _daPollTimer = setInterval(function() {
+            if (!_daApprovalId) return;
+            $.ajax({
+                url: '<?= site_url('sales/discountPoll') ?>',
+                type: 'POST',
+                data: { approval_id: _daApprovalId },
+                dataType: 'json',
+                success: function(res) {
+                    if (!res.success) return;
+                    if (res.status === 'approved') {
+                        clearInterval(_daPollTimer);
+                        $('#da_status_text').html('<span style="color:#27ae60;"><span class="glyphicon glyphicon-ok-circle"></span>&nbsp;¡Aprobado! Ingrese el código:</span>');
+                        $('#da_status_text').css('color', '#27ae60');
+                        $('.da_digit').prop('disabled', false);
+                        $('.da_digit:first').focus();
+                        $('#da_apply_btn').prop('disabled', false);
+                    } else if (res.status === 'expired') {
+                        clearInterval(_daPollTimer);
+                        $('#da_status_text').text('Solicitud rechazada o expirada.');
+                        $('#da_status_text').css('color', '#c0392b');
+                        setTimeout(function() { $('#da_modal').modal('hide'); }, 2500);
+                    }
+                }
+            });
+        }, 3000);
+    }
+
+    $(document).ready(function() {
+        $('#da_request_btn').on('click', function() {
+            var $m = $('#da_modal');
+            $(this).prop('disabled', true).html('<span class="glyphicon glyphicon-hourglass"></span> Enviando...');
+            $.ajax({
+                url: '<?= site_url('sales/discountRequest') ?>',
+                type: 'POST',
+                data: {
+                    discount:      $m.data('discount_raw'),
+                    discount_type: $m.data('discount_type'),
+                    location_id:   $m.data('location_id'),
+                    item_name:     $m.data('item_name'),
+                    item_price:    $m.data('item_price'),
+                    item_quantity: $m.data('item_qty')
+                },
+                dataType: 'json',
+                success: function(res) {
+                    if (res.success) {
+                        _daApprovalId = res.approval_id;
+                        $('#da_state_request').hide();
+                        $('#da_state_waiting').show();
+                        discountAuthStartPolling();
+                    } else {
+                        $('#da_error').text(res.message || 'Error al enviar solicitud');
+                        $('#da_request_btn').prop('disabled', false).html('<span class="glyphicon glyphicon-send"></span>&nbsp;Solicitar Autorización');
+                    }
+                },
+                error: function() {
+                    $('#da_error').text('Error de conexión');
+                    $('#da_request_btn').prop('disabled', false).html('<span class="glyphicon glyphicon-send"></span>&nbsp;Solicitar Autorización');
+                }
+            });
+        });
+
+        $('#da_cancel_btn, #da_cancel_wait_btn').on('click', function() {
+            discountAuthStopTimers();
+            if (_daPendingForm) {
+                var $row = _daPendingForm.nextAll('tr:first');
+                var $di  = $row.find('[name="discount"]');
+                $di.val($di.data('original'));
+            }
+            _daApprovalId  = null;
+            _daPendingForm = null;
+            $('#da_modal').modal('hide');
+        });
+
+        // 4-digit inputs: auto-advance + backspace
+        $(document).on('input', '.da_digit', function() {
+            var val = $(this).val().replace(/\D/g, '').slice(0, 1);
+            $(this).val(val);
+            if (val.length === 1) {
+                var $next = $(this).next('.da_digit');
+                if ($next.length) $next.focus(); else $('#da_apply_btn').focus();
+            }
+        });
+        $(document).on('keydown', '.da_digit', function(e) {
+            if (e.which === 8 && $(this).val() === '') $(this).prev('.da_digit').focus();
+        });
+
+        $('#da_apply_btn').on('click', function() {
+            var code = $('.da_digit').map(function() { return $(this).val(); }).get().join('');
+            if (code.length !== 4 || !_daApprovalId) return;
+            var $m = $('#da_modal');
+            $(this).prop('disabled', true).html('<span class="glyphicon glyphicon-hourglass"></span> Verificando...');
+            $.ajax({
+                url: '<?= site_url('sales/discountVerify') ?>',
+                type: 'POST',
+                data: {
+                    approval_id:   _daApprovalId,
+                    code:          code,
+                    discount:      $m.data('discount_raw'),
+                    discount_type: $m.data('discount_type')
+                },
+                dataType: 'json',
+                success: function(res) {
+                    if (res.valid) {
+                        discountAuthStopTimers();
+                        var $f = _daPendingForm;
+                        var savedId   = _daApprovalId;
+                        var savedType = $m.data('discount_type');
+                        $f.find('[name="approval_id"]').remove();
+                        $f.find('[name="approval_code"]').remove();
+                        $f.find('[name="discount_type"]').remove();
+                        $f.append($('<input type="hidden" name="approval_id">').val(savedId));
+                        $f.append($('<input type="hidden" name="approval_code">').val(code));
+                        $f.append($('<input type="hidden" name="discount_type">').val(savedType));
+                        _daApprovalId  = null;
+                        _daPendingForm = null;
+                        $('#da_modal').modal('hide');
+                        $f.submit();
+                    } else {
+                        $('#da_code_error').text(res.message || 'Código incorrecto');
+                        $('.da_digit').val('').first().focus();
+                        $('#da_apply_btn').prop('disabled', false).html('<span class="glyphicon glyphicon-ok"></span>&nbsp;Aplicar Código');
+                    }
+                },
+                error: function() {
+                    $('#da_code_error').text('Error de conexión');
+                    $('#da_apply_btn').prop('disabled', false).html('<span class="glyphicon glyphicon-ok"></span>&nbsp;Aplicar Código');
+                }
+            });
+        });
+    });
+    // ─── End Discount Authorization ────────────────────────────────────────────
 
     // PIN Modal logic
     $(document).ready(function() {
