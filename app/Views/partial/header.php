@@ -214,7 +214,10 @@ if ($_emp_model->has_grant('discount_approvals', $_person_id)):
               '&nbsp;<button type="button" style="margin-left:4px; padding:2px 8px; font-size:12px;" class="btn btn-xs btn-default" id="da_notif_dismiss">&times;</button>');
 
     $(document).ready(function() { $('body').prepend($notif_banner); check_notif_status(); });
-    $('#da_notif_dismiss', $notif_banner).on('click', function() { $notif_banner.slideUp(); });
+    $('#da_notif_dismiss', $notif_banner).on('click', function() {
+        $notif_banner.slideUp();
+        try { localStorage.setItem('da_notif_denied_dismissed', '1'); } catch (e) {}
+    });
 
     function check_notif_status() {
         if (/Mac/.test(navigator.platform)) { return; }
@@ -225,6 +228,9 @@ if ($_emp_model->has_grant('discount_approvals', $_person_id)):
             return;
         }
         if (Notification.permission === 'denied') {
+            var dismissed = false;
+            try { dismissed = localStorage.getItem('da_notif_denied_dismissed') === '1'; } catch (e) {}
+            if (dismissed) { return; }
             $('#da_notif_msg').text('Las notificaciones están bloqueadas. Para recibir alertas de descuentos, habilitálas en Configuración del sitio en tu navegador.');
             $('#da_notif_enable_btn').hide();
             $notif_banner.slideDown();
