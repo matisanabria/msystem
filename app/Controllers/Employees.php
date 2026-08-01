@@ -131,6 +131,15 @@ class Employees extends Persons
 
         $grants_array = [];
         foreach ($this->module->get_all_permissions()->getResult() as $permission) {
+            // Location access (Recepciones/Ventas/Gastos/etc per sucursal) is managed from
+            // Admin Panel > Accesos, not from this form, so its grants must survive untouched.
+            if (!empty($permission->location_id)) {
+                if ($employee_id != NEW_ENTRY && $this->employee->has_grant($permission->permission_id, $employee_id)) {
+                    $grants_array[] = ['permission_id' => $permission->permission_id, 'menu_group' => '--'];
+                }
+                continue;
+            }
+
             $grants = [];
             $grant = $this->request->getPost('grant_' . $permission->permission_id) != null ? $this->request->getPost('grant_' . $permission->permission_id, FILTER_SANITIZE_FULL_SPECIAL_CHARS) : '';
 

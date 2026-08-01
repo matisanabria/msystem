@@ -30,6 +30,7 @@ return [
     "company_name"                     => "",
     "complete"                         => "",
     "complete_sale"                    => "Completar",
+    "consult_stock"                    => "Consultar Stock",
     "confirm_cancel_sale"              => "¿Está seguro que desea limpiar la venta? Todos los artículos serán borrados.",
     "confirm_delete"                   => "¿Está seguro que desea borrar todas las ventas seleccionadas?",
     "confirm_restore"                  => "¿Está seguro de desear restaurar las ventas seleccionadas?",

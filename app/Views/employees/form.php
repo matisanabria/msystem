@@ -122,11 +122,12 @@
                             <?php
                             foreach ($all_subpermissions as $permission) {
                                 if (in_array($permission->permission_id, $hidden_subpermissions)) continue;
+                                if (!empty($permission->location_id)) continue; // location access is managed from Admin Panel > Accesos
                                 $exploded_permission = explode('_', $permission->permission_id, 2);
                                 if ($permission->module_id == $module->module_id) {
-                                    $lang_key = $module->module_id . '.' . $exploded_permission[1];
-                                    $lang_line = lang(ucfirst($lang_key));
-                                    $lang_line = (lang(ucfirst($lang_key)) == $lang_line) ? ucwords(str_replace("_", " ", $exploded_permission[1])) : $lang_line;
+                                    $lang_key = ucfirst($module->module_id) . '.' . $exploded_permission[1];
+                                    $lang_line = lang($lang_key);
+                                    $lang_line = ($lang_line == $lang_key) ? ucwords(str_replace("_", " ", $exploded_permission[1])) : $lang_line;
                                     if (!empty($lang_line)) {
                             ?>
                                         <ul>

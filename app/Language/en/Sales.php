@@ -30,6 +30,7 @@ return [
     "company_name"                     => "",
     "complete"                         => "",
     "complete_sale"                    => "Complete",
+    "consult_stock"                    => "Consult Stock",
     "confirm_cancel_sale"              => "Are you sure you want to clear this sale? All items will be cleared.",
     "confirm_delete"                   => "Are you sure you want to delete the selected Sale(s)?",
     "confirm_restore"                  => "Are you sure you want to restore the selected Sale(s)?",

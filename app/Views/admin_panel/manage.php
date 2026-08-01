@@ -112,14 +112,58 @@ $logged_in_id = $emp_model->get_logged_in_employee_info()->person_id;
         <?php elseif (empty($employees)): ?>
             <p class="text-muted">No hay empleados registrados.</p>
         <?php else: ?>
+        <p class="text-muted">Marcá las sucursales a las que puede acceder cada empleado.</p>
+        <style>
+            #access_matrix td, #access_matrix th { vertical-align: middle; }
+            #access_matrix td.text-center, #access_matrix th.text-center { width: 140px; }
+            #access_matrix thead th { background: #f5f5f5; }
+            #access_matrix .access-switch {
+                position: relative;
+                display: inline-block;
+                width: 42px;
+                height: 22px;
+                margin: 0;
+                vertical-align: middle;
+            }
+            #access_matrix .access-switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+            #access_matrix .access-switch .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background-color: #ccc;
+                border-radius: 22px;
+                transition: .15s;
+            }
+            #access_matrix .access-switch .slider:before {
+                position: absolute;
+                content: "";
+                height: 16px;
+                width: 16px;
+                left: 3px;
+                bottom: 3px;
+                background-color: #fff;
+                border-radius: 50%;
+                transition: .15s;
+            }
+            #access_matrix .access-switch input:checked + .slider {
+                background-color: #5cb85c;
+            }
+            #access_matrix .access-switch input:checked + .slider:before {
+                transform: translateX(20px);
+            }
+        </style>
         <div class="table-responsive">
-            <table class="table table-condensed table-bordered table-hover" id="access_matrix">
+            <table class="table table-condensed table-bordered table-hover table-striped" id="access_matrix">
                 <thead>
                     <tr>
                         <th>Empleado</th>
                         <?php foreach ($branches as $branch): ?>
-                            <th class="text-center" style="min-width:90px;">
-                                <?= esc($branch['location_name']) ?>
+                            <th class="text-center">
+                                Acceso a <?= esc($branch['location_name']) ?>
                             </th>
                         <?php endforeach; ?>
                     </tr>
@@ -127,14 +171,17 @@ $logged_in_id = $emp_model->get_logged_in_employee_info()->person_id;
                 <tbody>
                     <?php foreach ($employees as $emp): ?>
                     <tr>
-                        <td><?= esc($emp['first_name'] . ' ' . $emp['last_name']) ?></td>
+                        <td><strong><?= esc($emp['first_name'] . ' ' . $emp['last_name']) ?></strong></td>
                         <?php foreach ($branches as $branch): ?>
                             <td class="text-center">
-                                <input type="checkbox"
-                                       class="access-toggle"
-                                       data-person="<?= $emp['person_id'] ?>"
-                                       data-location="<?= $branch['location_id'] ?>"
-                                       <?= ($access[$emp['person_id']][$branch['location_id']] ?? false) ? 'checked' : '' ?>>
+                                <label class="access-switch">
+                                    <input type="checkbox"
+                                           class="access-toggle"
+                                           data-person="<?= $emp['person_id'] ?>"
+                                           data-location="<?= $branch['location_id'] ?>"
+                                           <?= ($access[$emp['person_id']][$branch['location_id']] ?? false) ? 'checked' : '' ?>>
+                                    <span class="slider"></span>
+                                </label>
                             </td>
                         <?php endforeach; ?>
                     </tr>
@@ -143,7 +190,7 @@ $logged_in_id = $emp_model->get_logged_in_employee_info()->person_id;
             </table>
         </div>
         <p class="text-muted" style="font-size:12px;">
-            Marcar otorga acceso del empleado a esa sucursal en todos los módulos. Desmarcar lo revoca.
+            Activar un acceso permite al empleado iniciar sesión y utilizar todos los módulos disponibles en esa sucursal. Desactivarlo revoca el acceso.
         </p>
         <?php endif; ?>
     </div>

@@ -444,24 +444,8 @@ class Employee extends Person
         $builder = $this->db->table('grants');
         $builder->like('permission_id', $permission_id, 'after');
         $builder->where('person_id', $person_id);
-        $result_count = $builder->get()->getNumRows();
 
-        if ($result_count != 1) {
-            return ($result_count != 0);
-        }
-
-        return $this->has_subpermissions($permission_id);
-    }
-
-    /**
-     * Checks permissions
-     */
-    public function has_subpermissions(string $permission_id): bool
-    {
-        $builder = $this->db->table('permissions');
-        $builder->like('permission_id', $permission_id . '_', 'after');
-
-        return ($builder->get()->getNumRows() == 0);    // TODO: ===
+        return ($builder->get()->getNumRows() != 0);
     }
 
     /**
