@@ -193,6 +193,16 @@ helper('url');
                             <?php } else { ?>
                                 <td><?= esc($item['item_number']) ?></td>
                                 <td style="align: center;">
+                                    <?php if (!empty($item['pic_filename'])):
+                                        $ext = pathinfo($item['pic_filename'], PATHINFO_EXTENSION);
+                                        $images = $ext == ''
+                                            ? glob("./uploads/item_pics/{$item['pic_filename']}.*")
+                                            : glob("./uploads/item_pics/{$item['pic_filename']}");
+                                        if (sizeof($images) > 0): ?>
+                                            <img alt="<?= esc($item['name']) ?>" class="pull-left" style="max-width: 32px; max-height: 32px; margin-right: 6px;"
+                                                src="<?= site_url('items/PicThumb/' . pathinfo($images[0], PATHINFO_BASENAME)) ?>">
+                                        <?php endif;
+                                    endif; ?>
                                     <?= esc($item['name']) . ' ' . implode(' ', [$item['attribute_values'], $item['attribute_dtvalues']]) ?>
                                     <br>
                                     <?php if ($item['stock_type'] == '0'): echo '[' . to_quantity_decimals($item['in_stock']) . ' in ' . $item['stock_name'] . ']';

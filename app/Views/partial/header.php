@@ -222,6 +222,9 @@ if ($_emp_model->has_grant('discount_approvals', $_person_id)):
     function check_notif_status() {
         if (/Mac/.test(navigator.platform)) { return; }
         if (!('Notification' in window)) {
+            var dismissed_unsupported = false;
+            try { dismissed_unsupported = localStorage.getItem('da_notif_denied_dismissed') === '1'; } catch (e) {}
+            if (dismissed_unsupported) { return; }
             $('#da_notif_msg').text('Tu navegador no soporta notificaciones de escritorio. Las alertas de descuentos se mostrarán como mensajes en pantalla.');
             $('#da_notif_enable_btn').hide();
             $notif_banner.slideDown();

@@ -326,6 +326,67 @@
             })
         });
 
+        // Auto-compress item images client-side so they fit the configured
+        // max dimensions/size without the user having to resize manually.
+        var IMAGE_MAX_WIDTH  = <?= (int) $config['image_max_width'] ?>;
+        var IMAGE_MAX_HEIGHT = <?= (int) $config['image_max_height'] ?>;
+        var IMAGE_MAX_BYTES  = <?= (int) $config['image_max_size'] ?> * 1024;
+
+        function compress_image_file(file) {
+            return new Promise(function(resolve) {
+                if (!file || file.type.indexOf('image/') !== 0) {
+                    resolve(file);
+                    return;
+                }
+
+                var img = new Image();
+                img.onload = function() {
+                    var scale = Math.min(1, IMAGE_MAX_WIDTH / img.width, IMAGE_MAX_HEIGHT / img.height);
+                    var canvas = document.createElement('canvas');
+                    canvas.width = Math.round(img.width * scale);
+                    canvas.height = Math.round(img.height * scale);
+                    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                    URL.revokeObjectURL(img.src);
+
+                    var quality = 0.92;
+
+                    var try_export = function() {
+                        canvas.toBlob(function(blob) {
+                            if (!blob) {
+                                resolve(file);
+                                return;
+                            }
+                            if (blob.size > IMAGE_MAX_BYTES && quality > 0.3) {
+                                quality -= 0.1;
+                                try_export();
+                                return;
+                            }
+                            var name = file.name.replace(/\.[^.]+$/, '') + '.jpg';
+                            resolve(new File([blob], name, { type: 'image/jpeg' }));
+                        }, 'image/jpeg', quality);
+                    };
+                    try_export();
+                };
+                img.onerror = function() {
+                    resolve(file);
+                };
+                img.src = URL.createObjectURL(file);
+            });
+        }
+
+        $('input[name="items_image"]').on('change', function() {
+            var input = this;
+            var file  = input.files && input.files[0];
+            if (!file) { return; }
+
+            compress_image_file(file).then(function(compressed_file) {
+                if (compressed_file === file) { return; }
+                var transfer = new DataTransfer();
+                transfer.items.add(compressed_file);
+                input.files = transfer.files;
+            });
+        });
+
         $.validator.addMethod('valid_chars', function(value, element) {
             return value.match(/(\||_)/g) == null;
         }, "<?= lang('Attributes.attribute_value_invalid_chars') ?>");
