@@ -109,6 +109,31 @@ class Reports extends Secure_Controller
     }
 
     /**
+     * Resolves the location_id a report should use, based on the employee's
+     * allowed locations for the given module (mirrors Stock_location::get_allowed_locations()).
+     * - If the employee has access to exactly one location, that location is forced
+     *   (regardless of what was requested).
+     * - If a specific location_id was requested but is not in the allowed set, falls back to 'all'.
+     * - 'allowed_location_ids' must then be used by the report model to scope 'all' queries.
+     *
+     * @param string $location_id
+     * @param string $module
+     * @return array{location_id: string, allowed_location_ids: array}
+     */
+    private function _resolve_location_filter(string $location_id, string $module = 'sales'): array
+    {
+        $allowed_location_ids = array_keys($this->stock_location->get_allowed_locations($module));
+
+        if (count($allowed_location_ids) === 1) {
+            $location_id = (string) $allowed_location_ids[0];
+        } elseif ($location_id !== 'all' && !in_array((int) $location_id, $allowed_location_ids, true)) {
+            $location_id = 'all';
+        }
+
+        return ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids];
+    }
+
+    /**
      * @return void
      */
     public function index(): void
@@ -146,11 +171,13 @@ class Reports extends Secure_Controller
     {   // TODO: Duplicated code
         $this->clearCache();
 
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'sales');
+
         $inputs = [
             'start_date'  => $start_date,
             'end_date'    => $end_date,
             'sale_type'   => $sale_type,
-            'location_id' => $location_id
+            'location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids
         ];
 
         $report_data = $this->summary_sales->getData($inputs);
@@ -193,11 +220,13 @@ class Reports extends Secure_Controller
     {   // TODO: Duplicated code
         $this->clearCache();
 
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'sales');
+
         $inputs = [
             'start_date'  => $start_date,
             'end_date'    => $end_date,
             'sale_type'   => $sale_type,
-            'location_id' => $location_id
+            'location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids
         ];
 
         $report_data = $this->summary_categories->getData($inputs);
@@ -238,7 +267,9 @@ class Reports extends Secure_Controller
     {
         $this->clearCache();
 
-        $inputs = ['start_date' => $start_date, 'end_date' => $end_date, 'sale_type' => $sale_type, 'location_id' => $location_id];    // TODO: Duplicated Code
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'expenses');
+
+        $inputs = ['start_date' => $start_date, 'end_date' => $end_date, 'sale_type' => $sale_type, 'location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids];    // TODO: Duplicated Code
 
         $report_data = $this->summary_expenses_categories->getData($inputs);
         $summary = $this->summary_expenses_categories->getSummaryData($inputs);
@@ -276,11 +307,13 @@ class Reports extends Secure_Controller
     {
         $this->clearCache();
 
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'sales');
+
         $inputs = [    // TODO: Duplicated Code
             'start_date'  => $start_date,
             'end_date'    => $end_date,
             'sale_type'   => $sale_type,
-            'location_id' => $location_id
+            'location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids
         ];
 
         $report_data = $this->summary_customers->getData($inputs);
@@ -324,11 +357,13 @@ class Reports extends Secure_Controller
     {   // TODO: Duplicated Code
         $this->clearCache();
 
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'sales');
+
         $inputs = [
             'start_date'  => $start_date,
             'end_date'    => $end_date,
             'sale_type'   => $sale_type,
-            'location_id' => $location_id
+            'location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids
         ];
 
         $report_data = $this->summary_suppliers->getData($inputs);
@@ -370,11 +405,13 @@ class Reports extends Secure_Controller
     {
         $this->clearCache();
 
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'sales');
+
         $inputs = [
             'start_date'  => $start_date,
             'end_date'    => $end_date,
             'sale_type'   => $sale_type,
-            'location_id' => $location_id
+            'location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids
         ];
 
         $report_data = $this->summary_items->getData($inputs);
@@ -420,11 +457,13 @@ class Reports extends Secure_Controller
     {
         $this->clearCache();
 
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'sales');
+
         $inputs = [
             'start_date'  => $start_date,
             'end_date'    => $end_date,
             'sale_type'   => $sale_type,
-            'location_id' => $location_id
+            'location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids
         ];
 
         $report_data = $this->summary_employees->getData($inputs);
@@ -468,11 +507,13 @@ class Reports extends Secure_Controller
     {   // TODO: Duplicate Code
         $this->clearCache();
 
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'sales');
+
         $inputs = [
             'start_date'  => $start_date,
             'end_date'    => $end_date,
             'sale_type'   => $sale_type,
-            'location_id' => $location_id
+            'location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids
         ];
 
         $report_data = $this->summary_taxes->getData($inputs);
@@ -509,11 +550,13 @@ class Reports extends Secure_Controller
     {   // TODO: Duplicated code
         $this->clearCache();
 
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'sales');
+
         $inputs = [
             'start_date'  => $start_date,
             'end_date'    => $end_date,
             'sale_type'   => $sale_type,
-            'location_id' => $location_id
+            'location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids
         ];
 
         $report_data = $this->summary_sales_taxes->getData($inputs);
@@ -568,11 +611,14 @@ class Reports extends Secure_Controller
     {   // TODO: Duplicated Code
         $this->clearCache();
 
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'sales');
+
         $inputs = [
             'start_date'    => $start_date,
             'end_date'      => $end_date,
             'sale_type'     => $sale_type,
             'location_id'   => $location_id,
+            'allowed_location_ids' => $allowed_location_ids,
             'discount_type' => $discount_type
         ];
 
@@ -606,11 +652,14 @@ class Reports extends Secure_Controller
     {
         $this->clearCache();
 
+        $allowed_location_ids = array_keys($this->stock_location->get_allowed_locations('sales'));
+
         $inputs = [
-            'start_date'  => $start_date,
-            'end_date'    => $end_date,
-            'sale_type'   => 'complete',
-            'location_id' => 'all'
+            'start_date'            => $start_date,
+            'end_date'              => $end_date,
+            'sale_type'             => 'complete',
+            'location_id'           => 'all',
+            'allowed_location_ids'  => $allowed_location_ids
         ];
 
         $report_data = $this->summary_payments->getData($inputs);
@@ -774,11 +823,13 @@ class Reports extends Secure_Controller
     {
         $this->clearCache();
 
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'expenses');
+
         $inputs = [
             'start_date'  => $start_date,
             'end_date'    => $end_date,
             'sale_type'   => $sale_type,
-            'location_id' => $location_id
+            'location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids
         ];
 
         $report_data = $this->summary_expenses_categories->getData($inputs);
@@ -820,11 +871,13 @@ class Reports extends Secure_Controller
     {
         $this->clearCache();
 
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'sales');
+
         $inputs = [
             'start_date'  => $start_date,
             'end_date'    => $end_date,
             'sale_type'   => $sale_type,
-            'location_id' => $location_id
+            'location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids
         ];
 
         $report_data = $this->summary_sales->getData($inputs);
@@ -866,11 +919,13 @@ class Reports extends Secure_Controller
     {
         $this->clearCache();
 
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'sales');
+
         $inputs = [
             'start_date'  => $start_date,
             'end_date'    => $end_date,
             'sale_type'   => $sale_type,
-            'location_id' => $location_id
+            'location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids
         ];
 
 
@@ -913,11 +968,13 @@ class Reports extends Secure_Controller
     {   // TODO: Duplicated Code
         $this->clearCache();
 
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'sales');
+
         $inputs = [
             'start_date'  => $start_date,
             'end_date'    => $end_date,
             'sale_type'   => $sale_type,
-            'location_id' => $location_id
+            'location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids
         ];
 
         $report_data = $this->summary_categories->getData($inputs);
@@ -956,11 +1013,13 @@ class Reports extends Secure_Controller
     {
         $this->clearCache();
 
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'sales');
+
         $inputs = [
             'start_date'  => $start_date,
             'end_date'    => $end_date,
             'sale_type'   => $sale_type,
-            'location_id' => $location_id
+            'location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids
         ];
 
         $top_categories = $this->summary_categories_trend->getTopCategories($inputs, 5);
@@ -1043,11 +1102,13 @@ class Reports extends Secure_Controller
     {   // TODO: Duplicated Code
         $this->clearCache();
 
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'sales');
+
         $inputs = [
             'start_date'  => $start_date,
             'end_date'    => $end_date,
             'sale_type'   => $sale_type,
-            'location_id' => $location_id
+            'location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids
         ];
 
 
@@ -1088,11 +1149,13 @@ class Reports extends Secure_Controller
     {
         $this->clearCache();
 
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'sales');
+
         $inputs = [
             'start_date'  => $start_date,
             'end_date'    => $end_date,
             'sale_type'   => $sale_type,
-            'location_id' => $location_id
+            'location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids
         ];
 
         $report_data = $this->summary_employees->getData($inputs);
@@ -1132,11 +1195,13 @@ class Reports extends Secure_Controller
     {   // TODO: Duplicated Code
         $this->clearCache();
 
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'sales');
+
         $inputs = [
             'start_date'  => $start_date,
             'end_date'    => $end_date,
             'sale_type'   => $sale_type,
-            'location_id' => $location_id
+            'location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids
         ];
 
         $report_data = $this->summary_taxes->getData($inputs);
@@ -1176,11 +1241,13 @@ class Reports extends Secure_Controller
     {   // TODO: Duplicated Code
         $this->clearCache();
 
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'sales');
+
         $inputs = [
             'start_date'  => $start_date,
             'end_date'    => $end_date,
             'sale_type'   => $sale_type,
-            'location_id' => $location_id
+            'location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids
         ];
 
         $report_data = $this->summary_sales_taxes->getData($inputs);
@@ -1220,11 +1287,13 @@ class Reports extends Secure_Controller
     {   // TODO: Duplicated Code
         $this->clearCache();
 
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'sales');
+
         $inputs = [
             'start_date'  => $start_date,
             'end_date'    => $end_date,
             'sale_type'   => $sale_type,
-            'location_id' => $location_id
+            'location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids
         ];
 
         $report_data = $this->summary_customers->getData($inputs);
@@ -1267,11 +1336,14 @@ class Reports extends Secure_Controller
     {   // TODO: Duplicated Code
         $this->clearCache();
 
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'sales');
+
         $inputs = [
             'start_date'    => $start_date,
             'end_date'      => $end_date,
             'sale_type'     => $sale_type,
             'location_id'   => $location_id,
+            'allowed_location_ids' => $allowed_location_ids,
             'discount_type' => $discount_type
         ];
 
@@ -1314,11 +1386,13 @@ class Reports extends Secure_Controller
     {
         $this->clearCache();
 
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'sales');
+
         $inputs = [
             'start_date'  => $start_date,
             'end_date'    => $end_date,
             'sale_type'   => $sale_type,
-            'location_id' => $location_id
+            'location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids
         ];
 
         $report_data = $this->summary_payments->getData($inputs);
@@ -1906,6 +1980,8 @@ class Reports extends Secure_Controller
     {
         $this->clearCache();
 
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'sales');
+
         $definition_names = $this->attribute->get_definitions_by_flags(attribute::SHOW_IN_SALES);
 
         $inputs = [
@@ -1913,6 +1989,7 @@ class Reports extends Secure_Controller
             'end_date'       => $end_date,
             'sale_type'      => $sale_type,
             'location_id'    => $location_id,
+            'allowed_location_ids' => $allowed_location_ids,
             'definition_ids' => array_keys($definition_names)
         ];
 
@@ -2060,9 +2137,12 @@ class Reports extends Secure_Controller
     {
         $this->clearCache();
 
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'receivings');
+
         $definition_names = $this->attribute->get_definitions_by_flags(attribute::SHOW_IN_RECEIVINGS);
 
-        $inputs = ['start_date' => $start_date, 'end_date' => $end_date, 'receiving_type' => $receiving_type, 'location_id' => $location_id, 'definition_ids' => array_keys($definition_names)];
+        $inputs = ['start_date' => $start_date, 'end_date' => $end_date, 'receiving_type' => $receiving_type, 'location_id' => $location_id,
+            'allowed_location_ids' => $allowed_location_ids, 'definition_ids' => array_keys($definition_names)];
 
         $this->detailed_receivings->create($inputs);
 
@@ -2140,7 +2220,7 @@ class Reports extends Secure_Controller
     {
         $this->clearCache();
 
-        $inputs = [];
+        $inputs = ['allowed_location_ids' => array_keys($this->stock_location->get_allowed_locations('items'))];
 
         $inventory_low = model(Inventory_low::class);
 
@@ -2197,7 +2277,9 @@ class Reports extends Secure_Controller
     {
         $this->clearCache();
 
-        $inputs = ['location_id' => $location_id, 'item_count' => $item_count];
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'items');
+
+        $inputs = ['location_id' => $location_id, 'item_count' => $item_count, 'allowed_location_ids' => $allowed_location_ids];
 
         $report_data = $this->inventory_summary->getData($inputs);
 
@@ -2236,7 +2318,9 @@ class Reports extends Secure_Controller
      */
     public function inventory_summary_export(string $location_id = 'all', string $item_count = 'all'): void
     {
-        $inputs = ['location_id' => $location_id, 'item_count' => $item_count];
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'items');
+
+        $inputs = ['location_id' => $location_id, 'item_count' => $item_count, 'allowed_location_ids' => $allowed_location_ids];
         $report_data = $this->inventory_summary->getData($inputs);
 
         $col_headers = [
@@ -2298,10 +2382,13 @@ class Reports extends Secure_Controller
     {
         $this->clearCache();
 
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'sales');
+
         $inputs = [
             'start_date'  => $start_date,
             'end_date'    => $end_date,
             'location_id' => $location_id,
+            'allowed_location_ids' => $allowed_location_ids,
         ];
 
         $report_data = $this->monthly_financial_summary->getData($inputs);

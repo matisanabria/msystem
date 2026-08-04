@@ -84,6 +84,8 @@ class Summary_categories_trend extends Summary_report
 
         if ($inputs['location_id'] != 'all') {
             $builder->where('sales_items.item_location', $inputs['location_id']);
+        } elseif (!empty($inputs['allowed_location_ids'])) {
+            $builder->whereIn('sales_items.item_location', $inputs['allowed_location_ids']);
         }
 
         if ($inputs['sale_type'] == 'complete') {

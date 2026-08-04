@@ -99,6 +99,8 @@ class Detailed_receivings extends Report
 
         if ($inputs['location_id'] != 'all') {
             $builder->where('item_location', $inputs['location_id']);
+        } elseif (!empty($inputs['allowed_location_ids'])) {
+            $builder->whereIn('item_location', $inputs['allowed_location_ids']);
         }
 
         if ($inputs['receiving_type'] == 'receiving') {    // TODO: These if statements should be replaced with a switch statement
@@ -160,6 +162,8 @@ class Detailed_receivings extends Report
 
         if ($inputs['location_id'] != 'all') {
             $builder->where('item_location', $inputs['location_id']);
+        } elseif (!empty($inputs['allowed_location_ids'])) {
+            $builder->whereIn('item_location', $inputs['allowed_location_ids']);
         }
 
         switch ($inputs['receiving_type']) {

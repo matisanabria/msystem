@@ -68,6 +68,8 @@ class Inventory_summary extends Report
 
         if ($inputs['location_id'] != 'all') {
             $builder->where('stock_locations.location_id', $inputs['location_id']);
+        } elseif (!empty($inputs['allowed_location_ids'])) {
+            $builder->whereIn('stock_locations.location_id', $inputs['allowed_location_ids']);
         }
 
         $builder->orderBy('items.name');

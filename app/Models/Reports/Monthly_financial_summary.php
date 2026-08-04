@@ -37,9 +37,10 @@ class Monthly_financial_summary extends Report
         $config = config(OSPOS::class)->settings;
         $decimals = totals_decimals();
         $location_id = $inputs['location_id'] ?? 'all';
+        $allowed_location_ids = $inputs['allowed_location_ids'] ?? [];
 
-        $sales_by_month    = $this->_get_sales_by_month($config, $decimals, $inputs['start_date'], $inputs['end_date'], $location_id);
-        $expenses_by_month = $this->_get_expenses_by_month($config, $inputs['start_date'], $inputs['end_date'], $location_id);
+        $sales_by_month    = $this->_get_sales_by_month($config, $decimals, $inputs['start_date'], $inputs['end_date'], $location_id, $allowed_location_ids);
+        $expenses_by_month = $this->_get_expenses_by_month($config, $inputs['start_date'], $inputs['end_date'], $location_id, $allowed_location_ids);
 
         $month_keys = array_unique(array_merge(array_keys($sales_by_month), array_keys($expenses_by_month)));
         sort($month_keys);
@@ -102,7 +103,7 @@ class Monthly_financial_summary extends Report
      * @param string $end_date
      * @return array
      */
-    private function _get_sales_by_month(array $config, int $decimals, string $start_date, string $end_date, string $location_id = 'all'): array
+    private function _get_sales_by_month(array $config, int $decimals, string $start_date, string $end_date, string $location_id = 'all', array $allowed_location_ids = []): array
     {
         $sale_price = 'CASE WHEN sales_items.discount_type = ' . PERCENT
             . " THEN sales_items.quantity_purchased * sales_items.item_unit_price"
@@ -134,6 +135,9 @@ class Monthly_financial_summary extends Report
         if ($location_id !== 'all' && is_numeric($location_id)) {
             $loc_id_esc      = (int)$location_id;
             $location_filter = "  AND sales_items.item_location = {$loc_id_esc}";
+        } elseif ($location_id === 'all' && !empty($allowed_location_ids)) {
+            $loc_ids_esc      = implode(',', array_map('intval', $allowed_location_ids));
+            $location_filter  = "  AND sales_items.item_location IN ({$loc_ids_esc})";
         }
 
         $sql = "SELECT
@@ -170,7 +174,7 @@ class Monthly_financial_summary extends Report
      * @param string $end_date
      * @return array
      */
-    private function _get_expenses_by_month(array $config, string $start_date, string $end_date, string $location_id = 'all'): array
+    private function _get_expenses_by_month(array $config, string $start_date, string $end_date, string $location_id = 'all', array $allowed_location_ids = []): array
     {
         if (empty($config['date_or_time_format'])) {
             $where_date = 'DATE(expenses.date) BETWEEN ' . $this->db->escape($start_date) . ' AND ' . $this->db->escape($end_date);
@@ -182,6 +186,9 @@ class Monthly_financial_summary extends Report
         if ($location_id !== 'all' && is_numeric($location_id)) {
             $loc_id_esc      = (int)$location_id;
             $location_filter = "AND expenses.location_id = {$loc_id_esc}";
+        } elseif ($location_id === 'all' && !empty($allowed_location_ids)) {
+            $loc_ids_esc      = implode(',', array_map('intval', $allowed_location_ids));
+            $location_filter  = "AND expenses.location_id IN ({$loc_ids_esc})";
         }
 
         $sql = "SELECT

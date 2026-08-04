@@ -33,6 +33,13 @@ class Inventory_low extends Report
     public function getData(array $inputs): array
     {    // TODO: convert to using QueryBuilder. Use App/Models/Reports/Summary_taxes.php getData() as a reference template
         $item = model(Item::class);
+
+        $location_filter = '';
+        if (!empty($inputs['allowed_location_ids'])) {
+            $location_ids = implode(',', array_map('intval', $inputs['allowed_location_ids']));
+            $location_filter = "AND stock_locations.location_id IN ($location_ids)";
+        }
+
         $query = $this->db->query("SELECT " . $item->get_item_name('name') . ",
             items.item_number,
             item_quantities.quantity,
@@ -45,6 +52,7 @@ class Inventory_low extends Report
             AND items.stock_type = 0
             AND item_quantities.quantity <= items.reorder_level
             AND stock_locations.deleted = 0
+            $location_filter
             ORDER BY items.name");
 
         return $query->getResultArray() ?: [];

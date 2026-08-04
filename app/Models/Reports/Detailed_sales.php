@@ -122,6 +122,8 @@ class Detailed_sales extends Report
 
         if ($inputs['location_id'] != 'all') {    // TODO: Duplicated code
             $builder->where('item_location', $inputs['location_id']);
+        } elseif (!empty($inputs['allowed_location_ids'])) {
+            $builder->whereIn('item_location', $inputs['allowed_location_ids']);
         }
 
         switch ($inputs['sale_type']) {
@@ -221,6 +223,8 @@ class Detailed_sales extends Report
 
         if ($inputs['location_id'] != 'all') {    // TODO: Duplicated code
             $builder->where('item_location', $inputs['location_id']);
+        } elseif (!empty($inputs['allowed_location_ids'])) {
+            $builder->whereIn('item_location', $inputs['allowed_location_ids']);
         }
 
         switch ($inputs['sale_type']) {
