@@ -136,8 +136,86 @@ $request = Services::request();
         @media (max-width: 767px) {
             .topbar .navbar-left  { display: none; }
             .topbar .navbar-center { display: none; }
-            .topbar .navbar-right  { float: none; text-align: center; padding: 4px 0; }
-            .topbar .container     { padding: 0 8px; }
+            .topbar .navbar-right {
+                float: none;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                padding: 6px 8px;
+                white-space: nowrap;
+            }
+            .topbar .navbar-right a {
+                max-width: 42vw;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                display: inline-block;
+                vertical-align: bottom;
+            }
+            .topbar .navbar-right span {
+                flex: none;
+                opacity: .5;
+            }
+            .topbar .container { padding: 0 8px; }
+
+            /* Module menu: proper touch list instead of the desktop icon grid */
+            .navbar-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .navbar-header .navbar-brand {
+                order: 1;
+            }
+
+            .navbar-header .navbar-toggle {
+                order: 2;
+                margin-right: 0;
+            }
+
+            .navbar-collapse.collapse.in,
+            .navbar-collapse.collapsing {
+                box-shadow: inset 0 1px 0 rgba(0, 0, 0, .06), 0 6px 12px rgba(0, 0, 0, .1);
+                border-top: 1px solid #e7e7e7;
+            }
+
+            .navbar .navbar-nav {
+                margin: 0;
+            }
+
+            .navbar .navbar-nav > li {
+                border-bottom: 1px solid #eef0f2;
+            }
+
+            .navbar .navbar-nav > li:last-child {
+                border-bottom: none;
+            }
+
+            .navbar .navbar-nav > li > a.menu-icon {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                text-align: left;
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+
+            .navbar .navbar-nav > li.active > a.menu-icon {
+                background-color: #f4f6f8;
+                font-weight: 600;
+            }
+
+            .navbar .menu-icon br {
+                display: none;
+            }
+
+            .navbar .menu-icon img {
+                width: 22px;
+                height: 22px;
+                flex: none;
+            }
         }
     </style>
 </head>
