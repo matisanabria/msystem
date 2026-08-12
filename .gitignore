@@ -103,3 +103,11 @@ claudio.bat
 
 .mcp.json
 .opencode.json
+GEMINI.md
+INSTALL.MD
+/.agents/
+.cursorrules
+/.kiro/
+skills-lock.json
+/writable/backups/
+/writable/cache/throttler_*

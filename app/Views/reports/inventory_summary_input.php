@@ -24,7 +24,7 @@ if (isset($error)) {
     <div class="form-group form-group-sm">
         <?= form_label(lang('Reports.item_count'), 'reports_item_count_label', ['class' => 'required control-label col-xs-2']) ?>
         <div id="report_item_count" class="col-xs-3">
-            <?= form_dropdown('item_count', $item_count, 'all', 'id="item_count" class="form-control"') ?>
+            <?= form_dropdown('item_count', $item_count, 'more_than_zero', 'id="item_count" class="form-control"') ?>
         </div>
     </div>
 

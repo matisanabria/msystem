@@ -56,7 +56,7 @@ $('#table').bootstrapTable('refreshOptions', {
 });
 
 // Initialize visibility settings from localStorage
-var summaryVisibility = JSON.parse(safeGetItem('summaryVisibility')) || { cost: false, profit: false };
+var summaryVisibility = { cost: true, profit: true };
 
 // Function to apply visibility for cost and profit rows
 function applySummaryVisibility() {
@@ -64,17 +64,8 @@ function applySummaryVisibility() {
     var costRow = rows.eq(rows.length - 2); // Second-to-last row
     var profitRow = rows.eq(rows.length - 1); // Last row
 
-    if (summaryVisibility.cost === false) {
-        costRow.hide(); // Hide the cost row
-    } else {
-        costRow.show(); // Show the cost row
-    }
-
-    if (summaryVisibility.profit === false) {
-        profitRow.hide(); // Hide the profit row
-    } else {
-        profitRow.show(); // Show the profit row
-    }
+    costRow.show();
+    profitRow.show();
 }
 
 // Toggle visibility when the button is clicked

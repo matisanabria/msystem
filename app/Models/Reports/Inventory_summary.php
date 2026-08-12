@@ -89,11 +89,13 @@ class Inventory_summary extends Report
     {
         $return = [    // TODO: This variable name should be refactored to reflect what it is... perhaps summary_data
             'total_quantity' => 0,
+            'total_cost'     => 0,
             'total_retail'   => 0
         ];
 
         foreach ($inputs as $input) {
             $return['total_quantity'] += $input['quantity'];
+            $return['total_cost'] += $input['cost_price'] * $input['quantity'];
             $return['total_retail'] += $input['unit_price'] * $input['quantity'];
         }
 

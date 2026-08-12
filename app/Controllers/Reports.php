@@ -2273,7 +2273,7 @@ class Reports extends Secure_Controller
      * @param string $item_count
      * @return void
      */
-    public function inventory_summary(string $location_id = 'all', string $item_count = 'all'): void
+    public function inventory_summary(string $location_id = 'all', string $item_count = 'more_than_zero'): void
     {
         $this->clearCache();
 
@@ -2316,7 +2316,7 @@ class Reports extends Secure_Controller
      * @return void
      * @noinspection PhpUnused
      */
-    public function inventory_summary_export(string $location_id = 'all', string $item_count = 'all'): void
+    public function inventory_summary_export(string $location_id = 'all', string $item_count = 'more_than_zero'): void
     {
         ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'items');
 
