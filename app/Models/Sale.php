@@ -236,13 +236,17 @@ class Sale extends Model
         $config = config(OSPOS::class)->settings;
 
         // Get payment summary
+        // NOTE: sales_items/items are intentionally NOT joined directly here — a sale with N line
+        // items would otherwise multiply every sales_payments row by N, inflating count/amount.
+        // Item-based conditions (barcode search, location filter) go through EXISTS subqueries instead.
         $builder = $this->db->table('sales AS sales');
         $builder->select('payment_type, COUNT(payment_amount) AS count, SUM(payment_amount - cash_refund) AS payment_amount');
         $builder->join('sales_payments', 'sales_payments.sale_id = sales.sale_id');
-        $builder->join('sales_items', 'sales_items.sale_id = sales.sale_id', 'LEFT');
-        $builder->join('items AS sale_items_ref', 'sales_items.item_id = sale_items_ref.item_id', 'LEFT');
         $builder->join('people AS customer_p', 'sales.customer_id = customer_p.person_id', 'LEFT');
         $builder->join('customers AS customer', 'sales.customer_id = customer.person_id', 'LEFT');
+
+        $sales_items_table = $this->db->prefixTable('sales_items');
+        $items_table = $this->db->prefixTable('items');
 
         // TODO: This needs to be replaced with Ternary notation
         if (empty($config['date_or_time_format'])) {    // TODO: duplicated code.  We should think about refactoring out a method.
@@ -256,9 +260,14 @@ class Sale extends Model
                 $pieces = explode(' ', $search);
                 $builder->where('sales.sale_id', $pieces[1]);
             } elseif (ctype_digit($search)) {
+                $search_escaped = $this->db->escape('%' . $this->db->escapeLikeString($search) . '%');
                 $builder->groupStart();
                 $builder->where('sales.sale_id', (int)$search);
-                $builder->orLike('sale_items_ref.item_number', $search);
+                $builder->orWhere(
+                    "sales.sale_id IN (SELECT si.sale_id FROM `$sales_items_table` si INNER JOIN `$items_table` it ON it.item_id = si.item_id WHERE it.item_number LIKE $search_escaped)",
+                    null,
+                    false
+                );
                 $builder->groupEnd();
             } else {
                 $builder->groupStart();
@@ -288,6 +297,15 @@ class Sale extends Model
 
         if (!empty($filters['payment_filter'])) {
             $builder->like('payment_type', $filters['payment_filter']);
+        }
+
+        if (!empty($filters['location_id']) && $filters['location_id'] !== 'all') {
+            $location_id_escaped = (int)$filters['location_id'];
+            $builder->where(
+                "sales.sale_id IN (SELECT sale_id FROM `$sales_items_table` WHERE item_location = $location_id_escaped)",
+                null,
+                false
+            );
         }
 
         $builder->groupBy('payment_type');
@@ -630,6 +648,7 @@ class Sale extends Model
                 'discount_type'      => $item_data['discount_type'],
                 'item_cost_price'    => $item_data['cost_price'],
                 'item_unit_price'    => $item_data['price'],
+                'price_type'         => $item_data['price_type'] ?? 0,
                 'item_location'      => $item_data['item_location'],
                 'print_option'       => $item_data['print_option']
             ];

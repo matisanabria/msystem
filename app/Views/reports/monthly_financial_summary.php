@@ -176,6 +176,12 @@
             <div class="mfs-kpi-dot">&#8593;</div>
             <div class="mfs-kpi-amount"><?= to_currency($summary['ingresos']) ?></div>
             <div class="mfs-kpi-name"><?= lang('Reports.total_ingresos') ?></div>
+            <?php if ($summary['ingresos_mayorista'] > 0 || $summary['ingresos_revendedor'] > 0): ?>
+                <div style="margin-top:8px; font-size:10px; color:#95a5a6; line-height:1.6;">
+                    <?= lang('Reports.ingresos_mayorista') ?>: <?= to_currency($summary['ingresos_mayorista']) ?><br>
+                    <?= lang('Reports.ingresos_revendedor') ?>: <?= to_currency($summary['ingresos_revendedor']) ?>
+                </div>
+            <?php endif; ?>
         </div>
 
         <div class="mfs-kpi mfs-kpi-cos">
@@ -218,6 +224,16 @@
                     <span class="mfs-row-label"><?= lang('Reports.total_ingresos') ?></span>
                     <span class="mfs-row-val v-pos"><?= $row['ingresos'] ?></span>
                 </div>
+                <?php if ($row['ingresos_mayorista'] !== to_currency(0) || $row['ingresos_revendedor'] !== to_currency(0)): ?>
+                <div class="mfs-row">
+                    <span class="mfs-row-label" style="text-transform:none; font-weight:400; padding-left:8px;"><?= lang('Reports.ingresos_mayorista') ?></span>
+                    <span class="mfs-row-val" style="font-weight:400;"><?= $row['ingresos_mayorista'] ?></span>
+                </div>
+                <div class="mfs-row">
+                    <span class="mfs-row-label" style="text-transform:none; font-weight:400; padding-left:8px;"><?= lang('Reports.ingresos_revendedor') ?></span>
+                    <span class="mfs-row-val" style="font-weight:400;"><?= $row['ingresos_revendedor'] ?></span>
+                </div>
+                <?php endif; ?>
                 <div class="mfs-row">
                     <span class="mfs-row-label"><?= lang('Reports.total_costos') ?></span>
                     <span class="mfs-row-val v-neg"><?= $row['costos'] ?></span>

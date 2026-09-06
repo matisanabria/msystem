@@ -157,6 +157,8 @@ return [
     "monthly_financial_summary_report"        => "Resumen Financiero",
     "month"                                   => "Mes",
     "total_ingresos"                          => "Ingresos",
+    "ingresos_mayorista"                      => "Ingresos (Mayorista)",
+    "ingresos_revendedor"                     => "Ingresos (Revendedor)",
     "total_costos"                            => "Costo de Mercadería",
     "resultado_bruto"                         => "Resultado Bruto",
     "total_egresos"                           => "Egresos",

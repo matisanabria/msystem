@@ -2400,12 +2400,14 @@ class Reports extends Secure_Controller
             $month_label = date('M Y', mktime(0, 0, 0, (int)$month_num, 1, (int)$year));
 
             $rows[] = [
-                'month'           => $month_label,
-                'ingresos'        => to_currency($row['ingresos']),
-                'costos'          => to_currency($row['costos']),
-                'resultado_bruto' => to_currency($row['resultado_bruto']),
-                'egresos'         => to_currency($row['egresos']),
-                'resultado_final' => to_currency($row['resultado_final']),
+                'month'                => $month_label,
+                'ingresos'             => to_currency($row['ingresos']),
+                'ingresos_mayorista'   => to_currency($row['ingresos_mayorista']),
+                'ingresos_revendedor'  => to_currency($row['ingresos_revendedor']),
+                'costos'               => to_currency($row['costos']),
+                'resultado_bruto'      => to_currency($row['resultado_bruto']),
+                'egresos'              => to_currency($row['egresos']),
+                'resultado_final'      => to_currency($row['resultado_final']),
             ];
         }
 

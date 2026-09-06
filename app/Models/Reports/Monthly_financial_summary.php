@@ -12,12 +12,14 @@ class Monthly_financial_summary extends Report
     protected function _get_data_columns(): array
     {
         return [
-            ['month'           => lang('Reports.month')],
-            ['ingresos'        => lang('Reports.total_ingresos'), 'sorter' => 'number_sorter'],
-            ['costos'          => lang('Reports.total_costos'), 'sorter' => 'number_sorter'],
-            ['resultado_bruto' => lang('Reports.resultado_bruto'), 'sorter' => 'number_sorter'],
-            ['egresos'         => lang('Reports.total_egresos'), 'sorter' => 'number_sorter'],
-            ['resultado_final' => lang('Reports.resultado_final'), 'sorter' => 'number_sorter'],
+            ['month'                => lang('Reports.month')],
+            ['ingresos'             => lang('Reports.total_ingresos'), 'sorter' => 'number_sorter'],
+            ['ingresos_mayorista'   => lang('Reports.ingresos_mayorista'), 'sorter' => 'number_sorter'],
+            ['ingresos_revendedor'  => lang('Reports.ingresos_revendedor'), 'sorter' => 'number_sorter'],
+            ['costos'               => lang('Reports.total_costos'), 'sorter' => 'number_sorter'],
+            ['resultado_bruto'      => lang('Reports.resultado_bruto'), 'sorter' => 'number_sorter'],
+            ['egresos'              => lang('Reports.total_egresos'), 'sorter' => 'number_sorter'],
+            ['resultado_final'      => lang('Reports.resultado_final'), 'sorter' => 'number_sorter'],
         ];
     }
 
@@ -47,19 +49,23 @@ class Monthly_financial_summary extends Report
 
         $rows = [];
         foreach ($month_keys as $month_key) {
-            $ingresos       = (float)($sales_by_month[$month_key]['ingresos'] ?? 0);
-            $costos         = (float)($sales_by_month[$month_key]['costos'] ?? 0);
-            $egresos        = (float)($expenses_by_month[$month_key]['egresos'] ?? 0);
-            $resultado_bruto  = $ingresos - $costos;
-            $resultado_final  = $resultado_bruto - $egresos;
+            $ingresos            = (float)($sales_by_month[$month_key]['ingresos'] ?? 0);
+            $ingresos_mayorista  = (float)($sales_by_month[$month_key]['ingresos_mayorista'] ?? 0);
+            $ingresos_revendedor = (float)($sales_by_month[$month_key]['ingresos_revendedor'] ?? 0);
+            $costos              = (float)($sales_by_month[$month_key]['costos'] ?? 0);
+            $egresos             = (float)($expenses_by_month[$month_key]['egresos'] ?? 0);
+            $resultado_bruto     = $ingresos - $costos;
+            $resultado_final     = $resultado_bruto - $egresos;
 
             $rows[] = [
-                'month_key'      => $month_key,
-                'ingresos'       => $ingresos,
-                'costos'         => $costos,
-                'resultado_bruto' => $resultado_bruto,
-                'egresos'        => $egresos,
-                'resultado_final' => $resultado_final,
+                'month_key'           => $month_key,
+                'ingresos'            => $ingresos,
+                'ingresos_mayorista'  => $ingresos_mayorista,
+                'ingresos_revendedor' => $ingresos_revendedor,
+                'costos'              => $costos,
+                'resultado_bruto'     => $resultado_bruto,
+                'egresos'             => $egresos,
+                'resultado_final'     => $resultado_final,
             ];
         }
 
@@ -75,19 +81,23 @@ class Monthly_financial_summary extends Report
     public function getSummaryData(array $inputs): array
     {
         $totals = [
-            'ingresos'        => 0.0,
-            'costos'          => 0.0,
-            'resultado_bruto' => 0.0,
-            'egresos'         => 0.0,
-            'resultado_final' => 0.0,
+            'ingresos'            => 0.0,
+            'ingresos_mayorista'  => 0.0,
+            'ingresos_revendedor' => 0.0,
+            'costos'              => 0.0,
+            'resultado_bruto'     => 0.0,
+            'egresos'             => 0.0,
+            'resultado_final'     => 0.0,
         ];
 
         foreach ($this->getData($inputs) as $row) {
-            $totals['ingresos']        += $row['ingresos'];
-            $totals['costos']          += $row['costos'];
-            $totals['resultado_bruto'] += $row['resultado_bruto'];
-            $totals['egresos']         += $row['egresos'];
-            $totals['resultado_final'] += $row['resultado_final'];
+            $totals['ingresos']            += $row['ingresos'];
+            $totals['ingresos_mayorista']  += $row['ingresos_mayorista'];
+            $totals['ingresos_revendedor'] += $row['ingresos_revendedor'];
+            $totals['costos']              += $row['costos'];
+            $totals['resultado_bruto']     += $row['resultado_bruto'];
+            $totals['egresos']             += $row['egresos'];
+            $totals['resultado_final']     += $row['resultado_final'];
         }
 
         return $totals;
@@ -120,9 +130,13 @@ class Monthly_financial_summary extends Report
             . '   AND sit.line = sales_items.line)';
 
         if ($config['tax_included']) {
-            $ingresos_expr = "ROUND(SUM($sale_price), $decimals)";
+            $ingresos_expr             = "ROUND(SUM($sale_price), $decimals)";
+            $ingresos_mayorista_expr   = "ROUND(SUM(CASE WHEN sales_items.price_type = 1 THEN $sale_price ELSE 0 END), $decimals)";
+            $ingresos_revendedor_expr  = "ROUND(SUM(CASE WHEN sales_items.price_type = 2 THEN $sale_price ELSE 0 END), $decimals)";
         } else {
-            $ingresos_expr = "ROUND(SUM($sale_price), $decimals) + SUM($tax_subq)";
+            $ingresos_expr             = "ROUND(SUM($sale_price), $decimals) + SUM($tax_subq)";
+            $ingresos_mayorista_expr   = "ROUND(SUM(CASE WHEN sales_items.price_type = 1 THEN $sale_price ELSE 0 END), $decimals) + SUM(CASE WHEN sales_items.price_type = 1 THEN $tax_subq ELSE 0 END)";
+            $ingresos_revendedor_expr  = "ROUND(SUM(CASE WHEN sales_items.price_type = 2 THEN $sale_price ELSE 0 END), $decimals) + SUM(CASE WHEN sales_items.price_type = 2 THEN $tax_subq ELSE 0 END)";
         }
 
         if (empty($config['date_or_time_format'])) {
@@ -143,6 +157,8 @@ class Monthly_financial_summary extends Report
         $sql = "SELECT
                     DATE_FORMAT(sales.sale_time, '%Y-%m') AS month_key,
                     $ingresos_expr AS ingresos,
+                    $ingresos_mayorista_expr AS ingresos_mayorista,
+                    $ingresos_revendedor_expr AS ingresos_revendedor,
                     SUM($sale_cost) AS costos
                 FROM " . $this->db->prefixTable('sales_items') . " AS sales_items
                 INNER JOIN " . $this->db->prefixTable('sales') . " AS sales
@@ -157,8 +173,10 @@ class Monthly_financial_summary extends Report
         $data = [];
         foreach ($this->db->query($sql)->getResultArray() as $row) {
             $data[$row['month_key']] = [
-                'ingresos' => $row['ingresos'],
-                'costos'   => $row['costos'],
+                'ingresos'            => $row['ingresos'],
+                'ingresos_mayorista'  => $row['ingresos_mayorista'],
+                'ingresos_revendedor' => $row['ingresos_revendedor'],
+                'costos'              => $row['costos'],
             ];
         }
 

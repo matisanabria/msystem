@@ -158,6 +158,8 @@ return [
     "monthly_financial_summary_report"        => "Financial Summary",
     "month"                                   => "Month",
     "total_ingresos"                          => "Revenue",
+    "ingresos_mayorista"                      => "Revenue (Wholesale)",
+    "ingresos_revendedor"                     => "Revenue (Reseller)",
     "total_costos"                            => "Cost of Goods",
     "resultado_bruto"                         => "Gross Result",
     "total_egresos"                           => "Expenses",
