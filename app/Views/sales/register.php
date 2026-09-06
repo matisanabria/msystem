@@ -99,6 +99,13 @@ helper('url');
                     </button>
                 </li>
 
+                <li class="pull-right">
+                    <a href="<?= esc(site_url("$controller_name/stockConsult")) ?>" class="btn btn-default btn-sm" id="stock_consult_button"
+                        title="<?= lang('Sales.stock_consult') ?>">
+                        <span class="glyphicon glyphicon-th-list">&nbsp;</span><?= lang('Sales.stock_consult') ?>
+                    </a>
+                </li>
+
                 <?php
                 $employee = model(Employee::class);
                 if ($employee->has_grant('reports_sales', session('person_id'))) {
@@ -217,6 +224,27 @@ helper('url');
                                 } else {
                                     echo to_currency($item['price']);
                                     echo form_hidden('price', to_currency_no_money($item['price']));
+                                }
+                                $current_price_type = (int)($item['price_type'] ?? 0);
+                                if ($items_module_allowed && $change_price) {
+                                    echo form_dropdown(
+                                        'price_type',
+                                        [
+                                            0 => lang('Sales.price_type_sale'),
+                                            1 => lang('Sales.price_type_wholesale'),
+                                            2 => lang('Sales.price_type_reseller'),
+                                        ],
+                                        $current_price_type,
+                                        [
+                                            'class'         => 'form-control input-sm price_type_select',
+                                            'style'         => 'margin-top:4px;',
+                                            'data-original' => (string)$current_price_type,
+                                            'data-wholesale' => to_currency_no_money($item['price_wholesale'] ?? $item['price']),
+                                            'data-reseller'  => to_currency_no_money($item['price_reseller'] ?? $item['price']),
+                                        ]
+                                    );
+                                } else {
+                                    echo form_hidden('price_type', (string)$current_price_type);
                                 }
                                 ?>
                             </td>
@@ -699,6 +727,111 @@ helper('url');
     </div>
 </div>
 
+<!-- Price Type Authorization Modal -->
+<div class="modal fade" id="pa_modal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <!-- State 1: Request authorization -->
+            <div id="pa_state_request">
+                <div class="modal-header" style="background:#d9534f; color:#fff; border-radius:3px 3px 0 0;">
+                    <h4 class="modal-title">
+                        <span class="glyphicon glyphicon-lock"></span>&nbsp;Autorización de Cambio de Precio Requerida
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-condensed" style="margin-bottom:6px;">
+                        <tbody>
+                            <tr style="background:#f9f9f9;">
+                                <td style="width:45%; color:#888;">Cajero</td>
+                                <td><strong><?= esc($current_cashier_name) ?></strong></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"><hr style="margin:4px 0;"></td>
+                            </tr>
+                            <tr>
+                                <td style="color:#888;">Artículo</td>
+                                <td><strong id="pa_item_name">—</strong></td>
+                            </tr>
+                            <tr>
+                                <td style="color:#888;">Tipo de precio</td>
+                                <td><strong id="pa_price_type_label">—</strong></td>
+                            </tr>
+                            <tr style="border-top:2px solid #ddd;">
+                                <td style="color:#888; font-weight:bold;">Nuevo precio unit.</td>
+                                <td style="color:#27ae60; font-weight:bold; font-size:1.1em;" id="pa_new_price">—</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div id="pa_error" class="text-danger" style="min-height:18px; font-size:12px;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button id="pa_request_btn" type="button" class="btn btn-warning btn-block">
+                        <span class="glyphicon glyphicon-send"></span>&nbsp;Solicitar Autorización
+                    </button>
+                    <button id="pa_cancel_btn" type="button" class="btn btn-default btn-block" style="margin-top:6px;">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+
+            <!-- State 2: Waiting for admin / enter code -->
+            <div id="pa_state_waiting" style="display:none;">
+                <div class="modal-header" style="background:#f0ad4e; color:#fff; border-radius:3px 3px 0 0;">
+                    <h4 class="modal-title">
+                        <span class="glyphicon glyphicon-hourglass"></span>&nbsp;Esperando aprobación del administrador...
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div style="background:#f9f9f9; border-radius:4px; padding:10px; margin-bottom:12px;">
+                        <table class="table table-condensed" style="margin:0;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:45%; color:#888;">Artículo</td>
+                                    <td><strong id="pa_item_name2"></strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="color:#888;">Tipo de precio</td>
+                                    <td style="color:#c0392b; font-weight:bold;" id="pa_price_type_label2">—</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="text-align:center; margin-bottom:12px;">
+                        <div id="pa_status_text" style="font-size:14px; color:#888; margin-bottom:8px;">
+                            <span class="glyphicon glyphicon-hourglass"></span> Esperando respuesta del administrador...
+                        </div>
+                        <small style="color:#aaa;">Solicitado hace: <span id="pa_elapsed">0s</span></small>
+                    </div>
+                    <div style="text-align:center;">
+                        <p style="color:#555; font-size:13px; margin-bottom:6px;">Código de autorización (4 dígitos):</p>
+                        <div style="display:flex; justify-content:center; gap:8px; margin-bottom:8px;">
+                            <input type="text" class="pa_digit form-control" inputmode="numeric" maxlength="1"
+                                   style="width:48px; height:48px; text-align:center; font-size:1.6em; font-weight:bold;" disabled>
+                            <input type="text" class="pa_digit form-control" inputmode="numeric" maxlength="1"
+                                   style="width:48px; height:48px; text-align:center; font-size:1.6em; font-weight:bold;" disabled>
+                            <input type="text" class="pa_digit form-control" inputmode="numeric" maxlength="1"
+                                   style="width:48px; height:48px; text-align:center; font-size:1.6em; font-weight:bold;" disabled>
+                            <input type="text" class="pa_digit form-control" inputmode="numeric" maxlength="1"
+                                   style="width:48px; height:48px; text-align:center; font-size:1.6em; font-weight:bold;" disabled>
+                        </div>
+                        <div id="pa_code_error" class="text-danger" style="min-height:18px; font-size:12px;"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="pa_apply_btn" type="button" class="btn btn-success btn-block" disabled>
+                        <span class="glyphicon glyphicon-ok"></span>&nbsp;Aplicar Código
+                    </button>
+                    <button id="pa_cancel_wait_btn" type="button" class="btn btn-default btn-block" style="margin-top:6px;">
+                        Cancelar solicitud
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <!-- PIN Identification Modal -->
 <div class="modal fade" id="pin_modal" tabindex="-1" role="dialog"
      data-backdrop="static" data-keyboard="false" aria-labelledby="pin_modal_label">
@@ -977,6 +1110,10 @@ helper('url');
             $(this).parents('tr').prevAll('form:first').submit()
         });
 
+        $('[name="price_type"]').change(function() {
+            $(this).parents('tr').prevAll('form:first').submit();
+        });
+
         // Discount field: Enter key triggers auth or submit (no auto-submit on blur)
         $('[name="discount"]').keydown(function(e) {
             if (e.which === 13) {
@@ -994,12 +1131,29 @@ helper('url');
             $form.submit();
         });
 
-        // Cart form submit interceptor — shows auth modal when discount changed
+        // Cart form submit interceptor — shows auth modal when price type or discount changed
         $(document).on('submit', '[id^="cart_"]', function(e) {
             var $form = $(this);
+            var $row  = $form.nextAll('tr:first');
+
+            if ($form.find('[name="price_approval_id"]').val() > 0) {
+                // Price authorization already applied for this submit — fall through to discount check.
+            } else {
+                var $ptSelect = $row.find('[name="price_type"]');
+                if ($ptSelect.length) {
+                    var newPriceType = parseInt($ptSelect.val(), 10) || 0;
+                    var origPriceType = parseInt($ptSelect.data('original') || '0', 10);
+                    if (newPriceType > 0 && newPriceType !== origPriceType) {
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+                        priceAuthOpen($form, $row, $ptSelect, newPriceType);
+                        return false;
+                    }
+                }
+            }
+
             if ($form.find('[name="approval_id"]').val() > 0) return true;
 
-            var $row       = $form.nextAll('tr:first');
             var $discInput = $row.find('[name="discount"]');
             if (!$discInput.length) return true;
 
@@ -1330,6 +1484,200 @@ helper('url');
         });
     });
     // ─── End Discount Authorization ────────────────────────────────────────────
+
+    // ─── Price Type Authorization ───────────────────────────────────────────────
+    var _paApprovalId  = null;
+    var _paPendingForm = null;
+    var _paPendingSelect = null;
+    var _paPollTimer   = null;
+    var _paElapsedTimer = null;
+    var _paElapsed     = 0;
+
+    var PRICE_TYPE_LABELS = {
+        1: '<?= esc(lang('Sales.price_type_wholesale')) ?>',
+        2: '<?= esc(lang('Sales.price_type_reseller')) ?>'
+    };
+
+    function priceAuthOpen($form, $row, $select, priceType) {
+        _paPendingForm   = $form;
+        _paPendingSelect = $select;
+        _paApprovalId    = null;
+
+        var itemName   = $row.find('td:nth-child(3)').text().split('[')[0].trim().replace(/\s+/g, ' ');
+        var itemQty    = discountParseFloat($row.find('[name="quantity"]').val()) || 1;
+        var locationId = parseInt($row.find('[name="location"]').val(), 10) || 0;
+        var newPrice   = priceType === 1
+            ? discountParseFloat($select.data('wholesale'))
+            : discountParseFloat($select.data('reseller'));
+        var label      = PRICE_TYPE_LABELS[priceType] || '?';
+
+        $('#pa_item_name').text(itemName || '—');
+        $('#pa_price_type_label').text(label);
+        $('#pa_new_price').text(discountFmtMoney(newPrice));
+
+        $('#pa_item_name2').text(itemName || '—');
+        $('#pa_price_type_label2').text(label);
+
+        $('#pa_modal')
+            .data('price_type', priceType)
+            .data('location_id', locationId)
+            .data('item_name', itemName)
+            .data('item_price', newPrice)
+            .data('item_qty', itemQty);
+
+        $('#pa_state_request').show();
+        $('#pa_state_waiting').hide();
+        $('#pa_error').text('');
+        $('#pa_code_error').text('');
+        $('#pa_status_text').html('<span class="glyphicon glyphicon-hourglass"></span> Esperando respuesta del administrador...');
+        $('#pa_status_text').css('color', '#888');
+        $('.pa_digit').val('').prop('disabled', true);
+        $('#pa_apply_btn').prop('disabled', true).html('<span class="glyphicon glyphicon-ok"></span>&nbsp;Aplicar Código');
+        $('#pa_request_btn').prop('disabled', false).html('<span class="glyphicon glyphicon-send"></span>&nbsp;Solicitar Autorización');
+        $('#pa_elapsed').text('0s');
+
+        $('#pa_modal').modal('show');
+    }
+
+    function priceAuthStopTimers() {
+        if (_paPollTimer)    clearInterval(_paPollTimer);
+        if (_paElapsedTimer) clearInterval(_paElapsedTimer);
+        _paElapsed = 0;
+    }
+
+    function priceAuthStartPolling() {
+        priceAuthStopTimers();
+        _paElapsedTimer = setInterval(function() {
+            _paElapsed++;
+            var m = Math.floor(_paElapsed / 60), s = _paElapsed % 60;
+            $('#pa_elapsed').text((m > 0 ? m + 'm ' : '') + s + 's');
+        }, 1000);
+        _paPollTimer = setInterval(function() {
+            if (!_paApprovalId) return;
+            $.ajax({
+                url: '<?= site_url('sales/discountPoll') ?>',
+                type: 'POST',
+                data: { approval_id: _paApprovalId },
+                dataType: 'json',
+                success: function(res) {
+                    if (!res.success) return;
+                    if (res.status === 'approved') {
+                        clearInterval(_paPollTimer);
+                        $('#pa_status_text').html('<span style="color:#27ae60;"><span class="glyphicon glyphicon-ok-circle"></span>&nbsp;¡Aprobado! Ingrese el código:</span>');
+                        $('#pa_status_text').css('color', '#27ae60');
+                        $('.pa_digit').prop('disabled', false);
+                        $('.pa_digit:first').focus();
+                        $('#pa_apply_btn').prop('disabled', false);
+                    } else if (res.status === 'expired') {
+                        clearInterval(_paPollTimer);
+                        $('#pa_status_text').text('Solicitud rechazada o expirada.');
+                        $('#pa_status_text').css('color', '#c0392b');
+                        setTimeout(function() { $('#pa_modal').modal('hide'); }, 2500);
+                    }
+                }
+            });
+        }, 3000);
+    }
+
+    $(document).ready(function() {
+        $('#pa_request_btn').on('click', function() {
+            var $m = $('#pa_modal');
+            $(this).prop('disabled', true).html('<span class="glyphicon glyphicon-hourglass"></span> Enviando...');
+            $.ajax({
+                url: '<?= site_url('sales/priceRequest') ?>',
+                type: 'POST',
+                data: {
+                    price_type:    $m.data('price_type'),
+                    location_id:   $m.data('location_id'),
+                    item_name:     $m.data('item_name'),
+                    item_price:    $m.data('item_price'),
+                    item_quantity: $m.data('item_qty')
+                },
+                dataType: 'json',
+                success: function(res) {
+                    if (res.success) {
+                        _paApprovalId = res.approval_id;
+                        $('#pa_state_request').hide();
+                        $('#pa_state_waiting').show();
+                        priceAuthStartPolling();
+                    } else {
+                        $('#pa_error').text(res.message || 'Error al enviar solicitud');
+                        $('#pa_request_btn').prop('disabled', false).html('<span class="glyphicon glyphicon-send"></span>&nbsp;Solicitar Autorización');
+                    }
+                },
+                error: function() {
+                    $('#pa_error').text('Error de conexión');
+                    $('#pa_request_btn').prop('disabled', false).html('<span class="glyphicon glyphicon-send"></span>&nbsp;Solicitar Autorización');
+                }
+            });
+        });
+
+        $('#pa_cancel_btn, #pa_cancel_wait_btn').on('click', function() {
+            priceAuthStopTimers();
+            if (_paPendingSelect) {
+                _paPendingSelect.val(_paPendingSelect.data('original'));
+            }
+            _paApprovalId    = null;
+            _paPendingForm   = null;
+            _paPendingSelect = null;
+            $('#pa_modal').modal('hide');
+        });
+
+        // 4-digit inputs: auto-advance + backspace
+        $(document).on('input', '.pa_digit', function() {
+            var val = $(this).val().replace(/\D/g, '').slice(0, 1);
+            $(this).val(val);
+            if (val.length === 1) {
+                var $next = $(this).next('.pa_digit');
+                if ($next.length) $next.focus(); else $('#pa_apply_btn').focus();
+            }
+        });
+        $(document).on('keydown', '.pa_digit', function(e) {
+            if (e.which === 8 && $(this).val() === '') $(this).prev('.pa_digit').focus();
+        });
+
+        $('#pa_apply_btn').on('click', function() {
+            var code = $('.pa_digit').map(function() { return $(this).val(); }).get().join('');
+            if (code.length !== 4 || !_paApprovalId) return;
+            var $m = $('#pa_modal');
+            $(this).prop('disabled', true).html('<span class="glyphicon glyphicon-hourglass"></span> Verificando...');
+            $.ajax({
+                url: '<?= site_url('sales/priceVerify') ?>',
+                type: 'POST',
+                data: {
+                    approval_id: _paApprovalId,
+                    code:        code,
+                    price_type:  $m.data('price_type')
+                },
+                dataType: 'json',
+                success: function(res) {
+                    if (res.valid) {
+                        priceAuthStopTimers();
+                        var $f = _paPendingForm;
+                        var savedId = _paApprovalId;
+                        $f.find('[name="price_approval_id"]').remove();
+                        $f.find('[name="price_approval_code"]').remove();
+                        $f.append($('<input type="hidden" name="price_approval_id">').val(savedId));
+                        $f.append($('<input type="hidden" name="price_approval_code">').val(code));
+                        _paApprovalId    = null;
+                        _paPendingForm   = null;
+                        _paPendingSelect = null;
+                        $('#pa_modal').modal('hide');
+                        $f.submit();
+                    } else {
+                        $('#pa_code_error').text(res.message || 'Código incorrecto');
+                        $('.pa_digit').val('').first().focus();
+                        $('#pa_apply_btn').prop('disabled', false).html('<span class="glyphicon glyphicon-ok"></span>&nbsp;Aplicar Código');
+                    }
+                },
+                error: function() {
+                    $('#pa_code_error').text('Error de conexión');
+                    $('#pa_apply_btn').prop('disabled', false).html('<span class="glyphicon glyphicon-ok"></span>&nbsp;Aplicar Código');
+                }
+            });
+        });
+    });
+    // ─── End Price Type Authorization ──────────────────────────────────────────
 
     // PIN Modal logic
     $(document).ready(function() {

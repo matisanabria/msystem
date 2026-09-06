@@ -10,7 +10,7 @@ class Discount_approval extends Model
     protected $primaryKey    = 'approval_id';
     protected $useTimestamps = false;
     protected $allowedFields = [
-        'location_id', 'requested_by', 'discount', 'discount_type',
+        'location_id', 'requested_by', 'request_type', 'discount', 'discount_type', 'price_type',
         'item_name', 'item_price', 'item_quantity',
         'auth_code', 'status', 'created_at', 'expires_at', 'approved_by',
     ];
@@ -20,8 +20,32 @@ class Discount_approval extends Model
         $this->insert([
             'location_id'   => $location_id,
             'requested_by'  => $person_id,
+            'request_type'  => 'discount',
             'discount'      => $discount,
             'discount_type' => $discount_type,
+            'item_name'     => $item_name,
+            'item_price'    => $item_price,
+            'item_quantity' => $item_quantity,
+            'status'        => 'pending',
+            'created_at'    => date('Y-m-d H:i:s'),
+        ]);
+
+        return (int)$this->getInsertID();
+    }
+
+    /**
+     * Creates an authorization request for switching a sale line to a wholesale/reseller price.
+     * $price_type: 1 = mayorista, 2 = revendedor.
+     */
+    public function create_price_request(int $location_id, int $person_id, int $price_type, string $item_name, float $item_price, float $item_quantity): int
+    {
+        $this->insert([
+            'location_id'   => $location_id,
+            'requested_by'  => $person_id,
+            'request_type'  => 'price_type',
+            'discount'      => 0,
+            'discount_type' => 0,
+            'price_type'    => $price_type,
             'item_name'     => $item_name,
             'item_price'    => $item_price,
             'item_quantity' => $item_quantity,
@@ -110,6 +134,30 @@ class Discount_approval extends Model
     public function verify(int $approval_id, string $code, float $discount, int $discount_type, int $requested_by): bool
     {
         if (!$this->check_code($approval_id, $code, $discount, $discount_type, $requested_by)) {
+            return false;
+        }
+
+        $this->update($approval_id, ['status' => 'used']);
+
+        return true;
+    }
+
+    public function check_price_code(int $approval_id, string $code, int $price_type, int $requested_by): bool
+    {
+        $row = $this->find($approval_id);
+
+        return $row
+            && $row['status'] === 'approved'
+            && $row['request_type'] === 'price_type'
+            && $row['auth_code'] === $code
+            && (int)$row['requested_by'] === $requested_by
+            && (int)$row['price_type'] === $price_type
+            && strtotime($row['expires_at']) >= time();
+    }
+
+    public function verify_price(int $approval_id, string $code, int $price_type, int $requested_by): bool
+    {
+        if (!$this->check_price_code($approval_id, $code, $price_type, $requested_by)) {
             return false;
         }
 

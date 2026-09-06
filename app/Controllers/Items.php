@@ -601,6 +601,12 @@ class Items extends Secure_Controller
 
         $cost_price = parse_decimals($this->request->getPost('cost_price'));
         $unit_price = parse_decimals($this->request->getPost('unit_price'));
+        $price_wholesale = $this->request->getPost('price_wholesale') !== null && $this->request->getPost('price_wholesale') !== ''
+            ? parse_decimals($this->request->getPost('price_wholesale'))
+            : $unit_price;
+        $price_reseller = $this->request->getPost('price_reseller') !== null && $this->request->getPost('price_reseller') !== ''
+            ? parse_decimals($this->request->getPost('price_reseller'))
+            : $unit_price;
         $reorder_level = parse_quantity($this->request->getPost('reorder_level'));
         $qty_per_pack = parse_quantity($this->request->getPost('qty_per_pack') ?? '');
 
@@ -627,6 +633,8 @@ class Items extends Secure_Controller
             'item_number'           => empty($this->request->getPost('item_number')) ? null : $this->request->getPost('item_number'),
             'cost_price'            => $cost_price,
             'unit_price'            => $unit_price,
+            'price_wholesale'       => $price_wholesale,
+            'price_reseller'        => $price_reseller,
             'reorder_level'         => $reorder_level,
             'receiving_quantity'    => $receiving_quantity,
             'allow_alt_description' => $this->request->getPost('allow_alt_description') != null,

@@ -29,12 +29,14 @@
                 <th><?= lang('Items.item_number') ?></th>
                 <th><?= lang('Items.category') ?></th>
                 <th><?= lang('Items.unit_price') ?></th>
+                <th><?= lang('Items.price_wholesale') ?></th>
+                <th><?= lang('Items.price_reseller') ?></th>
                 <th><?= lang('Items.date_added') ?></th>
                 <th style="width:70px; text-align:right;"><?= lang('Items.quantity') ?></th>
             </tr>
         </thead>
         <tbody id="stock_tbody">
-            <tr><td colspan="6" class="text-center text-muted">&mdash;</td></tr>
+            <tr><td colspan="8" class="text-center text-muted">&mdash;</td></tr>
         </tbody>
     </table>
     <div id="stock_pagination" class="text-center" style="margin-top:10px;"></div>
@@ -62,7 +64,7 @@ $(document).ready(function() {
             tbody.empty();
 
             if (!data.rows || data.rows.length === 0) {
-                tbody.append('<tr><td colspan="6" class="text-center text-muted"><?= lang('Items.no_items_to_display') ?></td></tr>');
+                tbody.append('<tr><td colspan="8" class="text-center text-muted"><?= lang('Items.no_items_to_display') ?></td></tr>');
                 $('#stock_pagination').empty();
                 return;
             }
@@ -74,6 +76,8 @@ $(document).ready(function() {
                     '<td><code>' + (row.item_number || '') + '</code></td>' +
                     '<td>' + row.category + '</td>' +
                     '<td><strong>' + row.unit_price + '</strong></td>' +
+                    '<td>' + row.price_wholesale + '</td>' +
+                    '<td>' + row.price_reseller + '</td>' +
                     '<td>' + (row.item_add_date || '') + '</td>' +
                     '<td style="text-align:right;">' + row.quantity + '</td>' +
                     '</tr>'
@@ -100,7 +104,7 @@ $(document).ready(function() {
             }
             $('#stock_pagination').html(pagination);
         }).fail(function(jqXHR) {
-            $('#stock_tbody').html('<tr><td colspan="6" class="text-danger small">Error ' + jqXHR.status + ': <pre style="white-space:pre-wrap">' + $('<div>').text(jqXHR.responseText.substring(0, 500)).html() + '</pre></td></tr>');
+            $('#stock_tbody').html('<tr><td colspan="8" class="text-danger small">Error ' + jqXHR.status + ': <pre style="white-space:pre-wrap">' + $('<div>').text(jqXHR.responseText.substring(0, 500)).html() + '</pre></td></tr>');
         });
     }
 

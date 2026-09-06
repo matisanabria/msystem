@@ -68,7 +68,12 @@
                 $discount  = (float)$row['discount'];
                 $dtype     = (int)$row['discount_type'];
                 $subtotal  = $price * $qty;
-                if ($dtype === 1) {
+                $is_price_request = ($row['request_type'] ?? 'discount') === 'price_type';
+                if ($is_price_request) {
+                    $price_type_labels = [1 => 'Mayorista', 2 => 'Revendedor'];
+                    $disc_amount = 0;
+                    $disc_label  = '→ ' . ($price_type_labels[(int)$row['price_type']] ?? '?');
+                } elseif ($dtype === 1) {
                     $disc_amount = $discount * $qty;
                     $disc_label  = to_currency($discount) . ' c/u';
                 } else {

@@ -28,6 +28,8 @@ class Item extends Model
         'description',
         'cost_price',
         'unit_price',
+        'price_wholesale',
+        'price_reseller',
         'reorder_level',
         'allow_alt_description',
         'is_serialized',
@@ -157,6 +159,8 @@ class Item extends Model
             $builder->select('MAX(items.description) AS description');
             $builder->select('MAX(items.cost_price) AS cost_price');
             $builder->select('MAX(items.unit_price) AS unit_price');
+            $builder->select('MAX(items.price_wholesale) AS price_wholesale');
+            $builder->select('MAX(items.price_reseller) AS price_reseller');
             $builder->select('MAX(items.reorder_level) AS reorder_level');
             $builder->select('MAX(items.receiving_quantity) AS receiving_quantity');
             $builder->select('MAX(items.pic_filename) AS pic_filename');
@@ -302,7 +306,7 @@ class Item extends Model
     {
         $prefix = $this->db->getPrefix();
         $builder = $this->db->table('items AS items');
-        $builder->select('items.item_id, items.name, items.item_number, items.category, items.unit_price');
+        $builder->select('items.item_id, items.name, items.item_number, items.category, items.unit_price, items.price_wholesale, items.price_reseller');
         $builder->select("COALESCE(item_quantities.quantity, 0) AS quantity");
         $builder->select("(SELECT MIN(trans_date) FROM `{$prefix}inventory` WHERE trans_items = items.item_id) AS item_add_date");
         $builder->join('item_quantities AS item_quantities', 'item_quantities.item_id = items.item_id AND item_quantities.location_id = items.location_id', 'left');

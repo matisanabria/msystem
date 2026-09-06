@@ -624,9 +624,10 @@ class Sales extends Secure_Controller
                 ? parse_decimals($this->request->getPost('discounted_total') ?? '')
                 : null;
 
+            $cart         = $this->sale_lib->get_cart();
+            $current_item = $cart[$line] ?? null;
+
             if ($discount > 0) {
-                $cart          = $this->sale_lib->get_cart();
-                $current_item  = $cart[$line] ?? null;
                 $current_disc  = $current_item ? (float)$current_item['discount'] : -1.0;
                 $current_type  = $current_item ? (int)$current_item['discount_type'] : -1;
                 $disc_changed  = abs((float)$discount - $current_disc) > 0.005 || (int)$discount_type !== $current_type;
@@ -645,7 +646,33 @@ class Sales extends Secure_Controller
                 }
             }
 
-            $this->sale_lib->edit_item($line, $description, $serialnumber, $quantity, $discount, $discount_type, $price, $discounted_total);
+            // Price type: 0 = venta, 1 = mayorista, 2 = revendedor.
+            // Switching TO mayorista/revendedor requires admin authorization; going back to venta does not.
+            $price_type_post = $this->request->getPost('price_type');
+            $price_type      = $price_type_post !== null ? (int)$price_type_post : (int)($current_item['price_type'] ?? 0);
+            $current_price_type = (int)($current_item['price_type'] ?? 0);
+
+            if ($price_type > 0 && $price_type !== $current_price_type) {
+                $price_approval_id = (int)$this->request->getPost('price_approval_id');
+                $price_code        = (string)$this->request->getPost('price_approval_code');
+                $person_id         = $this->employee->get_logged_in_employee_info()->person_id;
+
+                $approval_model = model(Discount_approval::class);
+                if (!$approval_model->verify_price($price_approval_id, $price_code, $price_type, $person_id)) {
+                    $data['error'] = lang('Sales.price_type_auth_required');
+                    $this->_reload($data);
+                    return;
+                }
+
+                // Server-authoritative price: use the item's stored wholesale/reseller price, not the client value.
+                $item_id_for_price = $current_item['item_id'] ?? $this->sale_lib->get_item_id($line);
+                $item_info_for_price = $this->item->get_info($item_id_for_price);
+                $price = $price_type === 1
+                    ? (string)($item_info_for_price->price_wholesale ?? $item_info_for_price->unit_price)
+                    : (string)($item_info_for_price->price_reseller ?? $item_info_for_price->unit_price);
+            }
+
+            $this->sale_lib->edit_item($line, $description, $serialnumber, $quantity, $discount, $discount_type, $price, $discounted_total, (string)$price_type);
 
             $this->sale_lib->empty_payments();
 
@@ -1823,6 +1850,8 @@ class Sales extends Secure_Controller
                 'item_number'   => esc($item['item_number'] ?? ''),
                 'category'      => esc($item['category']),
                 'unit_price'    => to_currency($item['unit_price']),
+                'price_wholesale' => to_currency($item['price_wholesale'] ?? $item['unit_price']),
+                'price_reseller'  => to_currency($item['price_reseller'] ?? $item['unit_price']),
                 'item_add_date' => $item['item_add_date'] ? to_datetime(strtotime($item['item_add_date'])) : '',
                 'quantity'      => (float)$item['quantity'],
             ];
@@ -1913,6 +1942,65 @@ class Sales extends Secure_Controller
         echo json_encode([
             'valid'   => $valid,
             'message' => $valid ? '' : 'Código incorrecto, expirado o descuento no coincide',
+        ]);
+    }
+
+    /**
+     * AJAX: cashier submits a price-type (mayorista/revendedor) authorization request.
+     *
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function postPriceRequest(): void
+    {
+        $person_id = $this->employee->get_logged_in_employee_info()->person_id;
+
+        $price_type    = (int)$this->request->getPost('price_type');
+        $location_id   = (int)$this->request->getPost('location_id');
+        $item_name     = $this->request->getPost('item_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
+        $item_price    = (float)$this->request->getPost('item_price');
+        $item_quantity = (float)$this->request->getPost('item_quantity');
+
+        if ($price_type <= 0 || $location_id <= 0) {
+            echo json_encode(['success' => false, 'message' => 'Datos inválidos']);
+            return;
+        }
+
+        $approval_model = model(Discount_approval::class);
+        $approval_id    = $approval_model->create_price_request(
+            $location_id, $person_id, $price_type,
+            $item_name, $item_price, $item_quantity
+        );
+
+        echo json_encode(['success' => true, 'approval_id' => $approval_id]);
+    }
+
+    /**
+     * AJAX: cashier pre-checks the price-type auth code (read-only — does not consume it).
+     * The code is consumed later when postEditItem validates it.
+     *
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function postPriceVerify(): void
+    {
+        $person_id = $this->employee->get_logged_in_employee_info()->person_id;
+
+        $approval_id = (int)$this->request->getPost('approval_id');
+        $code        = (string)$this->request->getPost('code');
+        $price_type  = (int)$this->request->getPost('price_type');
+
+        if (!ctype_digit($code) || strlen($code) !== 4) {
+            echo json_encode(['valid' => false, 'message' => 'Código inválido']);
+            return;
+        }
+
+        $approval_model = model(Discount_approval::class);
+        $valid          = $approval_model->check_price_code($approval_id, $code, $price_type, $person_id);
+
+        echo json_encode([
+            'valid'   => $valid,
+            'message' => $valid ? '' : 'Código incorrecto, expirado o tipo de precio no coincide',
         ]);
     }
 }

@@ -139,6 +139,48 @@
             </div>
         </div>
 
+        <div class="form-group form-group-sm">
+            <?= form_label(lang('Items.price_wholesale'), 'price_wholesale', ['class' => 'required control-label col-xs-3']) ?>
+            <div class="col-xs-4">
+                <div class="input-group input-group-sm">
+                    <?php if (!is_right_side_currency_symbol()): ?>
+                        <span class="input-group-addon input-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
+                    <?php endif; ?>
+                    <?= form_input([
+                        'name'    => 'price_wholesale',
+                        'id'      => 'price_wholesale',
+                        'class'   => 'form-control input-sm',
+                        'onClick' => 'this.select();',
+                        'value'   => to_currency_no_money($item_info->price_wholesale ?? $item_info->unit_price)
+                    ]) ?>
+                    <?php if (is_right_side_currency_symbol()): ?>
+                        <span class="input-group-addon input-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group form-group-sm">
+            <?= form_label(lang('Items.price_reseller'), 'price_reseller', ['class' => 'required control-label col-xs-3']) ?>
+            <div class="col-xs-4">
+                <div class="input-group input-group-sm">
+                    <?php if (!is_right_side_currency_symbol()): ?>
+                        <span class="input-group-addon input-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
+                    <?php endif; ?>
+                    <?= form_input([
+                        'name'    => 'price_reseller',
+                        'id'      => 'price_reseller',
+                        'class'   => 'form-control input-sm',
+                        'onClick' => 'this.select();',
+                        'value'   => to_currency_no_money($item_info->price_reseller ?? $item_info->unit_price)
+                    ]) ?>
+                    <?php if (is_right_side_currency_symbol()): ?>
+                        <span class="input-group-addon input-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
         <?php if ($include_hsn): ?>
             <div class="form-group form-group-sm">
                 <?= form_label(lang('Items.hsn_code'), 'category', ['class' => 'control-label col-xs-3']) ?>
@@ -440,6 +482,14 @@
                         required: true,
                         remote: "<?= esc("$controller_name/checkNumeric") ?>"
                     },
+                    price_wholesale: {
+                        required: true,
+                        remote: "<?= esc("$controller_name/checkNumeric") ?>"
+                    },
+                    price_reseller: {
+                        required: true,
+                        remote: "<?= esc("$controller_name/checkNumeric") ?>"
+                    },
                     <?php foreach ($stock_locations as $key => $location_detail) { ?>
                         <?= 'quantity_' . $key ?>: {
                             required: true,
@@ -471,6 +521,14 @@
                     unit_price: {
                         required: "<?= lang('Items.unit_price_required') ?>",
                         number: "<?= lang('Items.unit_price_number') ?>"
+                    },
+                    price_wholesale: {
+                        required: "<?= lang('Items.price_wholesale_required') ?>",
+                        number: "<?= lang('Items.price_wholesale_number') ?>"
+                    },
+                    price_reseller: {
+                        required: "<?= lang('Items.price_reseller_required') ?>",
+                        number: "<?= lang('Items.price_reseller_number') ?>"
                     },
                     <?php foreach ($stock_locations as $key => $location_detail) { ?>
                         <?= esc("quantity_$key", 'js') ?>: {

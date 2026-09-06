@@ -1098,6 +1098,9 @@ class Sale_lib
                     'quantity'              => $quantity,
                     'discount'              => $applied_discount,
                     'discount_type'         => $discount_type,
+                    'price_type'            => 0,
+                    'price_wholesale'       => $item_info->price_wholesale ?? $item_info->unit_price,
+                    'price_reseller'        => $item_info->price_reseller ?? $item_info->unit_price,
                     'in_stock'              => $this->item_quantity->get_item_quantity($item_id, $item_location)->quantity,
                     'price'                 => $price,
                     'cost_price'            => $cost_price,
@@ -1197,7 +1200,7 @@ class Sale_lib
      * @param string|null $discounted_total
      * @return bool
      */
-    public function edit_item(string $line, string $description, string $serialnumber, string $quantity, string $discount, ?string $discount_type, ?string $price, ?string $discounted_total = null): bool
+    public function edit_item(string $line, string $description, string $serialnumber, string $quantity, string $discount, ?string $discount_type, ?string $price, ?string $discounted_total = null, ?string $price_type = null): bool
     {
         $items = $this->get_cart();
         if (isset($items[$line])) {
@@ -1213,6 +1216,10 @@ class Sale_lib
 
             if ($discount_type != null) {
                 $line['discount_type'] = $discount_type;
+            }
+
+            if ($price_type != null) {
+                $line['price_type'] = $price_type;
             }
 
             $line['price'] = $price;
