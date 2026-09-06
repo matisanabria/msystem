@@ -143,7 +143,7 @@ class Activity_log extends Model
         }
 
         // Activity logs part (login, logout, ticket_status, etc.)
-        $activity_types = ['login', 'logout', 'ticket_status'];
+        $activity_types = ['login', 'logout', 'ticket_status', 'inventory_output'];
         $is_activity_type = in_array($type_filter, $activity_types);
 
         if (empty($type_filter) || $is_activity_type) {

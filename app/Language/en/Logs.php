@@ -10,6 +10,7 @@ return [
     'type_login'         => 'Login',
     'type_logout'        => 'Logout',
     'type_ticket_status' => 'Service Ticket',
+    'type_inventory_output' => 'Inventory Output',
     'col_date'           => 'Date / Time',
     'col_type'           => 'Type',
     'col_employee'       => 'Employee',

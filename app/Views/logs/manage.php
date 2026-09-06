@@ -35,6 +35,7 @@
         <option value="login"><?= lang('Logs.type_login') ?></option>
         <option value="logout"><?= lang('Logs.type_logout') ?></option>
         <option value="ticket_status"><?= lang('Logs.type_ticket_status') ?></option>
+        <option value="inventory_output"><?= lang('Logs.type_inventory_output') ?></option>
     </select>
     <select id="filter_employee" class="form-control input-sm" style="min-width:160px;">
         <option value="0"><?= lang('Logs.filter_all_employees') ?></option>
@@ -83,7 +84,8 @@ $(document).ready(function() {
         'sale':          '<?= lang('Logs.type_sale') ?>',
         'login':         '<?= lang('Logs.type_login') ?>',
         'logout':        '<?= lang('Logs.type_logout') ?>',
-        'ticket_status': '<?= lang('Logs.type_ticket_status') ?>'
+        'ticket_status': '<?= lang('Logs.type_ticket_status') ?>',
+        'inventory_output': '<?= lang('Logs.type_inventory_output') ?>'
     };
 
     var TYPE_CLASSES = {
@@ -91,7 +93,8 @@ $(document).ready(function() {
         'sale':          'success',
         'login':         'default',
         'logout':        'default',
-        'ticket_status': 'warning'
+        'ticket_status': 'warning',
+        'inventory_output': 'danger'
     };
 
     function typeLabel(type) {

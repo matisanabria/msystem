@@ -56,6 +56,8 @@ return [
     "timeclocks_desc"            => "",
     "discount_approvals"         => "Descuentos",
     "discount_approvals_desc"   => "Revisar y aprobar solicitudes de descuento de los cajeros.",
+    "inventory_output"            => "Salidas de Inventario",
+    "inventory_output_desc"       => "Registrar salidas de stock que no son venta (uso interno, dañado, pérdida, etc).",
     "logs"                       => "Registros",
     "logs_desc"                  => "Ver registros de actividad del sistema.",
 ];

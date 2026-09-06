@@ -359,6 +359,8 @@ function item_headers(): array
         ['company_name'  => lang('Suppliers.company_name')],
         ['cost_price'    => lang('Items.cost_price')],
         ['unit_price'    => lang('Items.unit_price')],
+        ['price_wholesale' => lang('Items.price_wholesale')],
+        ['price_reseller'  => lang('Items.price_reseller')],
         ['quantity'      => lang('Items.quantity')],
         ['date_added'    => lang('Items.date_added')]
     ];
@@ -424,6 +426,8 @@ function get_item_data_row(object $item): array
         'company_name'  => $item->company_name,    // TODO: This isn't in the items table. Should this be here?
         'cost_price'    => to_currency($item->cost_price),
         'unit_price'    => to_currency($item->unit_price),
+        'price_wholesale' => to_currency($item->price_wholesale ?? $item->unit_price),
+        'price_reseller'  => to_currency($item->price_reseller ?? $item->unit_price),
         'quantity'      => to_quantity_decimals($item->quantity),
         'date_added'    => !empty($item->date_added) ? to_date(strtotime($item->date_added)) : '',
         'item_pic'      => $image
@@ -793,6 +797,71 @@ function get_expenses_manage_payments_summary(array $payments, ResultInterface $
     $table .= '</div>';
 
     return $table;
+}
+
+function inventory_output_headers(): array
+{
+    $stock_location = model(App\Models\Stock_location::class);
+    $headers = [
+        ['output_id'   => lang('Inventory_outputs.output_id')],
+        ['created_at'  => lang('Inventory_outputs.date')],
+        ['item_name'   => lang('Inventory_outputs.item')],
+        ['quantity'    => lang('Inventory_outputs.quantity')],
+        ['reason'      => lang('Inventory_outputs.reason')],
+        ['created_by'  => lang('Inventory_outputs.employee'), 'sortable' => false],
+    ];
+
+    if ($stock_location->multiple_locations()) {
+        $headers[] = ['location_name' => lang('Inventory_outputs.location')];
+    }
+
+    return $headers;
+}
+
+/**
+ * Get the header for the inventory outputs tabular view
+ */
+function get_inventory_output_manage_table_headers(): string
+{
+    return transform_headers(inventory_output_headers());
+}
+
+/**
+ * Gets the html data row for an inventory output
+ */
+function get_inventory_output_data_row(object $output): array
+{
+    $stock_location = model(App\Models\Stock_location::class);
+
+    $item_label = $output->item_name ?? '';
+    if (!empty($output->item_number)) {
+        $item_label .= ' [' . $output->item_number . ']';
+    }
+
+    $row = [
+        'output_id'  => $output->output_id,
+        'created_at' => to_datetime(strtotime($output->created_at)),
+        'item_name'  => $item_label,
+        'quantity'   => to_quantity_decimals($output->quantity),
+        'reason'     => lang('Inventory_outputs.reason_' . $output->reason) . (!empty($output->comment) ? ' — ' . esc($output->comment) : ''),
+        'created_by' => trim(($output->first_name ?? '') . ' ' . ($output->last_name ?? '')),
+    ];
+
+    if ($stock_location->multiple_locations()) {
+        $row['location_name'] = $output->location_name ?? '';
+    }
+
+    $controller = get_controller();
+    $row['edit'] = anchor(
+        "$controller/view/$output->output_id",
+        '<span class="glyphicon glyphicon-eye-open"></span>',
+        [
+            'class' => 'modal-dlg',
+            'title' => lang('Inventory_outputs.view_details'),
+        ]
+    );
+
+    return $row;
 }
 
 function cashup_headers(): array
