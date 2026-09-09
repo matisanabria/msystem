@@ -4,15 +4,15 @@ namespace App\Controllers;
 
 use App\Models\Activity_log;
 use App\Models\Inventory;
-use App\Models\Inventory_output;
+use App\Models\Inventory_output as Inventory_output_model;
 use App\Models\Item;
 use App\Models\Item_quantity;
 use App\Models\Stock_location;
 use CodeIgniter\Database\BaseConnection;
 
-class Inventory_outputs extends Secure_Controller
+class Inventory_output extends Secure_Controller
 {
-    private Inventory_output $inventory_output;
+    private Inventory_output_model $inventory_output;
     private Item $item;
     private Item_quantity $item_quantity;
     private Inventory $inventory;
@@ -23,7 +23,7 @@ class Inventory_outputs extends Secure_Controller
     {
         parent::__construct('inventory_output');
 
-        $this->inventory_output = model(Inventory_output::class);
+        $this->inventory_output = model(Inventory_output_model::class);
         $this->item             = model(Item::class);
         $this->item_quantity    = model(Item_quantity::class);
         $this->inventory        = model(Inventory::class);
@@ -40,7 +40,7 @@ class Inventory_outputs extends Secure_Controller
         $data['stock_locations'] = $allowed;
         $data['show_location_filter'] = count($allowed) > 1;
 
-        echo view('inventory_outputs/manage', $data);
+        echo view('inventory_output/manage', $data);
     }
 
     public function getSearch(): void
@@ -55,6 +55,7 @@ class Inventory_outputs extends Secure_Controller
             'start_date' => $this->request->getGet('start_date', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
             'end_date'   => $this->request->getGet('end_date', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
             'reason'     => $this->request->getGet('reason', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '',
+            'deleted'    => $this->request->getGet('deleted_filter', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?: 'active',
         ];
 
         $allowed_location_ids = array_keys($this->stock_location->get_allowed_locations('inventory_output'));
@@ -85,45 +86,57 @@ class Inventory_outputs extends Secure_Controller
 
     public function getView(int $output_id = NEW_ENTRY): void
     {
-        $data['output_info'] = $this->inventory_output->get_info($output_id);
+        $output_info = $this->inventory_output->get_info($output_id);
+        $allowed_locations = $this->stock_location->get_allowed_locations('inventory_output');
+
+        if ($output_id === NEW_ENTRY) {
+            $output_location_id = (int)array_key_first($allowed_locations);
+        } else {
+            $output_location_id = (int)($output_info->location_id ?? array_key_first($allowed_locations));
+        }
+
+        $data['output_info'] = $output_info;
         $data['reasons'] = $this->_reason_options();
         $data['is_new'] = $output_id === NEW_ENTRY;
+        $data['stock_locations'] = $allowed_locations;
+        $data['output_location_id'] = $output_location_id;
+        $data['show_location_select'] = count($allowed_locations) > 1;
 
-        echo view('inventory_outputs/form', $data);
+        echo view('inventory_output/form', $data);
     }
 
     /**
-     * AJAX: item autocomplete restricted to locations this employee can register outputs for.
+     * AJAX: item autocomplete restricted to the branch selected in the form.
      *
      * @noinspection PhpUnused
      */
-    public function getItemSuggest(): void
+    public function getSuggestItems(): void
     {
-        $term = $this->request->getGet('term') ?? '';
-        $allowed_location_ids = array_keys($this->stock_location->get_allowed_locations('inventory_output'));
+        $search      = $this->request->getGet('term');
+        $location_id = (int)$this->request->getGet('location_id', FILTER_SANITIZE_NUMBER_INT);
 
-        $suggestions = $this->item->get_search_suggestions(
-            $term,
-            ['search_custom' => false, 'is_deleted' => false],
-            true,
-            25
-        );
+        $suggestions = [];
+        $builder = $this->db->table('items');
+        $builder->select('item_id, name, item_number');
+        $builder->where('deleted', 0);
+        $builder->where('location_id', $location_id);
+        $builder->whereIn('item_type', [ITEM, ITEM_AMOUNT_ENTRY]);
+        $builder->groupStart();
+        $builder->like('name', $search);
+        $builder->orLike('item_number', $search);
+        $builder->groupEnd();
+        $builder->orderBy('name', 'asc');
+        $builder->limit(25);
 
-        // get_search_suggestions() isn't location-aware for multiple locations, so filter
-        // the resulting item ids down to what this employee is allowed to register outputs for.
-        $filtered = [];
-        foreach ($suggestions as $suggestion) {
-            if (!isset($suggestion['value'])) {
-                continue;
+        foreach ($builder->get()->getResult() as $row) {
+            $label = $row->name;
+            if (!empty($row->item_number)) {
+                $label .= ' [' . $row->item_number . ']';
             }
-
-            $item_info = $this->item->get_info((int)$suggestion['value']);
-            if (!empty($item_info->item_id) && in_array((int)$item_info->location_id, $allowed_location_ids)) {
-                $filtered[] = $suggestion;
-            }
+            $suggestions[] = ['value' => $row->item_id, 'label' => $label];
         }
 
-        echo json_encode($filtered);
+        echo json_encode($suggestions);
     }
 
     /**
@@ -133,36 +146,38 @@ class Inventory_outputs extends Secure_Controller
      */
     public function getItemInfo(int $item_id): void
     {
-        $allowed_location_ids = array_keys($this->stock_location->get_allowed_locations('inventory_output'));
         $item_info = $this->item->get_info($item_id);
 
-        if (empty($item_info->item_id) || $item_info->item_id === NEW_ENTRY || !in_array((int)$item_info->location_id, $allowed_location_ids)) {
-            echo json_encode(['success' => false, 'message' => lang('Inventory_outputs.item_not_allowed')]);
-            return;
+        $result = [
+            'item_id'       => $item_id,
+            'name'          => $item_info->name ?? '',
+            'item_number'   => $item_info->item_number ?? '',
+            'category'      => $item_info->category ?? '',
+            'cost_price'    => $item_info->cost_price ?? '',
+            'unit_price'    => $item_info->unit_price ?? '',
+            'location_id'   => (int)($item_info->location_id ?? 0),
+            'location_name' => '',
+            'quantity'      => 0,
+        ];
+
+        if (!empty($item_info->location_id)) {
+            $quantity = $this->item_quantity->get_item_quantity($item_id, (int)$item_info->location_id);
+            $result['location_name'] = $this->stock_location->get_location_name((int)$item_info->location_id);
+            $result['quantity'] = (float)$quantity->quantity;
         }
 
-        $quantity = $this->item_quantity->get_item_quantity($item_id, (int)$item_info->location_id);
-
-        echo json_encode([
-            'success'       => true,
-            'item_id'       => $item_info->item_id,
-            'name'          => $item_info->name,
-            'item_number'   => $item_info->item_number,
-            'location_id'   => (int)$item_info->location_id,
-            'location_name' => $this->stock_location->get_location_name((int)$item_info->location_id),
-            'quantity'      => (float)$quantity->quantity,
-        ]);
+        echo json_encode($result);
     }
 
     /**
      * @noinspection PhpUnused
      */
-    public function postSave(): void
+    public function postSave(int $data_item_id = -1): void
     {
         $person_id = $this->employee->get_logged_in_employee_info()->person_id;
 
         $item_id  = (int)$this->request->getPost('item_id');
-        $quantity = parse_decimals((string)($this->request->getPost('quantity') ?? ''));
+        $quantity = parse_quantity((string)($this->request->getPost('quantity') ?? ''));
         $reason   = (string)($this->request->getPost('reason', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '');
         $comment  = trim((string)$this->request->getPost('comment'));
 
@@ -171,7 +186,7 @@ class Inventory_outputs extends Secure_Controller
             return;
         }
 
-        if (!array_key_exists($reason, Inventory_output::REASONS)) {
+        if (!array_key_exists($reason, Inventory_output_model::REASONS)) {
             echo json_encode(['success' => false, 'message' => lang('Inventory_outputs.reason_required')]);
             return;
         }
@@ -265,13 +280,41 @@ class Inventory_outputs extends Secure_Controller
     public function postDelete(): void
     {
         $ids = $this->request->getPost('ids', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? [];
+        $person_id = $this->employee->get_logged_in_employee_info()->person_id;
+
+        $this->db->transStart();
 
         $success = true;
         foreach ($ids as $id) {
+            $output = $this->inventory_output->get_info((int)$id);
+
+            if (empty($output->output_id) || (int)$output->output_id <= 0 || (int)$output->deleted === 1) {
+                continue;
+            }
+
+            // Restore the stock this output previously deducted.
+            $current_quantity = (float)$this->item_quantity->get_item_quantity($output->item_id, (int)$output->location_id)->quantity;
+            $this->item_quantity->save_value(
+                ['quantity' => $current_quantity + (float)$output->quantity, 'item_id' => $output->item_id, 'location_id' => (int)$output->location_id],
+                $output->item_id,
+                (int)$output->location_id
+            );
+
+            // Reversal kardex entry, same pattern as the original deduction.
+            $this->inventory->insert([
+                'trans_items'     => $output->item_id,
+                'trans_user'      => $person_id,
+                'trans_comment'   => lang('Inventory_outputs.kardex_comment_reversal', [$output->output_id]),
+                'trans_inventory' => (float)$output->quantity,
+                'trans_location'  => (int)$output->location_id,
+            ]);
+
             $success = $success && $this->inventory_output->soft_delete((int)$id);
         }
 
-        if ($success) {
+        $this->db->transComplete();
+
+        if ($success && $this->db->transStatus() !== false) {
             echo json_encode(['success' => true, 'message' => lang('Inventory_outputs.successful_deleted'), 'ids' => $ids]);
         } else {
             echo json_encode(['success' => false, 'message' => lang('Inventory_outputs.cannot_be_deleted'), 'ids' => $ids]);
@@ -281,7 +324,7 @@ class Inventory_outputs extends Secure_Controller
     private function _reason_options(): array
     {
         $options = [];
-        foreach (array_keys(Inventory_output::REASONS) as $reason) {
+        foreach (array_keys(Inventory_output_model::REASONS) as $reason) {
             $options[$reason] = lang('Inventory_outputs.reason_' . $reason);
         }
 

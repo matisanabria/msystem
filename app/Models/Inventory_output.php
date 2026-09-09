@@ -74,7 +74,12 @@ class Inventory_output extends Model
         $builder->join('stock_locations AS stock_locations', 'stock_locations.location_id = inventory_outputs.location_id', 'LEFT');
         $builder->join('people AS people', 'people.person_id = inventory_outputs.person_id', 'LEFT');
 
-        $builder->where('inventory_outputs.deleted', 0);
+        $deleted_filter = $filters['deleted'] ?? 'active';
+        if ($deleted_filter === 'deleted') {
+            $builder->where('inventory_outputs.deleted', 1);
+        } elseif ($deleted_filter !== 'all') {
+            $builder->where('inventory_outputs.deleted', 0);
+        }
 
         if (!empty($search)) {
             $builder->groupStart();
@@ -116,10 +121,13 @@ class Inventory_output extends Model
             inventory_outputs.*,
             items.name AS item_name,
             items.item_number AS item_number,
-            stock_locations.location_name AS location_name
+            stock_locations.location_name AS location_name,
+            people.first_name AS first_name,
+            people.last_name AS last_name
         ');
         $builder->join('items AS items', 'items.item_id = inventory_outputs.item_id', 'LEFT');
         $builder->join('stock_locations AS stock_locations', 'stock_locations.location_id = inventory_outputs.location_id', 'LEFT');
+        $builder->join('people AS people', 'people.person_id = inventory_outputs.person_id', 'LEFT');
         $builder->where('inventory_outputs.output_id', $output_id);
 
         $query = $builder->get();

@@ -31,12 +31,13 @@
                     "start_date": start_date,
                     "end_date": end_date,
                     "reason": $("#reason_filter").val() || '',
-                    "location_id": $("#location_id_filter").val() || 'all'
+                    "location_id": $("#location_id_filter").val() || 'all',
+                    "deleted_filter": $("#deleted_filter").val() || 'active'
                 });
             }
         });
 
-        $("#location_id_filter, #reason_filter").on('change', function() {
+        $("#location_id_filter, #reason_filter, #deleted_filter").on('change', function() {
             table_support.refresh();
         });
     });
@@ -55,6 +56,11 @@
         </button>
         <?= form_input(['name' => 'daterangepicker', 'class' => 'form-control input-sm', 'id' => 'daterangepicker']) ?>
         <?= form_dropdown('reason_filter', ['' => lang('Inventory_outputs.all_reasons')] + $reasons, '', ['id' => 'reason_filter', 'class' => 'form-control input-sm']) ?>
+        <?= form_dropdown('deleted_filter', [
+            'active'  => lang('Inventory_outputs.filter_active'),
+            'deleted' => lang('Inventory_outputs.filter_deleted'),
+            'all'     => lang('Inventory_outputs.filter_all'),
+        ], 'active', ['id' => 'deleted_filter', 'class' => 'form-control input-sm']) ?>
         <?php if (!empty($show_location_filter) && !empty($stock_locations)): ?>
             <?= form_dropdown('location_id_filter', ['all' => lang('Reports.all')] + $stock_locations, 'all', ['id' => 'location_id_filter', 'class' => 'form-control input-sm']) ?>
         <?php endif; ?>
