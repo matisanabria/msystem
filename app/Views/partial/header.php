@@ -18,7 +18,7 @@ $request = Services::request();
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <base href="<?= base_url() ?>">
-    <title><?= esc($config['company']) . ' | MSystem' ?></title>
+    <title><?= esc($config['company']) . ' | Sistema de Gestión' ?></title>
     <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
     <link rel="stylesheet" href="<?= 'resources/bootswatch/' . (empty($config['theme']) ? 'flatly' : esc($config['theme'])) . '/bootstrap.min.css' ?>">
 
@@ -250,7 +250,7 @@ $request = Services::request();
                         <span class="icon-bar"></span>
                     </button>
 
-                    <a class="navbar-brand hidden-sm" href="<?= site_url() ?>">MSystem</a>
+                    <a class="navbar-brand hidden-sm" href="<?= site_url() ?>">Sistema de Gestión</a>
                 </div>
 
                 <div class="navbar-collapse collapse">

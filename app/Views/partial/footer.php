@@ -9,7 +9,7 @@ use Config\OSPOS;
 
     <div id="footer">
         <div class="jumbotron push-spaces">
-            <strong>MSystem 2026</strong>
+            <strong>Sistema de Gestión 2026</strong>
         </div>
     </div>
 </body>
