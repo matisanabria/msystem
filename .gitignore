@@ -92,6 +92,8 @@ auth.json
 /writable/cache/settings
 /.env.bak
 /.claude/
+/.impeccable/
+DESIGN.md
 CLAUDE.md
 NUL
 CONTEXT_MULTI_SUCURSAL.md
