@@ -3,12 +3,14 @@
 namespace App\Controllers;
 
 use App\Models\Module;
+use App\Models\Stock_location;
 use Config\Services;
 
 /**
  *
  *
  * @property module module
+ * @property Stock_location stock_location
  *
  */
 class Employees extends Persons
@@ -18,6 +20,7 @@ class Employees extends Persons
         parent::__construct('employees');
 
         $this->module = model('Module');
+        $this->stock_location = model(Stock_location::class);
     }
 
     /**
@@ -129,12 +132,25 @@ class Employees extends Persons
             'identification'      => $this->request->getPost('identification', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? ''
         ];
 
+        // TODO: the employee create form has no location picker yet (that's still only in Admin Panel > Accesos),
+        // so until that's added, default a brand-new employee to the lowest-id sucursal instead of leaving them
+        // locked out of every location-scoped module (items/sales/receivings/expenses/service_tickets).
+        $default_location_id = null;
+        if ($employee_id == NEW_ENTRY) {
+            $location_ids = array_column($this->stock_location->get_all()->getResultArray(), 'location_id');
+            $default_location_id = !empty($location_ids) ? min($location_ids) : null;
+        }
+
         $grants_array = [];
         foreach ($this->module->get_all_permissions()->getResult() as $permission) {
             // Location access (Recepciones/Ventas/Gastos/etc per sucursal) is managed from
             // Admin Panel > Accesos, not from this form, so its grants must survive untouched.
             if (!empty($permission->location_id)) {
-                if ($employee_id != NEW_ENTRY && $this->employee->has_grant($permission->permission_id, $employee_id)) {
+                if ($employee_id != NEW_ENTRY) {
+                    if ($this->employee->has_grant($permission->permission_id, $employee_id)) {
+                        $grants_array[] = ['permission_id' => $permission->permission_id, 'menu_group' => '--'];
+                    }
+                } elseif ($permission->location_id == $default_location_id) {
                     $grants_array[] = ['permission_id' => $permission->permission_id, 'menu_group' => '--'];
                 }
                 continue;
