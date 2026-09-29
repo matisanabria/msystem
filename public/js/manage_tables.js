@@ -1,3 +1,58 @@
+/**
+ * $.notify shim on top of Bootstrap 5 toasts (replaces bootstrap-notify).
+ * Supports $.notify(message, {type}) and $.notify({message}, {type}), plus $.notifyDefaults({placement}).
+ */
+(function($) {
+
+    var placement = {align: 'right', from: 'top'};
+    var delay = 5000;
+
+    var container = function() {
+        var $container = $('#toast-container');
+        if (!$container.length) {
+            $container = $('<div id="toast-container" class="toast-container position-fixed p-3"></div>').appendTo('body');
+        }
+
+        var horizontal = {left: 'start-0', center: 'start-50 translate-middle-x', right: 'end-0'};
+        var vertical = {top: 'top-0', bottom: 'bottom-0'};
+
+        return $container
+            .removeClass('start-0 start-50 translate-middle-x end-0 top-0 bottom-0')
+            .addClass((horizontal[placement.align] || horizontal.right) + ' ' + (vertical[placement.from] || vertical.top));
+    };
+
+    $.notifyDefaults = function(defaults) {
+        $.extend(true, placement, (defaults && defaults.placement) || {});
+        if (defaults && defaults.delay !== undefined) {
+            delay = defaults.delay;
+        }
+    };
+
+    $.notify = function(content, options) {
+        var message = (content !== null && typeof content === 'object') ? content.message : content;
+        var type = (options && options.type) || 'info';
+        var close_class = type === 'warning' || type === 'light' ? '' : ' btn-close-white';
+
+        var $toast = $(
+            '<div class="toast align-items-center text-bg-' + type + ' border-0" role="alert" aria-live="assertive" aria-atomic="true">' +
+                '<div class="d-flex">' +
+                    '<div class="toast-body"></div>' +
+                    '<button type="button" class="btn-close' + close_class + ' me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>' +
+                '</div>' +
+            '</div>'
+        );
+        // message is expected to be sanitized by the caller (see header_js.php), HTML is allowed as before
+        $toast.find('.toast-body').html(message);
+        $toast.appendTo(container()).on('hidden.bs.toast', function() {
+            $toast.remove();
+        });
+
+        bootstrap.Toast.getOrCreateInstance($toast[0], {delay: (options && options.delay) || delay}).show();
+        return $toast;
+    };
+
+})(jQuery);
+
 (function(dialog_support, $) {
 
     var btn_id, dialog_ref;
@@ -338,10 +393,10 @@
         errorLabelContainer: "#error_message_box",
         wrapper: "li",
         highlight: function (e) {
-            $(e).closest('.form-group').addClass('has-error');
+            $(e).addClass('is-invalid').closest('.form-group').addClass('has-error');
         },
         unhighlight: function (e) {
-            $(e).closest('.form-group').removeClass('has-error');
+            $(e).removeClass('is-invalid').closest('.form-group').removeClass('has-error');
         }
     };
 
