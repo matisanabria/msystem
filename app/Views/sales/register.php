@@ -66,7 +66,7 @@ helper('url');
 <div id="register_wrapper">
 
     <!-- Top register controls -->
-    <?= form_open("$controller_name/changeMode", ['id' => 'mode_form', 'class' => 'form-horizontal card']) ?>
+    <?= form_open("$controller_name/changeMode", ['id' => 'mode_form', 'class' => 'form-horizontal register-section']) ?>
         <div class="card-body form-group">
             <ul>
                 <li class="float-start first_li">
@@ -136,7 +136,7 @@ helper('url');
 
     <?php $tabindex = 0; ?>
 
-    <?= form_open("$controller_name/add", ['id' => 'add_item_form', 'class' => 'form-horizontal card']) ?>
+    <?= form_open("$controller_name/add", ['id' => 'add_item_form', 'class' => 'form-horizontal register-section']) ?>
         <div class="card-body form-group">
             <ul>
                 <li class="float-start first_li">

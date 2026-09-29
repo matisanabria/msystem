@@ -1,7 +1,36 @@
+/* One card for the whole left side: controls, search and cart are sections separated by hairlines */
 #register_wrapper {
     float: left;
     width: 70%;
+    padding: .25rem 1rem 1rem;
+    background: #fff;
+    border: 1px solid #dce4ec;
+    border-radius: .375rem;
     font-size: 13px;
+}
+
+#register_wrapper .register-section {
+    margin: 0;
+    border: 0;
+}
+
+#register_wrapper .register-section .card-body {
+    padding: .625rem 0;
+}
+
+#register_wrapper .register-section + .register-section {
+    border-top: 1px solid #eef1f4;
+}
+
+/* the rows are floated lists: contain them so each section keeps its height and divider */
+#register_wrapper .register-section ul::after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+#register_wrapper .register-section ul li {
+    margin-bottom: 0;
 }
 
 #mode_form,
@@ -9,11 +38,6 @@
     margin: 0;
 }
 
-#mode_form .panel-body,
-#add_item_form .panel-body {
-    padding: 0.7em;
-    margin: 0;
-}
 
 #mode_form ul,
 #add_item_form ul {
@@ -41,14 +65,23 @@
     border-collapse: collapse;
 }
 
+#register {
+    margin-top: .25rem;
+}
+
 #register th {
-    padding: 5px;
+    padding: .5rem .375rem;
+    border-bottom: 1px solid #dce4ec;
     text-align: center;
+    font-size: .8125rem;
+    color: #5b6773;
 }
 
 #register td {
-    padding: 3px;
+    padding: .5rem .375rem;
+    border-bottom: 1px solid #eef1f4;
     text-align: center;
+    vertical-align: middle;
 }
 
 #overall_sale {
@@ -61,7 +94,7 @@
     text-align: center;
 }
 
-#overall_sale .panel-body {
+#overall_sale .card-body {
     padding-top: 0;
     padding-bottom: 0;
 }
@@ -87,7 +120,7 @@
 
 #sale_totals,
 #payment_totals {
-    border-top: 1px solid #000;
+    border-top: 1px solid #dce4ec;
 }
 
 input#amount_tendered:disabled {
@@ -96,7 +129,7 @@ input#amount_tendered:disabled {
 
 #payment_details {
     float: left;
-    border-top: 1px solid #000;
+    border-top: 1px solid #dce4ec;
     margin-top: 0.2em;
     padding: 0.5em;
     text-align: left;
