@@ -36,7 +36,7 @@
 <div id="report_summary">
     <?php
     foreach ($summary_data as $name => $value) {
-        if ($name == "total_quantity") {
+        if (in_array($name, ['total_quantity', 'total_items'], true)) {
             ?>
             <div class="summary_row"><?= lang("Reports.$name") . ": $value" ?></div>
         <?php } else { ?>

@@ -46,6 +46,9 @@ $routes->add('reports/graphical_summary_expenses_categories', 'Reports::date_inp
 $routes->add('reports/graphical_summary_discounts', 'Reports::summary_discounts_input');
 $routes->add('reports/graphical_(:any)', 'Reports::date_input');
 
+$routes->add('reports/inventory_by_category', 'Reports::inventory_by_category_input');
+$routes->add('reports/inventory_by_category/(:any)/(:any)', 'Reports::inventory_by_category/$1/$2');
+$routes->add('reports/inventory_by_category_export/(:any)/(:any)', 'Reports::inventory_by_category_export/$1/$2');
 $routes->add('reports/inventory_(:any)/(:any)', 'Reports::Inventory_$1/$2');
 $routes->add('reports/inventory_low', 'Reports::inventory_low');
 $routes->add('reports/inventory_summary', 'Reports::inventory_summary_input');

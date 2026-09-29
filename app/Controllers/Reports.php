@@ -8,6 +8,7 @@ use App\Models\Stock_location;
 use App\Models\Supplier;
 use App\Models\Reports\Detailed_receivings;
 use App\Models\Reports\Detailed_sales;
+use App\Models\Reports\Inventory_by_category;
 use App\Models\Reports\Inventory_low;
 use App\Models\Reports\Inventory_summary;
 use App\Models\Reports\Specific_customer;
@@ -54,6 +55,7 @@ class Reports extends Secure_Controller
     private Supplier $supplier;
     private Detailed_receivings $detailed_receivings;
     private Inventory_summary $inventory_summary;
+    private Inventory_by_category $inventory_by_category;
     private Summary_service_tickets $summary_service_tickets;
 
     public function __construct()
@@ -84,6 +86,7 @@ class Reports extends Secure_Controller
         $this->supplier = model(Supplier::class);
         $this->detailed_receivings = model(Detailed_receivings::class);
         $this->inventory_summary = model(Inventory_summary::class);
+        $this->inventory_by_category = model(Inventory_by_category::class);
         $this->summary_service_tickets = model(Summary_service_tickets::class);
 
         if (sizeof($exploder) > 1) {
@@ -2365,6 +2368,119 @@ class Reports extends Secure_Controller
         $xls = ob_get_clean();
 
         $filename = 'inventario_' . date('Y-m-d') . '.xls';
+        $this->response->download($filename, $xls)->setContentType('application/vnd.ms-excel; charset=UTF-8')->send();
+        exit;
+    }
+
+    /**
+     * Gets the inventory-by-category input view. Used in app/Config/Routes.php
+     *
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function inventory_by_category_input(): void
+    {
+        $this->clearCache();
+
+        $data = [];
+        $data['item_count']      = $this->inventory_summary->getItemCountDropdownArray();
+        $data['stock_locations'] = array_reverse($this->stock_location->get_allowed_locations('items'), true);
+
+        echo view('reports/inventory_by_category_input', $data);
+    }
+
+    /**
+     * @param string $location_id
+     * @param string $item_count
+     * @return void
+     */
+    public function inventory_by_category(string $location_id, string $item_count = 'more_than_zero'): void
+    {
+        $this->clearCache();
+
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'items');
+
+        if ($location_id === 'all') {
+            $location_id = (string) $allowed_location_ids[0];
+        }
+
+        $inputs = ['location_id' => $location_id, 'item_count' => $item_count];
+
+        $report_data = $this->inventory_by_category->getData($inputs);
+
+        $tabular_data = [];
+        foreach ($report_data as $row) {
+            $tabular_data[] = [
+                'category'         => $row['category'],
+                'item_count'       => (int) $row['item_count'],
+                'total_unit_price' => to_currency($row['total_unit_price']),
+                'total_wholesale'  => to_currency($row['total_wholesale']),
+                'total_reseller'   => to_currency($row['total_reseller'])
+            ];
+        }
+
+        $data = [
+            'title'             => lang('Reports.inventory_by_category_report'),
+            'subtitle'          => '',
+            'headers'           => $this->inventory_by_category->getDataColumns(),
+            'data'              => $tabular_data,
+            'summary_data'      => $this->inventory_by_category->getSummaryData($report_data),
+            'server_export_url' => base_url("reports/inventory_by_category_export/$location_id/$item_count")
+        ];
+
+        echo view('reports/tabular', $data);
+    }
+
+    /**
+     * @param string $location_id
+     * @param string $item_count
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function inventory_by_category_export(string $location_id, string $item_count = 'more_than_zero'): void
+    {
+        ['location_id' => $location_id, 'allowed_location_ids' => $allowed_location_ids] = $this->_resolve_location_filter($location_id, 'items');
+
+        if ($location_id === 'all') {
+            $location_id = (string) $allowed_location_ids[0];
+        }
+
+        $inputs = ['location_id' => $location_id, 'item_count' => $item_count];
+        $report_data = $this->inventory_by_category->getData($inputs);
+
+        $col_headers = [
+            lang('Reports.category'),
+            lang('Reports.category_item_count'),
+            lang('Reports.unit_price'),
+            lang('Items.price_wholesale'),
+            lang('Items.price_reseller'),
+        ];
+
+        $title = lang('Reports.inventory_by_category_report') . ' — ' . date('Y-m-d');
+
+        ob_start();
+        echo '<!DOCTYPE html><html><head><meta charset="UTF-8">';
+        echo '<title>' . esc($title) . '</title></head><body>';
+        echo '<table border="1"><thead><tr>';
+        foreach ($col_headers as $h) {
+            echo '<th>' . esc($h) . '</th>';
+        }
+        echo '</tr></thead><tbody>';
+
+        foreach ($report_data as $row) {
+            echo '<tr>';
+            echo '<td>' . esc($row['category'])         . '</td>';
+            echo '<td>' . (int) $row['item_count']      . '</td>';
+            echo '<td>' . (float) $row['total_unit_price'] . '</td>';
+            echo '<td>' . (float) $row['total_wholesale']  . '</td>';
+            echo '<td>' . (float) $row['total_reseller']   . '</td>';
+            echo '</tr>';
+        }
+
+        echo '</tbody></table></body></html>';
+        $xls = ob_get_clean();
+
+        $filename = 'stock_por_categoria_' . date('Y-m-d') . '.xls';
         $this->response->download($filename, $xls)->setContentType('application/vnd.ms-excel; charset=UTF-8')->send();
         exit;
     }

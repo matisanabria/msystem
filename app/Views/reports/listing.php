@@ -75,9 +75,11 @@ if (isset($error)) {
                     <?php
                     $inventory_low_report = get_report_link('reports_inventory_low');
                     $inventory_summary_report = get_report_link('reports_inventory_summary');
+                    $inventory_by_category_report = get_report_link('reports_inventory_by_category');
                     ?>
                     <a class="list-group-item" href="<?= $inventory_low_report['path'] ?>"><?= $inventory_low_report['label'] ?></a>
                     <a class="list-group-item" href="<?= $inventory_summary_report['path'] ?>"><?= $inventory_summary_report['label'] ?></a>
+                    <a class="list-group-item" href="<?= $inventory_by_category_report['path'] ?>"><?= $inventory_by_category_report['label'] ?></a>
                 </div>
             </div>
         <?php } ?>
