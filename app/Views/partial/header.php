@@ -44,7 +44,7 @@ $request = Services::request();
         <link rel="stylesheet" href="resources/css/ospos-66d8156c40.css">
         <link rel="stylesheet" href="resources/css/popupbox-7b616030b0.css">
         <link rel="stylesheet" href="resources/css/receipt-a171207d8e.css">
-        <link rel="stylesheet" href="resources/css/register-d8321cb86f.css">
+        <link rel="stylesheet" href="resources/css/register-3e32dacb14.css">
         <link rel="stylesheet" href="resources/css/reports-407b727797.css">
         <!-- endinject -->
         <!-- inject:debug:js -->
@@ -83,7 +83,7 @@ $request = Services::request();
         <!-- endinject -->
     <?php else : ?>
         <!--inject:prod:css -->
-        <link rel="stylesheet" href="resources/opensourcepos-3eb9f2570d.min.css">
+        <link rel="stylesheet" href="resources/opensourcepos-d60a18a8ac.min.css">
         <!-- endinject -->
 
         <!-- Tweaks to the UI for a particular theme should drop here  -->

@@ -199,3 +199,149 @@ input#amount_tendered:disabled {
 .segmented.discount-type .segmented-option {
     min-width: 2.25rem;
 }
+
+/*
+ * Responsive register.
+ * - Two columns from 992px; below that the cart and the checkout card stack (viewport media query).
+ * - Inside the cart card, layout follows the card's own width (container query), because the card is
+ *   only 70% of the page: rows become small cards and the top controls wrap.
+ */
+#register_wrapper {
+    container-type: inline-size;
+    container-name: register;
+}
+
+@media (max-width: 991.98px) {
+    #register_wrapper,
+    #overall_sale {
+        float: none;
+        width: 100%;
+        margin-left: 0;
+    }
+
+    #overall_sale {
+        margin-top: .75rem;
+    }
+}
+
+@container register (max-width: 680px) {
+    /* top controls and search: wrap into lines instead of floating */
+    #register_wrapper .register-section ul {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: .5rem;
+    }
+
+    #register_wrapper .register-section ul li {
+        float: none !important;
+        margin: 0 !important;
+    }
+
+    #mode_form ul li.float-end {
+        order: 3;
+    }
+
+    #mode_form ul li:has(#current_cashier_badge) {
+        order: -1;
+        flex-basis: 100%;
+        line-height: normal !important;
+    }
+
+    #add_item_form ul li:has(label) {
+        flex-basis: 100%;
+    }
+
+    #add_item_form ul li:has(#item) {
+        flex: 1 1 12rem;
+    }
+
+    #add_item_form #item {
+        width: 100%;
+    }
+
+    /* cart: one small card per line instead of a wide table */
+    #register,
+    #register tbody {
+        display: block;
+        width: 100%;
+    }
+
+    #register thead {
+        display: none;
+    }
+
+    #register tbody tr {
+        display: block;
+    }
+
+    #register tbody tr > td {
+        display: block;
+        padding: 0;
+        border: 0;
+        text-align: left;
+    }
+
+    #register tbody tr:has(> td:nth-child(8)) {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: .5rem .75rem;
+        padding: .75rem 0 .25rem;
+        border-top: 1px solid #eef1f4;
+    }
+
+    #register tbody tr:has(> td:nth-child(8)):first-child {
+        border-top: 0;
+    }
+
+    #register tbody tr > td[data-label]::before {
+        content: attr(data-label);
+        display: block;
+        margin-bottom: .125rem;
+        font-size: .6875rem;
+        color: #5b6773;
+    }
+
+    #register tbody tr:has(> td:nth-child(8)) > td:nth-child(1)::before,
+    #register tbody tr:has(> td:nth-child(8)) > td:nth-child(2)::before,
+    #register tbody tr:has(> td:nth-child(8)) > td:nth-child(3)::before,
+    #register tbody tr:has(> td:nth-child(8)) > td:nth-child(8)::before {
+        display: none;
+    }
+
+    #register tbody tr:has(> td:nth-child(8)) > td:nth-child(1) {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+        font-size: 1.125rem;
+    }
+
+    #register tbody tr:has(> td:nth-child(8)) > td:nth-child(2) {
+        grid-column: 1;
+        grid-row: 1;
+        font-size: .75rem;
+        color: #5b6773;
+    }
+
+    #register tbody tr:has(> td:nth-child(8)) > td:nth-child(3) {
+        grid-column: 1 / -1;
+        font-weight: 700;
+    }
+
+    #register tbody tr:has(> td:nth-child(8)) > td:nth-child(8) {
+        grid-column: 1 / -1;
+        justify-self: end;
+    }
+
+    /* second line of each item (description / serial) */
+    #register tbody tr:not(:has(> td:nth-child(8))) {
+        padding: 0 0 .5rem;
+        border-bottom: 1px solid #eef1f4;
+        font-size: .8125rem;
+        color: #5b6773;
+    }
+
+    #register tbody tr > td.cell-empty {
+        display: none;
+    }
+}

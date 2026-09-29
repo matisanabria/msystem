@@ -1119,6 +1119,23 @@ helper('url');
             $(this).parents('tr').prevAll('form:first').submit()
         });
 
+        // Column titles as data-label so the narrow (card) layout can show them next to each value
+        var cartLabels = $('#register thead th').map(function() { return $.trim($(this).text()); }).get();
+        $('#cart_contents tr').each(function() {
+            var $cells = $(this).children('td');
+            if ($cells.length === 8) {
+                $cells.each(function(index) { $(this).attr('data-label', cartLabels[index]); });
+            }
+            else {
+                // description/serial line: flag empty spacer cells so the narrow layout can hide them
+                $cells.each(function() {
+                    if ($.trim($(this).text()) === '' && !$(this).find('input:not([type="hidden"])').length) {
+                        $(this).addClass('cell-empty');
+                    }
+                });
+            }
+        });
+
         // Segmented controls drive the (hidden) native price_type select and discount_toggle checkbox
         var segmentedSet = function($group, value) {
             $group.find('.segmented-option').each(function() {
