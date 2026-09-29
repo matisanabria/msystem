@@ -95,14 +95,14 @@ helper('url');
                 <li class="pull-right">
                     <button class="btn btn-default btn-sm modal-dlg" id="show_suspended_sales_button" data-href="<?= esc("$controller_name/suspended") ?>"
                         title="<?= lang(ucfirst($controller_name) . '.suspended_sales') ?>">
-                        <span class="glyphicon glyphicon-align-justify">&nbsp;</span><?= lang(ucfirst($controller_name) . '.suspended_sales') ?>
+                        <span class="bi bi-justify">&nbsp;</span><?= lang(ucfirst($controller_name) . '.suspended_sales') ?>
                     </button>
                 </li>
 
                 <li class="pull-right">
                     <a href="<?= esc(site_url("$controller_name/stockConsult")) ?>" class="btn btn-default btn-sm" id="stock_consult_button"
                         title="<?= lang('Sales.stock_consult') ?>">
-                        <span class="glyphicon glyphicon-th-list">&nbsp;</span><?= lang('Sales.stock_consult') ?>
+                        <span class="bi bi-list-ul">&nbsp;</span><?= lang('Sales.stock_consult') ?>
                     </a>
                 </li>
 
@@ -113,7 +113,7 @@ helper('url');
                     <li class="pull-right">
                         <?= anchor(
                             "$controller_name/manage",
-                            '<span class="glyphicon glyphicon-list-alt">&nbsp;</span>' . lang(ucfirst($controller_name) . '.takings'),
+                            '<span class="bi bi-card-list">&nbsp;</span>' . lang(ucfirst($controller_name) . '.takings'),
                             array('class' => 'btn btn-primary btn-sm', 'id' => 'sales_takings_button', 'title' => lang(ucfirst($controller_name) . '.takings'))
                         ) ?>
                     </li>
@@ -122,11 +122,11 @@ helper('url');
                 <li class="pull-right" style="margin-right:8px; line-height:30px;">
                     <?php if ($current_cashier_id > 0): ?>
                         <span id="current_cashier_badge" class="label label-success" style="font-size:13px; padding:5px 10px;">
-                            <span class="glyphicon glyphicon-user"></span>&nbsp;<?= lang('Sales.cashier') ?>: <?= esc($current_cashier_name) ?>
+                            <span class="bi bi-person"></span>&nbsp;<?= lang('Sales.cashier') ?>: <?= esc($current_cashier_name) ?>
                         </span>
                     <?php else: ?>
                         <span id="current_cashier_badge" class="label label-default" style="font-size:13px; padding:5px 10px;">
-                            <span class="glyphicon glyphicon-user"></span>&nbsp;<?= lang('Sales.no_cashier') ?>
+                            <span class="bi bi-person"></span>&nbsp;<?= lang('Sales.no_cashier') ?>
                         </span>
                     <?php endif; ?>
                 </li>
@@ -148,7 +148,7 @@ helper('url');
                 </li>
                 <li class="pull-right">
                     <button id="new_item_button" class="btn btn-info btn-sm pull-right modal-dlg" data-btn-new="<?= lang('Common.new') ?>" data-btn-submit="<?= lang('Common.submit') ?>" data-href="<?= "items/view" ?>" title="<?= lang(ucfirst($controller_name) . ".new_item") ?>">
-                        <span class="glyphicon glyphicon-tag">&nbsp;</span><?= lang(ucfirst($controller_name) . ".new_item") ?>
+                        <span class="bi bi-tag">&nbsp;</span><?= lang(ucfirst($controller_name) . ".new_item") ?>
                     </button>
                 </li>
             </ul>
@@ -187,7 +187,7 @@ helper('url');
                         <tr>
                             <td>
                                 <?php
-                                echo anchor("$controller_name/deleteItem/$line", '<span class="glyphicon glyphicon-trash"></span>');
+                                echo anchor("$controller_name/deleteItem/$line", '<span class="bi bi-trash"></span>');
                                 echo form_hidden('location', (string)$item['item_location']);
                                 echo form_input(['type' => 'hidden', 'name' => 'item_id', 'value' => $item['item_id']]);
                                 ?>
@@ -281,7 +281,7 @@ helper('url');
 
                             <td>
                                 <a href="javascript:$('#<?= "cart_$line" ?>').submit();" title="<?= lang(ucfirst($controller_name) . '.update') ?>">
-                                    <span class="glyphicon glyphicon-refresh"></span>
+                                    <span class="bi bi-arrow-clockwise"></span>
                                 </a>
                             </td>
                         </tr>
@@ -388,7 +388,7 @@ helper('url');
 
                 <?= anchor(
                     "$controller_name/removeCustomer",
-                    '<span class="glyphicon glyphicon-remove">&nbsp;</span>' . lang('Common.remove') . ' ' . lang('Customers.customer'),
+                    '<span class="bi bi-x-lg">&nbsp;</span>' . lang('Common.remove') . ' ' . lang('Customers.customer'),
                     ['class' => 'btn btn-danger btn-sm', 'id' => 'remove_customer_button', 'title' => lang('Common.remove') . ' ' . lang('Customers.customer')]
                 )
                 ?>
@@ -400,10 +400,10 @@ helper('url');
                     <?= form_input(['name' => 'customer', 'id' => 'customer', 'class' => 'form-control input-sm', 'value' => lang(ucfirst($controller_name) . '.start_typing_customer_name')]) ?>
 
                     <button class="btn btn-info btn-sm modal-dlg" data-btn-submit="<?= lang('Common.submit') ?>" data-href="<?= "customers/view" ?>" title="<?= lang(ucfirst($controller_name) . ".new_customer") ?>">
-                        <span class="glyphicon glyphicon-user">&nbsp;</span><?= lang(ucfirst($controller_name) . ".new_customer") ?>
+                        <span class="bi bi-person">&nbsp;</span><?= lang(ucfirst($controller_name) . ".new_customer") ?>
                     </button>
                     <button class="btn btn-default btn-sm modal-dlg" id="show_keyboard_help" data-href="<?= esc("$controller_name/salesKeyboardHelp") ?>" title="<?= lang(ucfirst($controller_name) . '.key_title') ?>">
-                        <span class="glyphicon glyphicon-share-alt">&nbsp;</span><?= lang(ucfirst($controller_name) . '.key_help') ?>
+                        <span class="bi bi-share">&nbsp;</span><?= lang(ucfirst($controller_name) . '.key_help') ?>
                     </button>
                 </div>
             <?php } ?>
@@ -473,7 +473,7 @@ helper('url');
                         if (!$due_payment || ($due_payment && isset($customer))) {    // TODO: $due_payment is not needed because the first clause insures that it will always be true if it gets to this point.  Can be shortened to if (!$due_payment || isset($customer))
                     ?>
                             <div class="btn btn-sm btn-success pull-right" id="finish_sale_button" tabindex="<?= ++$tabindex ?>">
-                                <span class="glyphicon glyphicon-ok">&nbsp;</span><?= lang(ucfirst($controller_name) . '.complete_sale') ?>
+                                <span class="bi bi-check-lg">&nbsp;</span><?= lang(ucfirst($controller_name) . '.complete_sale') ?>
                             </div>
                     <?php
                         }
@@ -499,7 +499,7 @@ helper('url');
                     <?= form_close() ?>
 
                     <div class="btn btn-sm btn-success pull-right" id="add_payment_button" tabindex="<?= ++$tabindex ?>">
-                        <span class="glyphicon glyphicon-credit-card">&nbsp;</span><?= lang(ucfirst($controller_name) . '.add_payment') ?>
+                        <span class="bi bi-credit-card">&nbsp;</span><?= lang(ucfirst($controller_name) . '.add_payment') ?>
                     </div>
                 <?php } ?>
 
@@ -516,7 +516,7 @@ helper('url');
                         <tbody id="payment_contents">
                             <?php foreach ($payments as $payment_id => $payment) { ?>
                                 <tr>
-                                    <td><?= anchor("$controller_name/deletePayment/". base64url_encode($payment_id), '<span class="glyphicon glyphicon-trash"></span>') ?></td>
+                                    <td><?= anchor("$controller_name/deletePayment/". base64url_encode($payment_id), '<span class="bi bi-trash"></span>') ?></td>
                                     <td><?= $payment['payment_type'] ?></td>
                                     <td style="text-align: right;"><?= to_currency($payment['payment_amount']) ?></td>
                                 </tr>
@@ -528,12 +528,12 @@ helper('url');
 
             <?= form_open("$controller_name/cancel", ['id' => 'buttons_form']) ?>
             <div class="form-group" id="buttons_sale">
-                <div class="btn btn-sm btn-default pull-left" id="suspend_sale_button"><span class="glyphicon glyphicon-align-justify">&nbsp;</span><?= lang(ucfirst($controller_name) . '.suspend_sale') ?></div>
+                <div class="btn btn-sm btn-default pull-left" id="suspend_sale_button"><span class="bi bi-justify">&nbsp;</span><?= lang(ucfirst($controller_name) . '.suspend_sale') ?></div>
                 <?php if (!$pos_mode && isset($customer)) { // Only show this part if the payment covers the total ?>
-                    <div class="btn btn-sm btn-success" id="finish_invoice_quote_button"><span class="glyphicon glyphicon-ok">&nbsp;</span><?= esc($mode_label) ?></div>
+                    <div class="btn btn-sm btn-success" id="finish_invoice_quote_button"><span class="bi bi-check-lg">&nbsp;</span><?= esc($mode_label) ?></div>
                 <?php } ?>
 
-                <div class="btn btn-sm btn-danger pull-right" id="cancel_sale_button"><span class="glyphicon glyphicon-remove">&nbsp;</span><?= lang(ucfirst($controller_name) . '.cancel_sale') ?></div>
+                <div class="btn btn-sm btn-danger pull-right" id="cancel_sale_button"><span class="bi bi-x-lg">&nbsp;</span><?= lang(ucfirst($controller_name) . '.cancel_sale') ?></div>
             </div>
             <?php if ($payments_cover_total || !$pos_mode) { ?>
             <div class="form-group form-group-sm" style="margin-top: 8px; margin-bottom: 4px;">
@@ -611,7 +611,7 @@ helper('url');
             <div id="da_state_request">
                 <div class="modal-header" style="background:#d9534f; color:#fff; border-radius:3px 3px 0 0;">
                     <h4 class="modal-title">
-                        <span class="glyphicon glyphicon-lock"></span>&nbsp;Autorización de Descuento Requerida
+                        <span class="bi bi-lock"></span>&nbsp;Autorización de Descuento Requerida
                     </h4>
                 </div>
                 <div class="modal-body">
@@ -658,7 +658,7 @@ helper('url');
                 </div>
                 <div class="modal-footer">
                     <button id="da_request_btn" type="button" class="btn btn-warning btn-block">
-                        <span class="glyphicon glyphicon-send"></span>&nbsp;Solicitar Autorización
+                        <span class="bi bi-send"></span>&nbsp;Solicitar Autorización
                     </button>
                     <button id="da_cancel_btn" type="button" class="btn btn-default btn-block" style="margin-top:6px;">
                         Cancelar
@@ -670,7 +670,7 @@ helper('url');
             <div id="da_state_waiting" style="display:none;">
                 <div class="modal-header" style="background:#f0ad4e; color:#fff; border-radius:3px 3px 0 0;">
                     <h4 class="modal-title">
-                        <span class="glyphicon glyphicon-hourglass"></span>&nbsp;Esperando aprobación del administrador...
+                        <span class="bi bi-hourglass-split"></span>&nbsp;Esperando aprobación del administrador...
                     </h4>
                 </div>
                 <div class="modal-body">
@@ -694,7 +694,7 @@ helper('url');
                     </div>
                     <div style="text-align:center; margin-bottom:12px;">
                         <div id="da_status_text" style="font-size:14px; color:#888; margin-bottom:8px;">
-                            <span class="glyphicon glyphicon-hourglass"></span> Esperando respuesta del administrador...
+                            <span class="bi bi-hourglass-split"></span> Esperando respuesta del administrador...
                         </div>
                         <small style="color:#aaa;">Solicitado hace: <span id="da_elapsed">0s</span></small>
                     </div>
@@ -715,7 +715,7 @@ helper('url');
                 </div>
                 <div class="modal-footer">
                     <button id="da_apply_btn" type="button" class="btn btn-success btn-block" disabled>
-                        <span class="glyphicon glyphicon-ok"></span>&nbsp;Aplicar Código
+                        <span class="bi bi-check-lg"></span>&nbsp;Aplicar Código
                     </button>
                     <button id="da_cancel_wait_btn" type="button" class="btn btn-default btn-block" style="margin-top:6px;">
                         Cancelar solicitud
@@ -736,7 +736,7 @@ helper('url');
             <div id="pa_state_request">
                 <div class="modal-header" style="background:#d9534f; color:#fff; border-radius:3px 3px 0 0;">
                     <h4 class="modal-title">
-                        <span class="glyphicon glyphicon-lock"></span>&nbsp;Autorización de Cambio de Precio Requerida
+                        <span class="bi bi-lock"></span>&nbsp;Autorización de Cambio de Precio Requerida
                     </h4>
                 </div>
                 <div class="modal-body">
@@ -767,7 +767,7 @@ helper('url');
                 </div>
                 <div class="modal-footer">
                     <button id="pa_request_btn" type="button" class="btn btn-warning btn-block">
-                        <span class="glyphicon glyphicon-send"></span>&nbsp;Solicitar Autorización
+                        <span class="bi bi-send"></span>&nbsp;Solicitar Autorización
                     </button>
                     <button id="pa_cancel_btn" type="button" class="btn btn-default btn-block" style="margin-top:6px;">
                         Cancelar
@@ -779,7 +779,7 @@ helper('url');
             <div id="pa_state_waiting" style="display:none;">
                 <div class="modal-header" style="background:#f0ad4e; color:#fff; border-radius:3px 3px 0 0;">
                     <h4 class="modal-title">
-                        <span class="glyphicon glyphicon-hourglass"></span>&nbsp;Esperando aprobación del administrador...
+                        <span class="bi bi-hourglass-split"></span>&nbsp;Esperando aprobación del administrador...
                     </h4>
                 </div>
                 <div class="modal-body">
@@ -799,7 +799,7 @@ helper('url');
                     </div>
                     <div style="text-align:center; margin-bottom:12px;">
                         <div id="pa_status_text" style="font-size:14px; color:#888; margin-bottom:8px;">
-                            <span class="glyphicon glyphicon-hourglass"></span> Esperando respuesta del administrador...
+                            <span class="bi bi-hourglass-split"></span> Esperando respuesta del administrador...
                         </div>
                         <small style="color:#aaa;">Solicitado hace: <span id="pa_elapsed">0s</span></small>
                     </div>
@@ -820,7 +820,7 @@ helper('url');
                 </div>
                 <div class="modal-footer">
                     <button id="pa_apply_btn" type="button" class="btn btn-success btn-block" disabled>
-                        <span class="glyphicon glyphicon-ok"></span>&nbsp;Aplicar Código
+                        <span class="bi bi-check-lg"></span>&nbsp;Aplicar Código
                     </button>
                     <button id="pa_cancel_wait_btn" type="button" class="btn btn-default btn-block" style="margin-top:6px;">
                         Cancelar solicitud
@@ -840,7 +840,7 @@ helper('url');
             <div class="modal-header">
                 <a href="<?= site_url('home') ?>" class="close" style="float:right; font-size:1.5em;" title="<?= lang('Common.home') ?>">&times;</a>
                 <h4 class="modal-title" id="pin_modal_label">
-                    <span class="glyphicon glyphicon-user"></span>&nbsp;<?= lang('Sales.pin_identify') ?>
+                    <span class="bi bi-person"></span>&nbsp;<?= lang('Sales.pin_identify') ?>
                 </h4>
             </div>
             <div class="modal-body" style="text-align:center;">
@@ -854,7 +854,7 @@ helper('url');
             </div>
             <div class="modal-footer" style="text-align:center;">
                 <button type="button" id="pin_submit_btn" class="btn btn-primary btn-lg">
-                    <span class="glyphicon glyphicon-ok"></span>&nbsp;<?= lang('Sales.pin_enter') ?>
+                    <span class="bi bi-check-lg"></span>&nbsp;<?= lang('Sales.pin_enter') ?>
                 </button>
                 <?php
                 $_emp_check = model(\App\Models\Employee::class);
@@ -862,7 +862,7 @@ helper('url');
                 if ($_emp_check->has_grant('sales_consult_stock', $_pid_check)):
                 ?>
                 <button type="button" id="pin_stock_consult_btn" class="btn btn-default btn-sm" style="display:block; margin:10px auto 0;">
-                    <span class="glyphicon glyphicon-th-list"></span>&nbsp;<?= lang('Sales.stock_consult') ?>
+                    <span class="bi bi-list-ul"></span>&nbsp;<?= lang('Sales.stock_consult') ?>
                 </button>
                 <?php endif; ?>
             </div>
@@ -1330,11 +1330,11 @@ helper('url');
         $('#da_state_waiting').hide();
         $('#da_error').text('');
         $('#da_code_error').text('');
-        $('#da_status_text').html('<span class="glyphicon glyphicon-hourglass"></span> Esperando respuesta del administrador...');
+        $('#da_status_text').html('<span class="bi bi-hourglass-split"></span> Esperando respuesta del administrador...');
         $('#da_status_text').css('color', '#888');
         $('.da_digit').val('').prop('disabled', true);
-        $('#da_apply_btn').prop('disabled', true).html('<span class="glyphicon glyphicon-ok"></span>&nbsp;Aplicar Código');
-        $('#da_request_btn').prop('disabled', false).html('<span class="glyphicon glyphicon-send"></span>&nbsp;Solicitar Autorización');
+        $('#da_apply_btn').prop('disabled', true).html('<span class="bi bi-check-lg"></span>&nbsp;Aplicar Código');
+        $('#da_request_btn').prop('disabled', false).html('<span class="bi bi-send"></span>&nbsp;Solicitar Autorización');
         $('#da_elapsed').text('0s');
 
         $('#da_modal').modal('show');
@@ -1364,7 +1364,7 @@ helper('url');
                     if (!res.success) return;
                     if (res.status === 'approved') {
                         clearInterval(_daPollTimer);
-                        $('#da_status_text').html('<span style="color:#27ae60;"><span class="glyphicon glyphicon-ok-circle"></span>&nbsp;¡Aprobado! Ingrese el código:</span>');
+                        $('#da_status_text').html('<span style="color:#27ae60;"><span class="bi bi-check-circle"></span>&nbsp;¡Aprobado! Ingrese el código:</span>');
                         $('#da_status_text').css('color', '#27ae60');
                         $('.da_digit').prop('disabled', false);
                         $('.da_digit:first').focus();
@@ -1383,7 +1383,7 @@ helper('url');
     $(document).ready(function() {
         $('#da_request_btn').on('click', function() {
             var $m = $('#da_modal');
-            $(this).prop('disabled', true).html('<span class="glyphicon glyphicon-hourglass"></span> Enviando...');
+            $(this).prop('disabled', true).html('<span class="bi bi-hourglass-split"></span> Enviando...');
             $.ajax({
                 url: '<?= site_url('sales/discountRequest') ?>',
                 type: 'POST',
@@ -1404,12 +1404,12 @@ helper('url');
                         discountAuthStartPolling();
                     } else {
                         $('#da_error').text(res.message || 'Error al enviar solicitud');
-                        $('#da_request_btn').prop('disabled', false).html('<span class="glyphicon glyphicon-send"></span>&nbsp;Solicitar Autorización');
+                        $('#da_request_btn').prop('disabled', false).html('<span class="bi bi-send"></span>&nbsp;Solicitar Autorización');
                     }
                 },
                 error: function() {
                     $('#da_error').text('Error de conexión');
-                    $('#da_request_btn').prop('disabled', false).html('<span class="glyphicon glyphicon-send"></span>&nbsp;Solicitar Autorización');
+                    $('#da_request_btn').prop('disabled', false).html('<span class="bi bi-send"></span>&nbsp;Solicitar Autorización');
                 }
             });
         });
@@ -1443,7 +1443,7 @@ helper('url');
             var code = $('.da_digit').map(function() { return $(this).val(); }).get().join('');
             if (code.length !== 4 || !_daApprovalId) return;
             var $m = $('#da_modal');
-            $(this).prop('disabled', true).html('<span class="glyphicon glyphicon-hourglass"></span> Verificando...');
+            $(this).prop('disabled', true).html('<span class="bi bi-hourglass-split"></span> Verificando...');
             $.ajax({
                 url: '<?= site_url('sales/discountVerify') ?>',
                 type: 'POST',
@@ -1473,12 +1473,12 @@ helper('url');
                     } else {
                         $('#da_code_error').text(res.message || 'Código incorrecto');
                         $('.da_digit').val('').first().focus();
-                        $('#da_apply_btn').prop('disabled', false).html('<span class="glyphicon glyphicon-ok"></span>&nbsp;Aplicar Código');
+                        $('#da_apply_btn').prop('disabled', false).html('<span class="bi bi-check-lg"></span>&nbsp;Aplicar Código');
                     }
                 },
                 error: function() {
                     $('#da_code_error').text('Error de conexión');
-                    $('#da_apply_btn').prop('disabled', false).html('<span class="glyphicon glyphicon-ok"></span>&nbsp;Aplicar Código');
+                    $('#da_apply_btn').prop('disabled', false).html('<span class="bi bi-check-lg"></span>&nbsp;Aplicar Código');
                 }
             });
         });
@@ -1529,11 +1529,11 @@ helper('url');
         $('#pa_state_waiting').hide();
         $('#pa_error').text('');
         $('#pa_code_error').text('');
-        $('#pa_status_text').html('<span class="glyphicon glyphicon-hourglass"></span> Esperando respuesta del administrador...');
+        $('#pa_status_text').html('<span class="bi bi-hourglass-split"></span> Esperando respuesta del administrador...');
         $('#pa_status_text').css('color', '#888');
         $('.pa_digit').val('').prop('disabled', true);
-        $('#pa_apply_btn').prop('disabled', true).html('<span class="glyphicon glyphicon-ok"></span>&nbsp;Aplicar Código');
-        $('#pa_request_btn').prop('disabled', false).html('<span class="glyphicon glyphicon-send"></span>&nbsp;Solicitar Autorización');
+        $('#pa_apply_btn').prop('disabled', true).html('<span class="bi bi-check-lg"></span>&nbsp;Aplicar Código');
+        $('#pa_request_btn').prop('disabled', false).html('<span class="bi bi-send"></span>&nbsp;Solicitar Autorización');
         $('#pa_elapsed').text('0s');
 
         $('#pa_modal').modal('show');
@@ -1563,7 +1563,7 @@ helper('url');
                     if (!res.success) return;
                     if (res.status === 'approved') {
                         clearInterval(_paPollTimer);
-                        $('#pa_status_text').html('<span style="color:#27ae60;"><span class="glyphicon glyphicon-ok-circle"></span>&nbsp;¡Aprobado! Ingrese el código:</span>');
+                        $('#pa_status_text').html('<span style="color:#27ae60;"><span class="bi bi-check-circle"></span>&nbsp;¡Aprobado! Ingrese el código:</span>');
                         $('#pa_status_text').css('color', '#27ae60');
                         $('.pa_digit').prop('disabled', false);
                         $('.pa_digit:first').focus();
@@ -1582,7 +1582,7 @@ helper('url');
     $(document).ready(function() {
         $('#pa_request_btn').on('click', function() {
             var $m = $('#pa_modal');
-            $(this).prop('disabled', true).html('<span class="glyphicon glyphicon-hourglass"></span> Enviando...');
+            $(this).prop('disabled', true).html('<span class="bi bi-hourglass-split"></span> Enviando...');
             $.ajax({
                 url: '<?= site_url('sales/priceRequest') ?>',
                 type: 'POST',
@@ -1602,12 +1602,12 @@ helper('url');
                         priceAuthStartPolling();
                     } else {
                         $('#pa_error').text(res.message || 'Error al enviar solicitud');
-                        $('#pa_request_btn').prop('disabled', false).html('<span class="glyphicon glyphicon-send"></span>&nbsp;Solicitar Autorización');
+                        $('#pa_request_btn').prop('disabled', false).html('<span class="bi bi-send"></span>&nbsp;Solicitar Autorización');
                     }
                 },
                 error: function() {
                     $('#pa_error').text('Error de conexión');
-                    $('#pa_request_btn').prop('disabled', false).html('<span class="glyphicon glyphicon-send"></span>&nbsp;Solicitar Autorización');
+                    $('#pa_request_btn').prop('disabled', false).html('<span class="bi bi-send"></span>&nbsp;Solicitar Autorización');
                 }
             });
         });
@@ -1640,7 +1640,7 @@ helper('url');
             var code = $('.pa_digit').map(function() { return $(this).val(); }).get().join('');
             if (code.length !== 4 || !_paApprovalId) return;
             var $m = $('#pa_modal');
-            $(this).prop('disabled', true).html('<span class="glyphicon glyphicon-hourglass"></span> Verificando...');
+            $(this).prop('disabled', true).html('<span class="bi bi-hourglass-split"></span> Verificando...');
             $.ajax({
                 url: '<?= site_url('sales/priceVerify') ?>',
                 type: 'POST',
@@ -1667,12 +1667,12 @@ helper('url');
                     } else {
                         $('#pa_code_error').text(res.message || 'Código incorrecto');
                         $('.pa_digit').val('').first().focus();
-                        $('#pa_apply_btn').prop('disabled', false).html('<span class="glyphicon glyphicon-ok"></span>&nbsp;Aplicar Código');
+                        $('#pa_apply_btn').prop('disabled', false).html('<span class="bi bi-check-lg"></span>&nbsp;Aplicar Código');
                     }
                 },
                 error: function() {
                     $('#pa_code_error').text('Error de conexión');
-                    $('#pa_apply_btn').prop('disabled', false).html('<span class="glyphicon glyphicon-ok"></span>&nbsp;Aplicar Código');
+                    $('#pa_apply_btn').prop('disabled', false).html('<span class="bi bi-check-lg"></span>&nbsp;Aplicar Código');
                 }
             });
         });
@@ -1732,7 +1732,7 @@ helper('url');
                         $('#current_cashier_badge')
                             .removeClass('label-default')
                             .addClass('label-success')
-                            .html('<span class="glyphicon glyphicon-user"></span>&nbsp;<?= lang('Sales.cashier') ?>: ' + response.name);
+                            .html('<span class="bi bi-person"></span>&nbsp;<?= lang('Sales.cashier') ?>: ' + response.name);
                         $('#pin_modal').modal('hide');
                         setTimeout(function() { $('#item').focus(); }, 300);
                     } else {

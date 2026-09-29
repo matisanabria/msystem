@@ -8,10 +8,10 @@
 
 <div id="title_bar" class="btn-toolbar print_hide">
     <a href="<?= site_url('sales') ?>" class="btn btn-default btn-sm">
-        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<?= lang('Sales.pin_back') ?>
+        <span class="bi bi-arrow-left"></span>&nbsp;<?= lang('Sales.pin_back') ?>
     </a>
     <h4 class="pull-left" style="margin: 4px 15px 0;">
-        <span class="glyphicon glyphicon-th-list"></span>&nbsp;<?= lang('Sales.stock_consult_title') ?>
+        <span class="bi bi-list-ul"></span>&nbsp;<?= lang('Sales.stock_consult_title') ?>
     </h4>
 </div>
 

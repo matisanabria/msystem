@@ -24,7 +24,7 @@
 <?php if (!empty($server_export_url)): ?>
 <div id="server_export" style="margin-bottom:8px">
     <a href="<?= esc($server_export_url) ?>" class="btn btn-success btn-sm">
-        <span class="glyphicon glyphicon-download-alt"></span> <?= lang('Reports.download_csv') ?>
+        <span class="bi bi-download"></span> <?= lang('Reports.download_csv') ?>
     </a>
 </div>
 <?php endif ?>

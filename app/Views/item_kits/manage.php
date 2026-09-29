@@ -30,18 +30,18 @@
 
 <div id="title_bar" class="btn-toolbar">
     <button class="btn btn-info btn-sm pull-right modal-dlg" data-btn-submit="<?= lang('Common.submit') ?>" data-href="<?= esc("$controller_name/view") ?>" title="<?= lang(ucfirst($controller_name) . '.new') ?>">
-        <span class="glyphicon glyphicon-tags">&nbsp;</span><?= lang(ucfirst($controller_name) . '.new') ?>
+        <span class="bi bi-tags">&nbsp;</span><?= lang(ucfirst($controller_name) . '.new') ?>
     </button>
 </div>
 
 <div id="toolbar">
     <div class="pull-left btn-toolbar">
         <button id="delete" class="btn btn-default btn-sm">
-            <span class="glyphicon glyphicon-trash">&nbsp;</span><?= lang('Common.delete') ?>
+            <span class="bi bi-trash">&nbsp;</span><?= lang('Common.delete') ?>
         </button>
 
         <button id="generate_barcodes" class="btn btn-default btn-sm" data-href="<?= esc("$controller_name/generateBarcodes") ?>">
-            <span class="glyphicon glyphicon-barcode">&nbsp;</span><?= lang('Items.generate_barcodes') ?>
+            <span class="bi bi-upc-scan">&nbsp;</span><?= lang('Items.generate_barcodes') ?>
         </button>
     </div>
 </div>

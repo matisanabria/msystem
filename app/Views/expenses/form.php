@@ -26,7 +26,7 @@
             <?= form_label(lang('Expenses.date'), 'date', ['class' => 'required control-label col-xs-3']) ?>
             <div class="col-xs-6">
                 <div class="input-group">
-                    <span class="input-group-addon input-sm"><span class="glyphicon glyphicon-calendar"></span></span>
+                    <span class="input-group-addon input-sm"><span class="bi bi-calendar3"></span></span>
                     <?= form_input([
                         'name'     => 'date',
                         'class'    => 'form-control input-sm datetime',

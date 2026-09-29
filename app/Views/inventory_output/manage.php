@@ -45,14 +45,14 @@
 
 <div id="title_bar" class="print_hide btn-toolbar">
     <button class="btn btn-info btn-sm pull-right modal-dlg" data-btn-submit="<?= lang('Common.submit') ?>" data-href="<?= "$controller_name/view" ?>" title="<?= lang('Inventory_outputs.new') ?>">
-        <span class="glyphicon glyphicon-log-out">&nbsp;</span><?= lang('Inventory_outputs.new') ?>
+        <span class="bi bi-box-arrow-right">&nbsp;</span><?= lang('Inventory_outputs.new') ?>
     </button>
 </div>
 
 <div id="toolbar">
     <div class="pull-left form-inline" role="toolbar">
         <button id="delete" class="btn btn-default btn-sm print_hide">
-            <span class="glyphicon glyphicon-trash">&nbsp;</span><?= lang('Common.delete') ?>
+            <span class="bi bi-trash">&nbsp;</span><?= lang('Common.delete') ?>
         </button>
         <?= form_input(['name' => 'daterangepicker', 'class' => 'form-control input-sm', 'id' => 'daterangepicker']) ?>
         <?= form_dropdown('reason_filter', ['' => lang('Inventory_outputs.all_reasons')] + $reasons, '', ['id' => 'reason_filter', 'class' => 'form-control input-sm']) ?>

@@ -18,7 +18,7 @@
             <?= form_label(lang('Inventory_outputs.barcode'), 'view_barcode', ['class' => 'control-label col-xs-3']) ?>
             <div class="col-xs-8">
                 <div class="input-group">
-                    <span class="input-group-addon input-sm"><span class="glyphicon glyphicon-barcode"></span></span>
+                    <span class="input-group-addon input-sm"><span class="bi bi-upc-scan"></span></span>
                     <?= form_input(['name' => 'view_barcode', 'id' => 'view_barcode', 'class' => 'form-control input-sm', 'value' => $output_info->item_number ?? '', 'disabled' => 'disabled']) ?>
                 </div>
             </div>
@@ -35,7 +35,7 @@
             <?= form_label(lang('Common.location'), 'view_location', ['class' => 'control-label col-xs-3']) ?>
             <div class="col-xs-8">
                 <div class="input-group">
-                    <span class="input-group-addon input-sm"><span class="glyphicon glyphicon-map-marker"></span></span>
+                    <span class="input-group-addon input-sm"><span class="bi bi-geo-alt"></span></span>
                     <?= form_input(['name' => 'view_location', 'id' => 'view_location', 'class' => 'form-control input-sm', 'value' => $output_info->location_name ?? '', 'disabled' => 'disabled']) ?>
                 </div>
             </div>
@@ -113,7 +113,7 @@
                     <?= form_label(lang('Inventory_outputs.barcode'), 'item_info_barcode', ['class' => 'control-label col-xs-3']) ?>
                     <div class="col-xs-8">
                         <div class="input-group">
-                            <span class="input-group-addon input-sm"><span class="glyphicon glyphicon-barcode"></span></span>
+                            <span class="input-group-addon input-sm"><span class="bi bi-upc-scan"></span></span>
                             <?= form_input(['name' => 'item_info_barcode', 'id' => 'item_info_barcode', 'class' => 'form-control input-sm', 'disabled' => 'disabled']) ?>
                         </div>
                     </div>
@@ -130,7 +130,7 @@
                     <?= form_label(lang('Inventory_outputs.category'), 'item_info_category', ['class' => 'control-label col-xs-3']) ?>
                     <div class="col-xs-8">
                         <div class="input-group">
-                            <span class="input-group-addon input-sm"><span class="glyphicon glyphicon-tag"></span></span>
+                            <span class="input-group-addon input-sm"><span class="bi bi-tag"></span></span>
                             <?= form_input(['name' => 'item_info_category', 'id' => 'item_info_category', 'class' => 'form-control input-sm', 'disabled' => 'disabled']) ?>
                         </div>
                     </div>

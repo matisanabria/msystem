@@ -8,7 +8,7 @@ use Config\OSPOS;
     </div>
 
     <div id="footer">
-        <div class="jumbotron push-spaces">
+        <div class="bg-body-tertiary py-4">
             <strong>Sistema de Gestión 2026</strong>
         </div>
     </div>

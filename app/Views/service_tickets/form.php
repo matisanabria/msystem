@@ -35,7 +35,7 @@
                     ]) ?>
                     <span class="input-group-btn">
                         <button type="button" id="btn_new_customer" class="btn btn-info btn-sm" title="<?= lang('Customers.new') ?>">
-                            <span class="glyphicon glyphicon-user"></span>
+                            <span class="bi bi-person"></span>
                         </button>
                     </span>
                 </div>

@@ -58,7 +58,7 @@
 <div class="print_hide" style="text-align: right; margin: 8px;">
     <a href="javascript:window.print();">
         <div class="btn btn-info btn-sm">
-            <span class="glyphicon glyphicon-print">&nbsp;</span> Imprimir
+            <span class="bi bi-printer">&nbsp;</span> Imprimir
         </div>
     </a>
     <a href="javascript:history.back();">

@@ -73,15 +73,15 @@
 
 <div id="title_bar" class="print_hide btn-toolbar">
     <button onclick="javascript:printdoc()" class="btn btn-info btn-sm pull-right">
-        <span class="glyphicon glyphicon-print">&nbsp;</span><?= lang('Common.print') ?>
+        <span class="bi bi-printer">&nbsp;</span><?= lang('Common.print') ?>
     </button>
-    <?= anchor("sales", '<span class="glyphicon glyphicon-shopping-cart">&nbsp;</span>' . lang('Sales.register'), ['class' => 'btn btn-info btn-sm pull-right', 'id' => 'show_sales_button']) ?>
+    <?= anchor("sales", '<span class="bi bi-cart">&nbsp;</span>' . lang('Sales.register'), ['class' => 'btn btn-info btn-sm pull-right', 'id' => 'show_sales_button']) ?>
 </div>
 
 <div id="toolbar">
     <div class="pull-left form-inline" role="toolbar">
         <button id="delete" class="btn btn-default btn-sm print_hide">
-            <span class="glyphicon glyphicon-trash">&nbsp;</span><?= lang('Common.delete') ?>
+            <span class="bi bi-trash">&nbsp;</span><?= lang('Common.delete') ?>
         </button>
 
         <?= form_input(['name' => 'daterangepicker', 'class' => 'form-control input-sm', 'id' => 'daterangepicker']) ?>

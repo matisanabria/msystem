@@ -31,7 +31,7 @@
                         <div class="col-sm-7">
                             <a href="<?= 'https://bootswatch.com/3/' . ('bootstrap' == ($config['theme']) ? 'default' : esc($config['theme'])) ?>" target="_blank" rel=”noopener”>
                                 <span><?= lang('Config.theme_preview') . ' ' . ucfirst(esc($config['theme'])) . ' ' ?></span>
-                                <span class="glyphicon glyphicon-new-window"></span>
+                                <span class="bi bi-box-arrow-up-right"></span>
                             </a>
                         </div>
                     </div>
@@ -124,7 +124,7 @@
                     ]) ?>
                     &nbsp;
                     <label class="control-label">
-                        <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="right" title="<?= lang('Config.enforce_privacy_tooltip') ?>"></span>
+                        <span class="bi bi-info-circle" data-toggle="tooltip" data-placement="right" title="<?= lang('Config.enforce_privacy_tooltip') ?>"></span>
                     </label>
                 </div>
             </div>
@@ -194,7 +194,7 @@
                         <div class="col-sm-2">
                             <div class="input-group">
                                 <span class="input-group-addon input-sm">
-                                    <span class="glyphicon glyphicon-resize-horizontal"></span>
+                                    <span class="bi bi-arrow-left-right"></span>
                                 </span>
                                 <?= form_input([
                                     'name'           => 'image_max_width',
@@ -213,7 +213,7 @@
                         <div class="col-sm-2">
                             <div class="input-group">
                                 <span class="input-group-addon input-sm">
-                                    <span class="glyphicon glyphicon-resize-vertical"></span>
+                                    <span class="bi bi-arrows-vertical"></span>
                                 </span>
                                 <?= form_input([
                                     'name'           => 'image_max_height',
@@ -232,7 +232,7 @@
                         <div class="col-sm-2">
                             <div class="input-group">
                                 <span class="input-group-addon input-sm">
-                                    <span class="glyphicon glyphicon-hdd"></span>
+                                    <span class="bi bi-hdd"></span>
                                 </span>
                                 <?= form_input([
                                     'name'           => 'image_max_size',
@@ -279,7 +279,7 @@
                     ]) ?>
                     <label class="control-label">
                         <a href="https://www.google.com/recaptcha/admin" target="_blank">
-                            <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="right" title="<?= lang('Config.gcaptcha_tooltip') ?>"></span>
+                            <span class="bi bi-info-circle" data-toggle="tooltip" data-placement="right" title="<?= lang('Config.gcaptcha_tooltip') ?>"></span>
                         </a>
                     </label>
                 </div>
@@ -400,7 +400,7 @@
                     ]) ?>
                     &nbsp;
                     <label class="control-label">
-                        <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="right" title="<?= lang('Config.derive_sale_quantity_tooltip') ?>"></span>
+                        <span class="bi bi-info-circle" data-toggle="tooltip" data-placement="right" title="<?= lang('Config.derive_sale_quantity_tooltip') ?>"></span>
                     </label>
                 </div>
             </div>

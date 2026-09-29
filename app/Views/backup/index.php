@@ -30,7 +30,7 @@
         <form method="POST" action="<?= site_url('backup/create') ?>">
             <?= csrf_field() ?>
             <button type="submit" class="btn btn-primary">
-                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="bi bi-download"></span>
                 <?= lang('Backup.create_backup') ?>
             </button>
         </form>
@@ -60,7 +60,7 @@
                             <td>
                                 <a href="<?= site_url('backup/download/' . urlencode($backup['filename'])) ?>"
                                    class="btn btn-sm btn-default">
-                                    <span class="glyphicon glyphicon-download-alt"></span>
+                                    <span class="bi bi-download"></span>
                                     <?= lang('Backup.download') ?>
                                 </a>
                                 <form method="POST" action="<?= site_url('backup/delete') ?>"
@@ -69,7 +69,7 @@
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="filename" value="<?= esc($backup['filename']) ?>">
                                     <button type="submit" class="btn btn-sm btn-danger">
-                                        <span class="glyphicon glyphicon-trash"></span>
+                                        <span class="bi bi-trash"></span>
                                         <?= lang('Backup.delete') ?>
                                     </button>
                                 </form>

@@ -28,9 +28,9 @@ foreach ($dinner_tables as $table_key => $table) {
             echo form_input($form_data);
             ?>
         </div>
-        <span class="add_dinner_table glyphicon glyphicon-plus" style="padding-top: 0.5em;"></span>
+        <span class="add_dinner_table bi bi-plus-lg" style="padding-top: 0.5em;"></span>
         <span>&nbsp;&nbsp;</span>
-        <span class="remove_dinner_table glyphicon glyphicon-minus" style="padding-top: 0.5em;"></span>
+        <span class="remove_dinner_table bi bi-dash-lg" style="padding-top: 0.5em;"></span>
     </div>
 
 <?php } ?>

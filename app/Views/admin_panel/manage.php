@@ -20,14 +20,14 @@ $logged_in_id = $emp_model->get_logged_in_employee_info()->person_id;
             data-btn-submit="<?= lang('Common.submit') ?>"
             data-href="employees/view"
             title="<?= lang('Employees.new') ?>">
-        <span class="glyphicon glyphicon-plus"></span>&nbsp;<?= lang('Employees.new') ?>
+        <span class="bi bi-plus-lg"></span>&nbsp;<?= lang('Employees.new') ?>
     </button>
 </div>
 
 <div id="toolbar" style="display:none;">
     <div class="pull-left form-inline" role="toolbar">
         <button id="delete" class="btn btn-default btn-sm print_hide" disabled>
-            <span class="glyphicon glyphicon-trash"></span>&nbsp;<?= lang('Common.delete') ?>
+            <span class="bi bi-trash"></span>&nbsp;<?= lang('Common.delete') ?>
         </button>
     </div>
 </div>
@@ -59,7 +59,7 @@ $logged_in_id = $emp_model->get_logged_in_employee_info()->person_id;
                                 <button class="btn btn-danger btn-xs btn-delete-branch"
                                         data-id="<?= $branch['location_id'] ?>"
                                         data-name="<?= esc($branch['location_name']) ?>">
-                                    <span class="glyphicon glyphicon-trash"></span>
+                                    <span class="bi bi-trash"></span>
                                 </button>
                             </td>
                         </tr>
@@ -76,7 +76,7 @@ $logged_in_id = $emp_model->get_logged_in_employee_info()->person_id;
                                    placeholder="Nombre de la sucursal">
                         </div>
                         <button id="btn_create_branch" class="btn btn-primary btn-sm">
-                            <span class="glyphicon glyphicon-plus"></span> Crear
+                            <span class="bi bi-plus-lg"></span> Crear
                         </button>
                     </div>
                 </div>
@@ -92,11 +92,11 @@ $logged_in_id = $emp_model->get_logged_in_employee_info()->person_id;
                     data-btn-submit="<?= lang('Common.submit') ?>"
                     data-href="employees/view"
                     title="<?= lang('Employees.new') ?>">
-                <span class="glyphicon glyphicon-plus"></span>&nbsp;<?= lang('Employees.new') ?>
+                <span class="bi bi-plus-lg"></span>&nbsp;<?= lang('Employees.new') ?>
             </button>
             <div class="pull-left form-inline">
                 <button id="emp_delete" class="btn btn-default btn-sm" disabled>
-                    <span class="glyphicon glyphicon-trash"></span>&nbsp;<?= lang('Common.delete') ?>
+                    <span class="bi bi-trash"></span>&nbsp;<?= lang('Common.delete') ?>
                 </button>
             </div>
         </div>
@@ -200,7 +200,7 @@ $logged_in_id = $emp_model->get_logged_in_employee_info()->person_id;
         <div class="row" style="margin-bottom:12px;">
             <div class="col-xs-12">
                 <button id="btn_create_backup" class="btn btn-primary btn-sm">
-                    <span class="glyphicon glyphicon-download-alt"></span> <?= lang('Backup.create_backup') ?>
+                    <span class="bi bi-download"></span> <?= lang('Backup.create_backup') ?>
                 </button>
                 <span id="backup_spinner" style="display:none; margin-left:8px;" class="text-muted">Generando...</span>
             </div>
@@ -373,10 +373,10 @@ $(document).ready(function() {
                 '<td>' + b.size + '</td>' +
                 '<td>' +
                     '<a href="<?= site_url('backup/download') ?>/' + encodeURIComponent(b.filename) + '" class="btn btn-default btn-xs" title="<?= lang('Common.download') ?>">' +
-                        '<span class="glyphicon glyphicon-download-alt"></span>' +
+                        '<span class="bi bi-download"></span>' +
                     '</a> ' +
                     '<button class="btn btn-danger btn-xs btn-delete-backup" data-filename="' + $('<span>').text(b.filename).html() + '">' +
-                        '<span class="glyphicon glyphicon-trash"></span>' +
+                        '<span class="bi bi-trash"></span>' +
                     '</button>' +
                 '</td>' +
             '</tr>';

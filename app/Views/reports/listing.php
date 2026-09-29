@@ -30,7 +30,7 @@ if (isset($error)) {
     <div class="col-md-4">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <h3 class="panel-title"><span class="glyphicon glyphicon-list">&nbsp;</span><?= lang('Reports.summary_reports') ?></h3>
+                <h3 class="panel-title"><span class="bi bi-list-ul">&nbsp;</span><?= lang('Reports.summary_reports') ?></h3>
             </div>
             <div class="list-group">
                 <?php foreach ($permission_ids as $permission_id) {
@@ -49,7 +49,7 @@ if (isset($error)) {
     <div class="col-md-4">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <h3 class="panel-title"><span class="glyphicon glyphicon-list-alt">&nbsp;</span><?= lang('Reports.detailed_reports') ?></h3>
+                <h3 class="panel-title"><span class="bi bi-card-list">&nbsp;</span><?= lang('Reports.detailed_reports') ?></h3>
             </div>
             <div class="list-group">
                 <?php foreach ($detailed_reports as $report_name => $prefix) {
@@ -69,7 +69,7 @@ if (isset($error)) {
         <?php if (in_array('reports_inventory', $permission_ids, true)) { ?>
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <h3 class="panel-title"><span class="glyphicon glyphicon-book">&nbsp;</span><?= lang('Reports.inventory_reports') ?></h3>
+                    <h3 class="panel-title"><span class="bi bi-book">&nbsp;</span><?= lang('Reports.inventory_reports') ?></h3>
                 </div>
                 <div class="list-group">
                     <?php
@@ -91,11 +91,11 @@ if (isset($error)) {
         <?php if (in_array('reports_monthly_financial', $permission_ids, true)) { ?>
             <div class="panel panel-warning">
                 <div class="panel-heading">
-                    <h3 class="panel-title"><span class="glyphicon glyphicon-usd">&nbsp;</span><?= lang('Reports.monthly_financial_summary_report') ?></h3>
+                    <h3 class="panel-title"><span class="bi bi-currency-dollar">&nbsp;</span><?= lang('Reports.monthly_financial_summary_report') ?></h3>
                 </div>
                 <div class="list-group">
                     <a class="list-group-item" href="<?= site_url('reports/summary_monthly_sales') ?>">
-                        <span class="glyphicon glyphicon-stats">&nbsp;</span><?= lang('Reports.monthly_financial_summary_report') ?>
+                        <span class="bi bi-bar-chart">&nbsp;</span><?= lang('Reports.monthly_financial_summary_report') ?>
                     </a>
                 </div>
             </div>
@@ -106,11 +106,11 @@ if (isset($error)) {
         <?php if (in_array('reports_service_tickets', $permission_ids, true)) { ?>
             <div class="panel panel-info">
                 <div class="panel-heading">
-                    <h3 class="panel-title"><span class="glyphicon glyphicon-wrench">&nbsp;</span><?= lang('Reports.service_tickets_stats_report') ?></h3>
+                    <h3 class="panel-title"><span class="bi bi-wrench">&nbsp;</span><?= lang('Reports.service_tickets_stats_report') ?></h3>
                 </div>
                 <div class="list-group">
                     <a class="list-group-item" href="<?= site_url('reports/service_tickets_sales') ?>">
-                        <span class="glyphicon glyphicon-stats">&nbsp;</span><?= lang('Reports.service_tickets_stats_report') ?>
+                        <span class="bi bi-bar-chart">&nbsp;</span><?= lang('Reports.service_tickets_stats_report') ?>
                     </a>
                 </div>
             </div>
@@ -123,11 +123,11 @@ if (isset($error)) {
         <?php if (in_array('reports_graphical', $permission_ids, true)) { ?>
             <div class="panel panel-success">
                 <div class="panel-heading">
-                    <h3 class="panel-title"><span class="glyphicon glyphicon-signal">&nbsp;</span><?= lang('Reports.graphical_reports') ?></h3>
+                    <h3 class="panel-title"><span class="bi bi-reception-4">&nbsp;</span><?= lang('Reports.graphical_reports') ?></h3>
                 </div>
                 <div class="list-group">
                     <a class="list-group-item" href="<?= site_url('reports/graphical_summary_trend_categories') ?>">
-                        <span class="glyphicon glyphicon-stats">&nbsp;</span><?= lang('Reports.categories_trend_report') ?>
+                        <span class="bi bi-bar-chart">&nbsp;</span><?= lang('Reports.categories_trend_report') ?>
                     </a>
                 </div>
             </div>

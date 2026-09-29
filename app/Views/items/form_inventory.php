@@ -17,7 +17,7 @@
             <?= form_label(lang('Items.item_number'), 'name', ['class' => 'control-label col-xs-3']) ?>
             <div class="col-xs-8">
                 <div class="input-group">
-                    <span class="input-group-addon input-sm"><span class="glyphicon glyphicon-barcode"></span></span>
+                    <span class="input-group-addon input-sm"><span class="bi bi-upc-scan"></span></span>
                     <?= form_input([
                         'name'     => 'item_number',
                         'id'       => 'item_number',
@@ -46,7 +46,7 @@
             <?= form_label(lang('Items.category'), 'category', ['class' => 'control-label col-xs-3']) ?>
             <div class="col-xs-8">
                 <div class="input-group">
-                    <span class="input-group-addon input-sm"><span class="glyphicon glyphicon-tag"></span></span>
+                    <span class="input-group-addon input-sm"><span class="bi bi-tag"></span></span>
                     <?= form_input([
                         'name'     => 'category',
                         'id'       => 'category',

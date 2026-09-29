@@ -40,14 +40,14 @@ use App\Models\Employee;
 
 <div id="title_bar" class="btn-toolbar print_hide">
     <button class="btn btn-info btn-sm pull-right modal-dlg" data-btn-new="<?= lang('Common.new') ?>" data-btn-submit="<?= lang('Common.submit') ?>" data-href="<?= "$controller_name/view" ?>" title="<?= lang('Service_tickets.new') ?>">
-        <span class="glyphicon glyphicon-wrench">&nbsp;</span><?= lang('Service_tickets.new') ?>
+        <span class="bi bi-wrench">&nbsp;</span><?= lang('Service_tickets.new') ?>
     </button>
 </div>
 
 <div id="toolbar">
     <div class="pull-left form-inline" role="toolbar">
         <button id="delete" class="btn btn-default btn-sm print_hide">
-            <span class="glyphicon glyphicon-trash">&nbsp;</span><?= lang('Common.delete') ?>
+            <span class="bi bi-trash">&nbsp;</span><?= lang('Common.delete') ?>
         </button>
         <?php if (!empty($show_location_filter) && !empty($stock_locations)): ?>
             <?= form_dropdown('location_id_filter', ['all' => lang('Reports.all')] + $stock_locations, 'all', ['id' => 'location_id_filter', 'class' => 'form-control input-sm']) ?>

@@ -9,7 +9,7 @@
 
 <div id="title_bar" class="btn-toolbar print_hide">
     <h4 class="pull-left" style="margin: 4px 0 0;">
-        <span class="glyphicon glyphicon-list-alt"></span>&nbsp;<?= lang('Logs.title') ?>
+        <span class="bi bi-card-list"></span>&nbsp;<?= lang('Logs.title') ?>
     </h4>
 </div>
 
@@ -50,7 +50,7 @@
         <?php endforeach; ?>
     </select>
     <button id="btn_apply_filters" class="btn btn-primary btn-sm">
-        <span class="glyphicon glyphicon-search"></span>&nbsp;<?= lang('Common.search') ?>
+        <span class="bi bi-search"></span>&nbsp;<?= lang('Common.search') ?>
     </button>
 </div>
 
@@ -117,7 +117,7 @@ $(document).ready(function() {
             offset:      page * pageSize
         };
 
-        $('#logs_tbody').html('<tr><td colspan="6" class="text-center"><span class="glyphicon glyphicon-refresh"></span></td></tr>');
+        $('#logs_tbody').html('<tr><td colspan="6" class="text-center"><span class="bi bi-arrow-clockwise"></span></td></tr>');
 
         $.getJSON('<?= esc(site_url('logs/search')) ?>', params, function(data) {
             var tbody = $('#logs_tbody');

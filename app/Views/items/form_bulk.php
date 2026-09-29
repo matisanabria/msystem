@@ -29,7 +29,7 @@
             <?= form_label(lang('Items.category'), 'category', ['class' => 'control-label col-xs-3']) ?>
             <div class="col-xs-8">
                 <div class="input-group">
-                    <span class="input-group-addon input-sm"><span class="glyphicon glyphicon-tag"></span></span>
+                    <span class="input-group-addon input-sm"><span class="bi bi-tag"></span></span>
                     <?= form_input([
                         'name'  => 'category',
                         'id'    => 'category',

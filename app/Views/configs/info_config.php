@@ -18,7 +18,7 @@
                 <div class="col-xs-6">
                     <div class="input-group">
                         <span class="input-group-addon input-sm">
-                            <span class="glyphicon glyphicon-home"></span>
+                            <span class="bi bi-house"></span>
                         </span>
                         <?= form_input([
                             'name'  => 'company',
@@ -67,7 +67,7 @@
                 <div class="col-xs-6">
                     <div class="input-group">
                         <span class="input-group-addon input-sm">
-                            <span class="glyphicon glyphicon-globe"></span>
+                            <span class="bi bi-globe"></span>
                         </span>
                         <?= form_input([
                             'name'  => 'website',
@@ -84,7 +84,7 @@
                 <div class="col-xs-6">
                     <div class="input-group">
                         <span class="input-group-addon input-sm">
-                            <span class="glyphicon glyphicon-envelope"></span>
+                            <span class="bi bi-envelope"></span>
                         </span>
                         <?= form_input([
                             'name'  => 'email',
@@ -102,7 +102,7 @@
                 <div class="col-xs-6">
                     <div class="input-group">
                         <span class="input-group-addon input-sm">
-                            <span class="glyphicon glyphicon-phone-alt"></span>
+                            <span class="bi bi-telephone"></span>
                         </span>
                         <?= form_input([
                             'name'  => 'phone',
@@ -119,7 +119,7 @@
                 <div class="col-xs-6">
                     <div class="input-group">
                         <span class="input-group-addon input-sm">
-                            <span class="glyphicon glyphicon-phone-alt"></span>
+                            <span class="bi bi-telephone"></span>
                         </span>
                         <?= form_input([
                             'name'  => 'fax',

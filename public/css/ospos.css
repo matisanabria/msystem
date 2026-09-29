@@ -19,13 +19,6 @@ a.none {
     padding: 0.2em;
 }
 
-/* Add container-xxl width from Bootstrap 5 */
-@media (min-width: 1400px) {
-    .container {
-        width: 1320px;
-    }
-}
-
 .navbar {
     border-radius: 0;
 }
@@ -34,15 +27,11 @@ a.none {
     padding-top: 10px;
 }
 
-.navbar-default .navbar-nav>.active>a,
-.navbar-default .navbar-nav>.active>a:hover,
-.navbar-default .navbar-nav>.active>a:focus {
+.navbar .navbar-nav>.nav-item>.nav-link.active,
+.navbar .navbar-nav>.nav-item>.nav-link.active:hover,
+.navbar .navbar-nav>.nav-item>.nav-link.active:focus {
     color: #2C3E50;
     background-color: #FFFFFF;
-}
-
-.jumbotron.push-spaces {
-    margin: 0; /* Add this */
 }
 
 .navbar .menu-icon {
@@ -153,16 +142,16 @@ label.required {
 }
 
 @media (min-width: 768px) {
-    .navbar-nav>li>a {
+    .navbar-nav>.nav-item>a {
         padding: 10px 10px 9px;
     }
 
     .modal-dlg .modal-dialog {
-        width: 500px;
+        max-width: 500px;
     }
 
     .modal-dlg-wide .modal-dialog {
-        width: 750px;
+        max-width: 750px;
     }
 }
 
@@ -174,9 +163,4 @@ label.required {
 .no-gutter [class*="-1"] {
     padding-right: 0;
     padding-left: 0;
-}
-
-/* Recreate font-monospace class from Bootstrap 5 */
-.font-monospace {
-    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
 }

@@ -57,20 +57,20 @@ if (isset($error_message)) {
 
 <div class="print_hide" id="control_buttons" style="text-align: right;">
     <a href="javascript:printdoc();">
-        <div class="btn btn-info btn-sm" id="show_print_button"><?= '<span class="glyphicon glyphicon-print">&nbsp;</span>' . lang('Common.print') ?></div>
+        <div class="btn btn-info btn-sm" id="show_print_button"><?= '<span class="bi bi-printer">&nbsp;</span>' . lang('Common.print') ?></div>
     </a>
     <?php
     /* This line will allow to print and go back to sales automatically.
-     * echo anchor('sales', '<span class="glyphicon glyphicon-print">&nbsp;</span>' . lang('Common.print'), ['class' => 'btn btn-info btn-sm', 'id' => 'show_print_button', 'onclick' => 'window.print();'));
+     * echo anchor('sales', '<span class="bi bi-printer">&nbsp;</span>' . lang('Common.print'), ['class' => 'btn btn-info btn-sm', 'id' => 'show_print_button', 'onclick' => 'window.print();'));
      */
     ?>
     <?php if (isset($customer_email) && !empty($customer_email)): ?>
         <a href="javascript:void(0);">
-            <div class="btn btn-info btn-sm" id="show_email_button"><?= '<span class="glyphicon glyphicon-envelope">&nbsp;</span>' . lang('Sales.send_invoice') ?></div>
+            <div class="btn btn-info btn-sm" id="show_email_button"><?= '<span class="bi bi-envelope">&nbsp;</span>' . lang('Sales.send_invoice') ?></div>
         </a>
     <?php endif; ?>
-    <?= anchor("sales", '<span class="glyphicon glyphicon-shopping-cart">&nbsp;</span>' . lang('Sales.register'), ['class' => 'btn btn-info btn-sm', 'id' => 'show_sales_button']) ?>
-    <?= anchor("sales/manage", '<span class="glyphicon glyphicon-list-alt">&nbsp;</span>' . lang('Sales.takings'), ['class' => 'btn btn-info btn-sm', 'id' => 'show_takings_button']) ?>
+    <?= anchor("sales", '<span class="bi bi-cart">&nbsp;</span>' . lang('Sales.register'), ['class' => 'btn btn-info btn-sm', 'id' => 'show_sales_button']) ?>
+    <?= anchor("sales/manage", '<span class="bi bi-card-list">&nbsp;</span>' . lang('Sales.takings'), ['class' => 'btn btn-info btn-sm', 'id' => 'show_takings_button']) ?>
 </div>
 
 <div id="page-wrap">

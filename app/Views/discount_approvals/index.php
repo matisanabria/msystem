@@ -9,18 +9,18 @@
 
 <div id="title_bar" class="btn-toolbar print_hide">
     <h4 class="pull-left" style="margin: 4px 0 0;">
-        <span class="glyphicon glyphicon-tag"></span>&nbsp;<?= lang('Module.discount_approvals') ?>
+        <span class="bi bi-tag"></span>&nbsp;<?= lang('Module.discount_approvals') ?>
     </h4>
     <span id="pending_badge" class="label label-danger" style="font-size:14px; margin-left:10px; display:none;"></span>
 </div>
 
 <?php if (empty($pending)): ?>
     <div id="no_pending" class="alert alert-info" style="margin-top:20px;">
-        <span class="glyphicon glyphicon-ok"></span>&nbsp;No hay solicitudes de descuento pendientes.
+        <span class="bi bi-check-lg"></span>&nbsp;No hay solicitudes de descuento pendientes.
     </div>
 <?php else: ?>
     <div id="no_pending" class="alert alert-info" style="margin-top:20px; display:none;">
-        <span class="glyphicon glyphicon-ok"></span>&nbsp;No hay solicitudes de descuento pendientes.
+        <span class="bi bi-check-lg"></span>&nbsp;No hay solicitudes de descuento pendientes.
     </div>
 <?php endif; ?>
 
@@ -28,7 +28,7 @@
     <div class="modal-dialog" style="max-width:360px; width:360px;">
         <div class="modal-content">
             <div class="modal-header" style="background:#5cb85c; color:#fff;">
-                <h4 class="modal-title"><span class="glyphicon glyphicon-ok-circle"></span>&nbsp;Descuento Aprobado</h4>
+                <h4 class="modal-title"><span class="bi bi-check-circle"></span>&nbsp;Descuento Aprobado</h4>
             </div>
             <div class="modal-body" style="text-align:center;">
                 <p style="margin-bottom:12px; color:#555;">Comunique verbalmente este código al cajero:</p>
@@ -97,10 +97,10 @@
                 <td style="text-align:center;" class="wait_cell">—</td>
                 <td style="text-align:center; white-space:nowrap;">
                     <button class="btn btn-success btn-sm btn-approve" data-id="<?= esc($row['approval_id']) ?>">
-                        <span class="glyphicon glyphicon-ok"></span> Aprobar
+                        <span class="bi bi-check-lg"></span> Aprobar
                     </button>
                     <button class="btn btn-danger btn-sm btn-reject" data-id="<?= esc($row['approval_id']) ?>" style="margin-left:4px;">
-                        <span class="glyphicon glyphicon-remove"></span> Rechazar
+                        <span class="bi bi-x-lg"></span> Rechazar
                     </button>
                 </td>
             </tr>
@@ -162,10 +162,10 @@
             '<td style="text-align:center;" class="wait_cell">—</td>' +
             '<td style="text-align:center; white-space:nowrap;">' +
                 '<button class="btn btn-success btn-sm btn-approve" data-id="' + r.approval_id + '">' +
-                    '<span class="glyphicon glyphicon-ok"></span> Aprobar' +
+                    '<span class="bi bi-check-lg"></span> Aprobar' +
                 '</button>' +
                 '<button class="btn btn-danger btn-sm btn-reject" data-id="' + r.approval_id + '" style="margin-left:4px;">' +
-                    '<span class="glyphicon glyphicon-remove"></span> Rechazar' +
+                    '<span class="bi bi-x-lg"></span> Rechazar' +
                 '</button>' +
             '</td>' +
         '</tr>';
@@ -189,7 +189,7 @@
     $(document).on('click', '.btn-approve', function () {
         var $btn = $(this);
         var approval_id = $btn.data('id');
-        $btn.prop('disabled', true).html('<span class="glyphicon glyphicon-hourglass"></span>');
+        $btn.prop('disabled', true).html('<span class="bi bi-hourglass-split"></span>');
 
         $.ajax({
             url: '<?= base_url('discount_approvals/approve') ?>',
@@ -212,12 +212,12 @@
                     remove_row(approval_id);
                 } else {
                     alert(res.message || 'Error al aprobar');
-                    $btn.prop('disabled', false).html('<span class="glyphicon glyphicon-ok"></span> Aprobar');
+                    $btn.prop('disabled', false).html('<span class="bi bi-check-lg"></span> Aprobar');
                 }
             },
             error: function () {
                 alert('Error de conexión');
-                $btn.prop('disabled', false).html('<span class="glyphicon glyphicon-ok"></span> Aprobar');
+                $btn.prop('disabled', false).html('<span class="bi bi-check-lg"></span> Aprobar');
             }
         });
     });

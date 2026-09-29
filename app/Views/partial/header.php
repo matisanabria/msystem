@@ -20,7 +20,12 @@ $request = Services::request();
     <base href="<?= base_url() ?>">
     <title><?= esc($config['company']) . ' | Sistema de Gestión' ?></title>
     <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
-    <link rel="stylesheet" href="<?= 'resources/bootswatch/' . (empty($config['theme']) ? 'flatly' : esc($config['theme'])) . '/bootstrap.min.css' ?>">
+    <?php
+    // paper and readable are not available in Bootswatch 5
+    $theme = (empty($config['theme']) || in_array($config['theme'], ['paper', 'readable'], true)) ? 'flatly' : $config['theme'];
+    ?>
+    <link rel="stylesheet" href="<?= 'resources/bootswatch/' . esc($theme) . '/bootstrap.min.css' ?>">
+    <link rel="stylesheet" href="resources/bootstrap-icons/bootstrap-icons.min.css">
 
     <?php if (ENVIRONMENT == 'development' || get_cookie('debug') == 'true' || $request->getGet('debug') == 'true') : ?>
         <!-- inject:debug:css -->
@@ -37,7 +42,7 @@ $request = Services::request();
         <link rel="stylesheet" href="resources/css/bootstrap-292fc0ad3b.autocomplete.css">
         <link rel="stylesheet" href="resources/css/invoice-1eae5e39b9.css">
         <link rel="stylesheet" href="resources/css/ospos_print-2ba645b044.css">
-        <link rel="stylesheet" href="resources/css/ospos-9ead7561a7.css">
+        <link rel="stylesheet" href="resources/css/ospos-417a9fb4a0.css">
         <link rel="stylesheet" href="resources/css/popupbox-7b616030b0.css">
         <link rel="stylesheet" href="resources/css/receipt-a171207d8e.css">
         <link rel="stylesheet" href="resources/css/register-58be93b261.css">
@@ -79,7 +84,7 @@ $request = Services::request();
         <!-- endinject -->
     <?php else : ?>
         <!--inject:prod:css -->
-        <link rel="stylesheet" href="resources/opensourcepos-b66b189952.min.css">
+        <link rel="stylesheet" href="resources/opensourcepos-8e0799e22a.min.css">
         <!-- endinject -->
 
         <!-- Tweaks to the UI for a particular theme should drop here  -->
@@ -129,7 +134,7 @@ $request = Services::request();
             }
         }
 
-        @media (max-width: 767px) {
+        @media (max-width: 767.98px) {
             .topbar .navbar-left  { display: none; }
             .topbar .navbar-center { display: none; }
             .topbar .navbar-right {
@@ -156,23 +161,8 @@ $request = Services::request();
             .topbar .container { padding: 0 8px; }
 
             /* Module menu: proper touch list instead of the desktop icon grid */
-            .navbar-header {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-            }
-
-            .navbar-header .navbar-brand {
-                order: 1;
-            }
-
-            .navbar-header .navbar-toggle {
-                order: 2;
-                margin-right: 0;
-            }
-
-            .navbar-collapse.collapse.in,
-            .navbar-collapse.collapsing {
+            .navbar .navbar-collapse.show,
+            .navbar .navbar-collapse.collapsing {
                 box-shadow: inset 0 1px 0 rgba(0, 0, 0, .06), 0 6px 12px rgba(0, 0, 0, .1);
                 border-top: 1px solid #e7e7e7;
             }
@@ -181,15 +171,15 @@ $request = Services::request();
                 margin: 0;
             }
 
-            .navbar .navbar-nav > li {
+            .navbar .navbar-nav > .nav-item {
                 border-bottom: 1px solid #eef0f2;
             }
 
-            .navbar .navbar-nav > li:last-child {
+            .navbar .navbar-nav > .nav-item:last-child {
                 border-bottom: none;
             }
 
-            .navbar .navbar-nav > li > a.menu-icon {
+            .navbar .navbar-nav > .nav-item > a.menu-icon {
                 display: flex;
                 align-items: center;
                 gap: 14px;
@@ -198,7 +188,7 @@ $request = Services::request();
                 font-size: 14px;
             }
 
-            .navbar .navbar-nav > li.active > a.menu-icon {
+            .navbar .navbar-nav > .nav-item > a.menu-icon.active {
                 background-color: #f4f6f8;
                 font-weight: 600;
             }
@@ -236,24 +226,19 @@ $request = Services::request();
             </div>
         </div>
 
-        <div class="navbar navbar-default" role="navigation">
+        <nav class="navbar navbar-expand-md navbar-light bg-light">
             <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
+                <a class="navbar-brand d-md-none d-lg-inline" href="<?= site_url() ?>">Sistema de Gestión</a>
 
-                    <a class="navbar-brand hidden-sm" href="<?= site_url() ?>">Sistema de Gestión</a>
-                </div>
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-modules" aria-controls="navbar-modules" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav navbar-right">
+                <div class="collapse navbar-collapse" id="navbar-modules">
+                    <ul class="navbar-nav ms-auto">
                         <?php foreach ($allowed_modules as $module): ?>
-                            <li class="<?= $module->module_id == $request->getUri()->getSegment(1) ? 'active' : '' ?>">
-                                <a href="<?= base_url($module->module_id) ?>" title="<?= lang("Module.$module->module_id") ?>" class="menu-icon">
+                            <li class="nav-item">
+                                <a href="<?= base_url($module->module_id) ?>" title="<?= lang("Module.$module->module_id") ?>" class="nav-link menu-icon <?= $module->module_id == $request->getUri()->getSegment(1) ? 'active' : '' ?>">
                                     <img src="<?= base_url("images/menubar/$module->module_id.svg") ?>" style="border: none;" alt="Module Icon"><br>
                                     <?= lang('Module.' . $module->module_id) ?>
                                 </a>
@@ -262,7 +247,7 @@ $request = Services::request();
                     </ul>
                 </div>
             </div>
-        </div>
+        </nav>
 
         <div class="container">
             <div class="row">
@@ -283,9 +268,9 @@ if ($_emp_model->has_grant('discount_approvals', $_person_id)):
         .css({position:'fixed', top:'0', left:'0', right:'0', zIndex:10000,
               background:'#e67e22', color:'#fff', padding:'8px 16px',
               fontSize:'13px', textAlign:'center', display:'none'})
-        .html('<span class="glyphicon glyphicon-bell"></span>&nbsp;<span id="da_notif_msg"></span>' +
-              '&nbsp;<button type="button" style="margin-left:12px; padding:2px 10px; font-size:12px;" class="btn btn-xs btn-light" id="da_notif_enable_btn" style="display:none;">Habilitar</button>' +
-              '&nbsp;<button type="button" style="margin-left:4px; padding:2px 8px; font-size:12px;" class="btn btn-xs btn-default" id="da_notif_dismiss">&times;</button>');
+        .html('<span class="bi bi-bell"></span>&nbsp;<span id="da_notif_msg"></span>' +
+              '&nbsp;<button type="button" style="margin-left:12px; padding:2px 10px; font-size:12px;" class="btn btn-sm btn-light" id="da_notif_enable_btn" style="display:none;">Habilitar</button>' +
+              '&nbsp;<button type="button" style="margin-left:4px; padding:2px 8px; font-size:12px;" class="btn btn-sm btn-light" id="da_notif_dismiss">&times;</button>');
 
     $(document).ready(function() { $('body').prepend($notif_banner); check_notif_status(); });
     $('#da_notif_dismiss', $notif_banner).on('click', function() {
@@ -356,12 +341,12 @@ if ($_emp_model->has_grant('discount_approvals', $_person_id)):
 
         // Fallback: toast
         var bg   = type === 'warning' ? '#e67e22' : '#2980b9';
-        var icon = type === 'warning' ? 'glyphicon-warning-sign' : 'glyphicon-tag';
+        var icon = type === 'warning' ? 'bi-exclamation-triangle' : 'bi-tag';
         var $t = $('<div>')
             .css({background: bg, color: '#fff', borderRadius: '4px', padding: '10px 14px',
                   marginTop: '8px', boxShadow: '0 2px 8px rgba(0,0,0,.3)', fontSize: '13px',
                   cursor: 'pointer', position: 'relative'})
-            .html('<span class="glyphicon ' + icon + '"></span>&nbsp;' + msg +
+            .html('<span class="bi ' + icon + '"></span>&nbsp;' + msg +
                   (link ? ' <a href="' + link + '" style="color:#fff; text-decoration:underline; margin-left:8px;">Ver</a>' : '') +
                   '<span style="position:absolute;top:6px;right:10px;cursor:pointer;font-size:16px;" class="da_toast_close">&times;</span>');
         $t.find('.da_toast_close').on('click', function() { $t.remove(); });
