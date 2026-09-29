@@ -12,16 +12,16 @@
             <ul id="message_error_message_box" class="error_message_box"></ul>
 
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Config.msg_uid'), 'msg_uid', ['class' => 'control-label col-xs-2 required']) ?>
-                <div class="col-xs-4">
+                <?= form_label(lang('Config.msg_uid'), 'msg_uid', ['class' => 'control-label col-2 required']) ?>
+                <div class="col-4">
                     <div class="input-group">
-                        <span class="input-group-addon input-sm">
+                        <span class="input-group-text form-control-sm">
                             <span class="bi bi-person"></span>
                         </span>
                         <?= form_input([
                             'name'  => 'msg_uid',
                             'id'    => 'msg_uid',
-                            'class' => 'form-control input-sm required',
+                            'class' => 'form-control form-control-sm required',
                             'value' => $config['msg_uid']
                         ]) ?>
                     </div>
@@ -29,16 +29,16 @@
             </div>
 
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Config.msg_pwd'), 'msg_pwd', ['class' => 'control-label col-xs-2 required']) ?>
-                <div class="col-xs-4">
+                <?= form_label(lang('Config.msg_pwd'), 'msg_pwd', ['class' => 'control-label col-2 required']) ?>
+                <div class="col-4">
                     <div class="input-group">
-                        <span class="input-group-addon input-sm">
+                        <span class="input-group-text form-control-sm">
                             <span class="bi bi-lock"></span>
                         </span>
                         <?= form_password([
                             'name'  => 'msg_pwd',
                             'id'    => 'msg_pwd',
-                            'class' => 'form-control input-sm required',
+                            'class' => 'form-control form-control-sm required',
                             'value' => $config['msg_pwd']
                         ]) ?>
                     </div>
@@ -46,16 +46,16 @@
             </div>
 
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Config.msg_src'), 'msg_src', ['class' => 'control-label col-xs-2 required']) ?>
-                <div class="col-xs-4">
+                <?= form_label(lang('Config.msg_src'), 'msg_src', ['class' => 'control-label col-2 required']) ?>
+                <div class="col-4">
                     <div class="input-group">
-                        <span class="input-group-addon input-sm">
+                        <span class="input-group-text form-control-sm">
                             <span class="bi bi-megaphone"></span>
                         </span>
                         <?= form_input([
                             'name'  => 'msg_src',
                             'id'    => 'msg_src',
-                            'class' => 'form-control input-sm required',
+                            'class' => 'form-control form-control-sm required',
                             'value' => $config['msg_src'] == null ? $config['company'] : $config['msg_src']
                         ]) ?>
                     </div>
@@ -63,12 +63,12 @@
             </div>
 
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Config.msg_msg'), 'msg_msg', ['class' => 'control-label col-xs-2']) ?>
-                <div class="col-xs-4">
+                <?= form_label(lang('Config.msg_msg'), 'msg_msg', ['class' => 'control-label col-2']) ?>
+                <div class="col-4">
                     <?= form_textarea([
                         'name'        => 'msg_msg',
                         'id'          => 'msg_msg',
-                        'class'       => 'form-control input-sm',
+                        'class'       => 'form-control form-control-sm',
                         'value'       => $config['msg_msg'],
                         'placeholder' => lang('Config.msg_msg_placeholder')
                     ]) ?>
@@ -79,7 +79,7 @@
                 'name'  => 'submit_message',
                 'id'    => 'submit_message',
                 'value' => lang('Common.submit'),
-                'class' => 'btn btn-primary btn-sm pull-right'
+                'class' => 'btn btn-primary btn-sm float-end'
             ]) ?>
 
         </fieldset>

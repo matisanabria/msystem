@@ -66,41 +66,41 @@ helper('url');
 <div id="register_wrapper">
 
     <!-- Top register controls -->
-    <?= form_open("$controller_name/changeMode", ['id' => 'mode_form', 'class' => 'form-horizontal panel panel-default']) ?>
-        <div class="panel-body form-group">
+    <?= form_open("$controller_name/changeMode", ['id' => 'mode_form', 'class' => 'form-horizontal card']) ?>
+        <div class="card-body form-group">
             <ul>
-                <li class="pull-left first_li">
+                <li class="float-start first_li">
                     <label class="control-label"><?= lang(ucfirst($controller_name) . '.mode') ?></label>
                 </li>
-                <li class="pull-left">
-                    <?= form_dropdown('mode', $modes, $mode, ['onchange' => "$('#mode_form').submit();", 'class' => 'selectpicker show-menu-arrow', 'data-style' => 'btn-default btn-sm', 'data-width' => 'fit']) ?>
+                <li class="float-start">
+                    <?= form_dropdown('mode', $modes, $mode, ['onchange' => "$('#mode_form').submit();", 'class' => 'selectpicker show-menu-arrow', 'data-style' => 'btn-outline-secondary btn-sm', 'data-width' => 'fit']) ?>
                 </li>
                 <?php if ($config['dinner_table_enable']) { ?>
-                    <li class="pull-left first_li">
+                    <li class="float-start first_li">
                         <label class="control-label"><?= lang(ucfirst($controller_name) . '.table') ?></label>
                     </li>
-                    <li class="pull-left">
-                        <?= form_dropdown('dinner_table', $empty_tables, $selected_table, ['onchange' => "$('#mode_form').submit();", 'class' => 'selectpicker show-menu-arrow', 'data-style' => 'btn-default btn-sm', 'data-width' => 'fit']) ?>
+                    <li class="float-start">
+                        <?= form_dropdown('dinner_table', $empty_tables, $selected_table, ['onchange' => "$('#mode_form').submit();", 'class' => 'selectpicker show-menu-arrow', 'data-style' => 'btn-outline-secondary btn-sm', 'data-width' => 'fit']) ?>
                     </li>
                 <?php } ?>
                 <?php if (count($stock_locations) > 1) { ?>
-                    <li class="pull-left">
+                    <li class="float-start">
                         <label class="control-label"><?= lang(ucfirst($controller_name) . '.stock_location') ?></label>
                     </li>
-                    <li class="pull-left">
-                        <?= form_dropdown('stock_location', $stock_locations, $stock_location, ['onchange' => "$('#mode_form').submit();", 'class' => 'selectpicker show-menu-arrow', 'data-style' => 'btn-default btn-sm', 'data-width' => 'fit']) ?>
+                    <li class="float-start">
+                        <?= form_dropdown('stock_location', $stock_locations, $stock_location, ['onchange' => "$('#mode_form').submit();", 'class' => 'selectpicker show-menu-arrow', 'data-style' => 'btn-outline-secondary btn-sm', 'data-width' => 'fit']) ?>
                     </li>
                 <?php } ?>
 
-                <li class="pull-right">
-                    <button class="btn btn-default btn-sm modal-dlg" id="show_suspended_sales_button" data-href="<?= esc("$controller_name/suspended") ?>"
+                <li class="float-end">
+                    <button class="btn btn-outline-secondary btn-sm modal-dlg" id="show_suspended_sales_button" data-href="<?= esc("$controller_name/suspended") ?>"
                         title="<?= lang(ucfirst($controller_name) . '.suspended_sales') ?>">
                         <span class="bi bi-justify">&nbsp;</span><?= lang(ucfirst($controller_name) . '.suspended_sales') ?>
                     </button>
                 </li>
 
-                <li class="pull-right">
-                    <a href="<?= esc(site_url("$controller_name/stockConsult")) ?>" class="btn btn-default btn-sm" id="stock_consult_button"
+                <li class="float-end">
+                    <a href="<?= esc(site_url("$controller_name/stockConsult")) ?>" class="btn btn-outline-secondary btn-sm" id="stock_consult_button"
                         title="<?= lang('Sales.stock_consult') ?>">
                         <span class="bi bi-list-ul">&nbsp;</span><?= lang('Sales.stock_consult') ?>
                     </a>
@@ -110,7 +110,7 @@ helper('url');
                 $employee = model(Employee::class);
                 if ($employee->has_grant('reports_sales', session('person_id'))) {
                 ?>
-                    <li class="pull-right">
+                    <li class="float-end">
                         <?= anchor(
                             "$controller_name/manage",
                             '<span class="bi bi-card-list">&nbsp;</span>' . lang(ucfirst($controller_name) . '.takings'),
@@ -119,13 +119,13 @@ helper('url');
                     </li>
                 <?php } ?>
 
-                <li class="pull-right" style="margin-right:8px; line-height:30px;">
+                <li class="float-end" style="margin-right:8px; line-height:30px;">
                     <?php if ($current_cashier_id > 0): ?>
-                        <span id="current_cashier_badge" class="label label-success" style="font-size:13px; padding:5px 10px;">
+                        <span id="current_cashier_badge" class="badge text-bg-success" style="font-size:13px; padding:5px 10px;">
                             <span class="bi bi-person"></span>&nbsp;<?= lang('Sales.cashier') ?>: <?= esc($current_cashier_name) ?>
                         </span>
                     <?php else: ?>
-                        <span id="current_cashier_badge" class="label label-default" style="font-size:13px; padding:5px 10px;">
+                        <span id="current_cashier_badge" class="badge text-bg-secondary" style="font-size:13px; padding:5px 10px;">
                             <span class="bi bi-person"></span>&nbsp;<?= lang('Sales.no_cashier') ?>
                         </span>
                     <?php endif; ?>
@@ -136,18 +136,18 @@ helper('url');
 
     <?php $tabindex = 0; ?>
 
-    <?= form_open("$controller_name/add", ['id' => 'add_item_form', 'class' => 'form-horizontal panel panel-default']) ?>
-        <div class="panel-body form-group">
+    <?= form_open("$controller_name/add", ['id' => 'add_item_form', 'class' => 'form-horizontal card']) ?>
+        <div class="card-body form-group">
             <ul>
-                <li class="pull-left first_li">
+                <li class="float-start first_li">
                     <label for="item" class="control-label"><?= lang(ucfirst($controller_name) . '.find_or_scan_item_or_receipt') ?></label>
                 </li>
-                <li class="pull-left">
-                    <?= form_input(['name' => 'item', 'id' => 'item', 'class' => 'form-control input-sm', 'size' => '50', 'tabindex' => ++$tabindex]) ?>
+                <li class="float-start">
+                    <?= form_input(['name' => 'item', 'id' => 'item', 'class' => 'form-control form-control-sm', 'size' => '50', 'tabindex' => ++$tabindex]) ?>
                     <span class="ui-helper-hidden-accessible" role="status"></span>
                 </li>
-                <li class="pull-right">
-                    <button id="new_item_button" class="btn btn-info btn-sm pull-right modal-dlg" data-btn-new="<?= lang('Common.new') ?>" data-btn-submit="<?= lang('Common.submit') ?>" data-href="<?= "items/view" ?>" title="<?= lang(ucfirst($controller_name) . ".new_item") ?>">
+                <li class="float-end">
+                    <button id="new_item_button" class="btn btn-info btn-sm float-end modal-dlg" data-btn-new="<?= lang('Common.new') ?>" data-btn-submit="<?= lang('Common.submit') ?>" data-href="<?= "items/view" ?>" title="<?= lang(ucfirst($controller_name) . ".new_item") ?>">
                         <span class="bi bi-tag">&nbsp;</span><?= lang(ucfirst($controller_name) . ".new_item") ?>
                     </button>
                 </li>
@@ -193,9 +193,9 @@ helper('url');
                                 ?>
                             </td>
                             <?php if ($item['item_type'] == ITEM_TEMP) { ?>
-                                <td><?= form_input(['name' => 'item_number', 'id' => 'item_number', 'class' => 'form-control input-sm', 'value' => $item['item_number'], 'tabindex' => ++$tabindex]) ?></td>
+                                <td><?= form_input(['name' => 'item_number', 'id' => 'item_number', 'class' => 'form-control form-control-sm', 'value' => $item['item_number'], 'tabindex' => ++$tabindex]) ?></td>
                                 <td style="align: center;">
-                                    <?= form_input(['name' => 'name', 'id' => 'name', 'class' => 'form-control input-sm', 'value' => $item['name'], 'tabindex' => ++$tabindex]) ?>
+                                    <?= form_input(['name' => 'name', 'id' => 'name', 'class' => 'form-control form-control-sm', 'value' => $item['name'], 'tabindex' => ++$tabindex]) ?>
                                 </td>
                             <?php } else { ?>
                                 <td><?= esc($item['item_number']) ?></td>
@@ -206,7 +206,7 @@ helper('url');
                                             ? glob("./uploads/item_pics/{$item['pic_filename']}.*")
                                             : glob("./uploads/item_pics/{$item['pic_filename']}");
                                         if (sizeof($images) > 0): ?>
-                                            <img alt="<?= esc($item['name']) ?>" class="pull-left" style="max-width: 32px; max-height: 32px; margin-right: 6px;"
+                                            <img alt="<?= esc($item['name']) ?>" class="float-start" style="max-width: 32px; max-height: 32px; margin-right: 6px;"
                                                 src="<?= site_url('items/PicThumb/' . pathinfo($images[0], PATHINFO_BASENAME)) ?>">
                                         <?php endif;
                                     endif; ?>
@@ -220,7 +220,7 @@ helper('url');
                             <td>
                                 <?php
                                 if ($items_module_allowed && $change_price) {
-                                    echo form_input(['name' => 'price', 'class' => 'form-control input-sm', 'value' => to_currency_no_money($item['price']), 'tabindex' => ++$tabindex, 'onClick' => 'this.select();']);
+                                    echo form_input(['name' => 'price', 'class' => 'form-control form-control-sm', 'value' => to_currency_no_money($item['price']), 'tabindex' => ++$tabindex, 'onClick' => 'this.select();']);
                                 } else {
                                     echo to_currency($item['price']);
                                     echo form_hidden('price', to_currency_no_money($item['price']));
@@ -236,7 +236,7 @@ helper('url');
                                         ],
                                         $current_price_type,
                                         [
-                                            'class'         => 'form-control input-sm price_type_select',
+                                            'class'         => 'form-select form-select-sm price_type_select',
                                             'style'         => 'margin-top:4px;',
                                             'data-original' => (string)$current_price_type,
                                             'data-wholesale' => to_currency_no_money($item['price_wholesale'] ?? $item['price']),
@@ -255,14 +255,14 @@ helper('url');
                                     echo to_quantity_decimals($item['quantity']);
                                     echo form_hidden('quantity', $item['quantity']);
                                 } else {
-                                    echo form_input(['name' => 'quantity', 'class' => 'form-control input-sm', 'value' => to_quantity_decimals($item['quantity']), 'tabindex' => ++$tabindex, 'onClick' => 'this.select();']);
+                                    echo form_input(['name' => 'quantity', 'class' => 'form-control form-control-sm', 'value' => to_quantity_decimals($item['quantity']), 'tabindex' => ++$tabindex, 'onClick' => 'this.select();']);
                                 }
                                 ?>
                             </td>
 
                             <td>
                                 <div class="input-group">
-                                    <?= form_input(['name' => 'discount', 'class' => 'form-control input-sm', 'value' => $item['discount_type'] ? to_currency_no_money($item['discount']) : to_decimals($item['discount']), 'tabindex' => ++$tabindex, 'onClick' => 'this.select();', 'data-original' => $item['discount_type'] ? to_currency_no_money($item['discount']) : to_decimals($item['discount']), 'data-original-type' => (string)(int)$item['discount_type']]) ?>
+                                    <?= form_input(['name' => 'discount', 'class' => 'form-control form-control-sm', 'value' => $item['discount_type'] ? to_currency_no_money($item['discount']) : to_decimals($item['discount']), 'tabindex' => ++$tabindex, 'onClick' => 'this.select();', 'data-original' => $item['discount_type'] ? to_currency_no_money($item['discount']) : to_decimals($item['discount']), 'data-original-type' => (string)(int)$item['discount_type']]) ?>
                                     <span class="input-group-btn">
                                         <?= form_checkbox(['id' => 'discount_toggle', 'name' => 'discount_toggle', 'value' => 1, 'data-toggle' => "toggle", 'data-size' => 'small', 'data-onstyle' => 'success', 'data-on' => '<b>' . $config['currency_symbol'] . '</b>', 'data-off' => '<b>%</b>', 'data-line' => $line, 'checked' => $item['discount_type'] == 1]) ?>
                                     </span>
@@ -272,7 +272,7 @@ helper('url');
                             <td>
                                 <?php
                                 if ($item['item_type'] == ITEM_AMOUNT_ENTRY) {    // TODO: === ?
-                                    echo form_input(['name' => 'discounted_total', 'class' => 'form-control input-sm', 'value' => to_currency_no_money($item['discounted_total']), 'tabindex' => ++$tabindex, 'onClick' => 'this.select();']);
+                                    echo form_input(['name' => 'discounted_total', 'class' => 'form-control form-control-sm', 'value' => to_currency_no_money($item['discounted_total']), 'tabindex' => ++$tabindex, 'onClick' => 'this.select();']);
                                 } else {
                                     echo to_currency($item['discounted_total']);
                                 }
@@ -289,7 +289,7 @@ helper('url');
                             <?php if ($item['item_type'] == ITEM_TEMP) { ?>
                                 <td><?= form_input(['type' => 'hidden', 'name' => 'item_id', 'value' => $item['item_id']]) ?></td>
                                 <td style="align: center;" colspan="6">
-                                    <?= form_input(['name' => 'item_description', 'id' => 'item_description', 'class' => 'form-control input-sm', 'value' => $item['description'], 'tabindex' => ++$tabindex]) ?>
+                                    <?= form_input(['name' => 'item_description', 'id' => 'item_description', 'class' => 'form-control form-control-sm', 'value' => $item['description'], 'tabindex' => ++$tabindex]) ?>
                                 </td>
                                 <td> </td>
                             <?php } else { ?>
@@ -301,7 +301,7 @@ helper('url');
                                 <td colspan="2" style="text-align: left;">
                                     <?php
                                     if ($item['allow_alt_description']) {
-                                        echo form_input(['name' => 'description', 'class' => 'form-control input-sm', 'value' => $item['description'], 'onClick' => 'this.select();']);
+                                        echo form_input(['name' => 'description', 'class' => 'form-control form-control-sm', 'value' => $item['description'], 'onClick' => 'this.select();']);
                                     } else {
                                         if ($item['description'] != '') {
                                             echo $item['description'];
@@ -331,8 +331,8 @@ helper('url');
 
 <!-- Overall Sale -->
 
-<div id="overall_sale" class="panel panel-default">
-    <div class="panel-body">
+<div id="overall_sale" class="card">
+    <div class="card-body">
         <?= form_open("$controller_name/selectCustomer", ['id' => 'select_customer_form', 'class' => 'form-horizontal']) ?>
             <?php if (isset($customer)) { ?>
                 <table class="sales_table_100">
@@ -397,12 +397,12 @@ helper('url');
                     <label id="customer_label" for="customer" class="control-label" style="margin-bottom: 1em; margin-top: -1em;">
                         <?= lang(ucfirst($controller_name) . '.select_customer') . esc(" $customer_required") ?>
                     </label>
-                    <?= form_input(['name' => 'customer', 'id' => 'customer', 'class' => 'form-control input-sm', 'value' => lang(ucfirst($controller_name) . '.start_typing_customer_name')]) ?>
+                    <?= form_input(['name' => 'customer', 'id' => 'customer', 'class' => 'form-control form-control-sm', 'value' => lang(ucfirst($controller_name) . '.start_typing_customer_name')]) ?>
 
                     <button class="btn btn-info btn-sm modal-dlg" data-btn-submit="<?= lang('Common.submit') ?>" data-href="<?= "customers/view" ?>" title="<?= lang(ucfirst($controller_name) . ".new_customer") ?>">
                         <span class="bi bi-person">&nbsp;</span><?= lang(ucfirst($controller_name) . ".new_customer") ?>
                     </button>
-                    <button class="btn btn-default btn-sm modal-dlg" id="show_keyboard_help" data-href="<?= esc("$controller_name/salesKeyboardHelp") ?>" title="<?= lang(ucfirst($controller_name) . '.key_title') ?>">
+                    <button class="btn btn-outline-secondary btn-sm modal-dlg" id="show_keyboard_help" data-href="<?= esc("$controller_name/salesKeyboardHelp") ?>" title="<?= lang(ucfirst($controller_name) . '.key_title') ?>">
                         <span class="bi bi-share">&nbsp;</span><?= lang(ucfirst($controller_name) . '.key_help') ?>
                     </button>
                 </div>
@@ -445,13 +445,13 @@ helper('url');
                             <tr>
                                 <td><?= lang(ucfirst($controller_name) . '.payment') ?></td>
                                 <td>
-                                    <?= form_dropdown('payment_type', $payment_options, $selected_payment_type, ['id' => 'payment_types', 'class' => 'selectpicker show-menu-arrow', 'data-style' => 'btn-default btn-sm', 'data-width' => 'fit', 'disabled' => 'disabled']) ?>
+                                    <?= form_dropdown('payment_type', $payment_options, $selected_payment_type, ['id' => 'payment_types', 'class' => 'selectpicker show-menu-arrow', 'data-style' => 'btn-outline-secondary btn-sm', 'data-width' => 'fit', 'disabled' => 'disabled']) ?>
                                 </td>
                             </tr>
                             <tr>
                                 <td><span id="amount_tendered_label"><?= lang(ucfirst($controller_name) . '.amount_tendered') ?></span></td>
                                 <td>
-                                    <?= form_input(['name' => 'amount_tendered', 'id' => 'amount_tendered', 'class' => 'form-control input-sm disabled', 'disabled' => 'disabled', 'value' => '0', 'size' => '5', 'tabindex' => ++$tabindex, 'onClick' => 'this.select();']) ?>
+                                    <?= form_input(['name' => 'amount_tendered', 'id' => 'amount_tendered', 'class' => 'form-control form-control-sm disabled', 'disabled' => 'disabled', 'value' => '0', 'size' => '5', 'tabindex' => ++$tabindex, 'onClick' => 'this.select();']) ?>
                                 </td>
                             </tr>
                         </table>
@@ -472,7 +472,7 @@ helper('url');
 
                         if (!$due_payment || ($due_payment && isset($customer))) {    // TODO: $due_payment is not needed because the first clause insures that it will always be true if it gets to this point.  Can be shortened to if (!$due_payment || isset($customer))
                     ?>
-                            <div class="btn btn-sm btn-success pull-right" id="finish_sale_button" tabindex="<?= ++$tabindex ?>">
+                            <div class="btn btn-sm btn-success float-end" id="finish_sale_button" tabindex="<?= ++$tabindex ?>">
                                 <span class="bi bi-check-lg">&nbsp;</span><?= lang(ucfirst($controller_name) . '.complete_sale') ?>
                             </div>
                     <?php
@@ -485,20 +485,20 @@ helper('url');
                             <tr>
                                 <td><?= lang(ucfirst($controller_name) . '.payment') ?></td>
                                 <td>
-                                    <?= form_dropdown('payment_type', $payment_options,  $selected_payment_type, ['id' => 'payment_types', 'class' => 'selectpicker show-menu-arrow', 'data-style' => 'btn-default btn-sm', 'data-width' => 'fit']) ?>
+                                    <?= form_dropdown('payment_type', $payment_options,  $selected_payment_type, ['id' => 'payment_types', 'class' => 'selectpicker show-menu-arrow', 'data-style' => 'btn-outline-secondary btn-sm', 'data-width' => 'fit']) ?>
                                 </td>
                             </tr>
                             <tr>
                                 <td><span id="amount_tendered_label"><?= lang(ucfirst($controller_name) . '.amount_tendered') ?></span></td>
                                 <td>
-                                    <?= form_input(['name' => 'amount_tendered', 'id' => 'amount_tendered', 'class' => 'form-control input-sm non-giftcard-input', 'value' => to_currency_no_money($amount_due), 'size' => '5', 'tabindex' => ++$tabindex, 'onClick' => 'this.select();']) ?>
-                                    <?= form_input(['name' => 'amount_tendered', 'id' => 'amount_tendered', 'class' => 'form-control input-sm giftcard-input', 'disabled' => true, 'value' => to_currency_no_money($amount_due), 'size' => '5', 'tabindex' => ++$tabindex]) ?>
+                                    <?= form_input(['name' => 'amount_tendered', 'id' => 'amount_tendered', 'class' => 'form-control form-control-sm non-giftcard-input', 'value' => to_currency_no_money($amount_due), 'size' => '5', 'tabindex' => ++$tabindex, 'onClick' => 'this.select();']) ?>
+                                    <?= form_input(['name' => 'amount_tendered', 'id' => 'amount_tendered', 'class' => 'form-control form-control-sm giftcard-input', 'disabled' => true, 'value' => to_currency_no_money($amount_due), 'size' => '5', 'tabindex' => ++$tabindex]) ?>
                                 </td>
                             </tr>
                         </table>
                     <?= form_close() ?>
 
-                    <div class="btn btn-sm btn-success pull-right" id="add_payment_button" tabindex="<?= ++$tabindex ?>">
+                    <div class="btn btn-sm btn-success float-end" id="add_payment_button" tabindex="<?= ++$tabindex ?>">
                         <span class="bi bi-credit-card">&nbsp;</span><?= lang(ucfirst($controller_name) . '.add_payment') ?>
                     </div>
                 <?php } ?>
@@ -528,17 +528,17 @@ helper('url');
 
             <?= form_open("$controller_name/cancel", ['id' => 'buttons_form']) ?>
             <div class="form-group" id="buttons_sale">
-                <div class="btn btn-sm btn-default pull-left" id="suspend_sale_button"><span class="bi bi-justify">&nbsp;</span><?= lang(ucfirst($controller_name) . '.suspend_sale') ?></div>
+                <div class="btn btn-sm btn-outline-secondary float-start" id="suspend_sale_button"><span class="bi bi-justify">&nbsp;</span><?= lang(ucfirst($controller_name) . '.suspend_sale') ?></div>
                 <?php if (!$pos_mode && isset($customer)) { // Only show this part if the payment covers the total ?>
                     <div class="btn btn-sm btn-success" id="finish_invoice_quote_button"><span class="bi bi-check-lg">&nbsp;</span><?= esc($mode_label) ?></div>
                 <?php } ?>
 
-                <div class="btn btn-sm btn-danger pull-right" id="cancel_sale_button"><span class="bi bi-x-lg">&nbsp;</span><?= lang(ucfirst($controller_name) . '.cancel_sale') ?></div>
+                <div class="btn btn-sm btn-danger float-end" id="cancel_sale_button"><span class="bi bi-x-lg">&nbsp;</span><?= lang(ucfirst($controller_name) . '.cancel_sale') ?></div>
             </div>
             <?php if ($payments_cover_total || !$pos_mode) { ?>
             <div class="form-group form-group-sm" style="margin-top: 8px; margin-bottom: 4px;">
                 <label class="control-label" style="display:block; margin-bottom: 2px;"><?= lang('Sales.sale_channel') ?></label>
-                <select name="sale_channel" class="form-control input-sm">
+                <select name="sale_channel" class="form-select form-select-sm">
                     <option value="store"><?= lang('Sales.sale_channel_store') ?></option>
                     <option value="delivery"><?= lang('Sales.sale_channel_delivery') ?></option>
                     <option value="shipping"><?= lang('Sales.sale_channel_shipping') ?></option>
@@ -551,15 +551,15 @@ helper('url');
                 <div class="container-fluid">
                     <div class="no-gutter row">
                         <div class="form-group form-group-sm">
-                            <div class="col-xs-12">
+                            <div class="col-12">
                                 <?= form_label(lang('Common.comments'), 'comments', ['class' => 'control-label', 'id' => 'comment_label', 'for' => 'comment']) ?>
-                                <?= form_textarea(['name' => 'comment', 'id' => 'comment', 'class' => 'form-control input-sm', 'value' => $comment, 'rows' => '2']) ?>
+                                <?= form_textarea(['name' => 'comment', 'id' => 'comment', 'class' => 'form-control form-control-sm', 'value' => $comment, 'rows' => '2']) ?>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group form-group-sm">
-                            <div class="col-xs-6">
+                            <div class="col-6">
                                 <label for="sales_print_after_sale" class="control-label checkbox">
                                     <?= form_checkbox(['name' => 'sales_print_after_sale', 'id' => 'sales_print_after_sale', 'value' => 1, 'checked' => $print_after_sale]) ?>
                                     <?= lang(ucfirst($controller_name) . '.print_after_sale') ?>
@@ -567,7 +567,7 @@ helper('url');
                             </div>
 
                             <?php if ($mode == 'sale_work_order') { ?>
-                                <div class="col-xs-6">
+                                <div class="col-6">
                                     <label for="price_work_orders" class="control-label checkbox">
                                         <?= form_checkbox(['name' => 'price_work_orders', 'id' => 'price_work_orders', 'value' => 1, 'checked' => $price_work_orders]) ?>
                                         <?= lang(ucfirst($controller_name) . '.include_prices') ?>
@@ -579,16 +579,16 @@ helper('url');
                     <?php if (($mode == 'sale_invoice') && $config['invoice_enable']) { ?>
                         <div class="row">
                             <div class="form-group form-group-sm">
-                                <div class="col-xs-6">
+                                <div class="col-6">
                                     <label for="sales_invoice_number" class="control-label checkbox">
                                         <?= lang(ucfirst($controller_name) . '.invoice_enable') ?>
                                     </label>
                                 </div>
 
-                                <div class="col-xs-6">
+                                <div class="col-6">
                                     <div class="input-group input-group-sm">
-                                        <span class="input-group-addon input-sm">#</span>
-                                        <?= form_input(['name' => 'sales_invoice_number', 'id' => 'sales_invoice_number', 'class' => 'form-control input-sm', 'value' => $invoice_number]) ?>
+                                        <span class="input-group-text form-control-sm">#</span>
+                                        <?= form_input(['name' => 'sales_invoice_number', 'id' => 'sales_invoice_number', 'class' => 'form-control form-control-sm', 'value' => $invoice_number]) ?>
                                     </div>
                                 </div>
                             </div>
@@ -603,7 +603,7 @@ helper('url');
 </div>
 
 <!-- Discount Authorization Modal -->
-<div class="modal fade" id="da_modal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+<div class="modal fade" id="da_modal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
 
@@ -615,7 +615,7 @@ helper('url');
                     </h4>
                 </div>
                 <div class="modal-body">
-                    <table class="table table-condensed" style="margin-bottom:6px;">
+                    <table class="table table-sm" style="margin-bottom:6px;">
                         <tbody>
                             <tr style="background:#f9f9f9;">
                                 <td style="width:45%; color:#888;">Cajero</td>
@@ -660,7 +660,7 @@ helper('url');
                     <button id="da_request_btn" type="button" class="btn btn-warning btn-block">
                         <span class="bi bi-send"></span>&nbsp;Solicitar Autorización
                     </button>
-                    <button id="da_cancel_btn" type="button" class="btn btn-default btn-block" style="margin-top:6px;">
+                    <button id="da_cancel_btn" type="button" class="btn btn-outline-secondary btn-block" style="margin-top:6px;">
                         Cancelar
                     </button>
                 </div>
@@ -675,7 +675,7 @@ helper('url');
                 </div>
                 <div class="modal-body">
                     <div style="background:#f9f9f9; border-radius:4px; padding:10px; margin-bottom:12px;">
-                        <table class="table table-condensed" style="margin:0;">
+                        <table class="table table-sm" style="margin:0;">
                             <tbody>
                                 <tr>
                                     <td style="width:45%; color:#888;">Artículo</td>
@@ -717,7 +717,7 @@ helper('url');
                     <button id="da_apply_btn" type="button" class="btn btn-success btn-block" disabled>
                         <span class="bi bi-check-lg"></span>&nbsp;Aplicar Código
                     </button>
-                    <button id="da_cancel_wait_btn" type="button" class="btn btn-default btn-block" style="margin-top:6px;">
+                    <button id="da_cancel_wait_btn" type="button" class="btn btn-outline-secondary btn-block" style="margin-top:6px;">
                         Cancelar solicitud
                     </button>
                 </div>
@@ -728,7 +728,7 @@ helper('url');
 </div>
 
 <!-- Price Type Authorization Modal -->
-<div class="modal fade" id="pa_modal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+<div class="modal fade" id="pa_modal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
 
@@ -740,7 +740,7 @@ helper('url');
                     </h4>
                 </div>
                 <div class="modal-body">
-                    <table class="table table-condensed" style="margin-bottom:6px;">
+                    <table class="table table-sm" style="margin-bottom:6px;">
                         <tbody>
                             <tr style="background:#f9f9f9;">
                                 <td style="width:45%; color:#888;">Cajero</td>
@@ -769,7 +769,7 @@ helper('url');
                     <button id="pa_request_btn" type="button" class="btn btn-warning btn-block">
                         <span class="bi bi-send"></span>&nbsp;Solicitar Autorización
                     </button>
-                    <button id="pa_cancel_btn" type="button" class="btn btn-default btn-block" style="margin-top:6px;">
+                    <button id="pa_cancel_btn" type="button" class="btn btn-outline-secondary btn-block" style="margin-top:6px;">
                         Cancelar
                     </button>
                 </div>
@@ -784,7 +784,7 @@ helper('url');
                 </div>
                 <div class="modal-body">
                     <div style="background:#f9f9f9; border-radius:4px; padding:10px; margin-bottom:12px;">
-                        <table class="table table-condensed" style="margin:0;">
+                        <table class="table table-sm" style="margin:0;">
                             <tbody>
                                 <tr>
                                     <td style="width:45%; color:#888;">Artículo</td>
@@ -822,7 +822,7 @@ helper('url');
                     <button id="pa_apply_btn" type="button" class="btn btn-success btn-block" disabled>
                         <span class="bi bi-check-lg"></span>&nbsp;Aplicar Código
                     </button>
-                    <button id="pa_cancel_wait_btn" type="button" class="btn btn-default btn-block" style="margin-top:6px;">
+                    <button id="pa_cancel_wait_btn" type="button" class="btn btn-outline-secondary btn-block" style="margin-top:6px;">
                         Cancelar solicitud
                     </button>
                 </div>
@@ -834,11 +834,11 @@ helper('url');
 
 <!-- PIN Identification Modal -->
 <div class="modal fade" id="pin_modal" tabindex="-1" role="dialog"
-     data-backdrop="static" data-keyboard="false" aria-labelledby="pin_modal_label">
+     data-bs-backdrop="static" data-keyboard="false" aria-labelledby="pin_modal_label">
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <a href="<?= site_url('home') ?>" class="close" style="float:right; font-size:1.5em;" title="<?= lang('Common.home') ?>">&times;</a>
+                <a href="<?= site_url('home') ?>" class="btn-close float-end" title="<?= lang('Common.home') ?>" aria-label="<?= lang('Common.home') ?>"></a>
                 <h4 class="modal-title" id="pin_modal_label">
                     <span class="bi bi-person"></span>&nbsp;<?= lang('Sales.pin_identify') ?>
                 </h4>
@@ -847,7 +847,7 @@ helper('url');
                 <p class="text-muted"><?= lang('Sales.pin_enter_prompt') ?></p>
                 <div style="margin: 0 auto; max-width: 180px;">
                     <input type="password" id="pin_input" inputmode="numeric" maxlength="4"
-                           class="form-control input-lg" style="text-align:center; letter-spacing:0.4em; font-size:2em;"
+                           class="form-control form-control-lg" style="text-align:center; letter-spacing:0.4em; font-size:2em;"
                            placeholder="????">
                 </div>
                 <div id="pin_error" class="text-danger" style="margin-top:10px; min-height:20px;"></div>
@@ -861,7 +861,7 @@ helper('url');
                 $_pid_check = session()->get('person_id');
                 if ($_emp_check->has_grant('sales_consult_stock', $_pid_check)):
                 ?>
-                <button type="button" id="pin_stock_consult_btn" class="btn btn-default btn-sm" style="display:block; margin:10px auto 0;">
+                <button type="button" id="pin_stock_consult_btn" class="btn btn-outline-secondary btn-sm" style="display:block; margin:10px auto 0;">
                     <span class="bi bi-list-ul"></span>&nbsp;<?= lang('Sales.stock_consult') ?>
                 </button>
                 <?php endif; ?>
@@ -1730,8 +1730,8 @@ helper('url');
                     if (response.success) {
                         // Update badge
                         $('#current_cashier_badge')
-                            .removeClass('label-default')
-                            .addClass('label-success')
+                            .removeClass('text-bg-secondary')
+                            .addClass('text-bg-success')
                             .html('<span class="bi bi-person"></span>&nbsp;<?= lang('Sales.cashier') ?>: ' + response.name);
                         $('#pin_modal').modal('hide');
                         setTimeout(function() { $('#item').focus(); }, 300);
@@ -1752,8 +1752,8 @@ helper('url');
             $('#pin_error').text(msg);
             $('#pin_input').val('').focus();
             // Shake animation
-            $('#pin_input').addClass('has-error');
-            setTimeout(function() { $('#pin_input').removeClass('has-error'); }, 600);
+            $('#pin_input').addClass('is-invalid');
+            setTimeout(function() { $('#pin_input').removeClass('is-invalid'); }, 600);
         }
 
         // Stock consultation button

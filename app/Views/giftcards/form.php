@@ -17,12 +17,12 @@
     <fieldset id="giftcard_basic_info">
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Giftcards.person_id'), 'person_name', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Giftcards.person_id'), 'person_name', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_input([
                     'name'  => 'person_name',
                     'id'    => 'person_name',
-                    'class' => 'form-control input-sm',
+                    'class' => 'form-control form-control-sm',
                     'value' => $selected_person_name
                 ]) ?>
                 <?= form_hidden('person_id', (string)$selected_person_id) ?>
@@ -36,12 +36,12 @@
         }
         ?>
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Giftcards.giftcard_number'), 'giftcard_number', ['class' => "control-label col-xs-3$class"]) ?>
-            <div class="col-xs-4">
+            <?= form_label(lang('Giftcards.giftcard_number'), 'giftcard_number', ['class' => "control-label col-3$class"]) ?>
+            <div class="col-4">
                 <?= form_input([
                     'name'  => 'giftcard_number',
                     'id'    => 'giftcard_number',
-                    'class' => 'form-control input-sm',
+                    'class' => 'form-control form-control-sm',
                     'value' => $giftcard_number
                 ]) ?>
             </div>
@@ -49,20 +49,20 @@
 
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Giftcards.card_value'), 'giftcard_amount', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-4">
+            <?= form_label(lang('Giftcards.card_value'), 'giftcard_amount', ['class' => 'required control-label col-3']) ?>
+            <div class="col-4">
                 <div class="input-group input-group-sm">
                     <?php if (!is_right_side_currency_symbol()): ?>
-                        <span class="input-group-addon input-sm"><?= esc($config['currency_symbol']) ?></span>
+                        <span class="input-group-text form-control-sm"><?= esc($config['currency_symbol']) ?></span>
                     <?php endif; ?>
                     <?= form_input([
                         'name'  => 'giftcard_amount',
                         'id'    => 'giftcard_amount',
-                        'class' => 'form-control input-sm',
+                        'class' => 'form-control form-control-sm',
                         'value' => to_currency_no_money($giftcard_value)
                     ]) ?>
                     <?php if (is_right_side_currency_symbol()): ?>
-                        <span class="input-group-addon input-sm"><b><?= esc($config['currency_symbol']) ?></span>
+                        <span class="input-group-text form-control-sm"><b><?= esc($config['currency_symbol']) ?></span>
                     <?php endif; ?>
                 </div>
             </div>

@@ -72,35 +72,35 @@
 <?= view('partial/print_receipt', ['print_after_sale' => false, 'selected_printer' => 'takings_printer']) ?>
 
 <div id="title_bar" class="print_hide btn-toolbar">
-    <button onclick="javascript:printdoc()" class="btn btn-info btn-sm pull-right">
+    <button onclick="javascript:printdoc()" class="btn btn-info btn-sm float-end">
         <span class="bi bi-printer">&nbsp;</span><?= lang('Common.print') ?>
     </button>
-    <?= anchor("sales", '<span class="bi bi-cart">&nbsp;</span>' . lang('Sales.register'), ['class' => 'btn btn-info btn-sm pull-right', 'id' => 'show_sales_button']) ?>
+    <?= anchor("sales", '<span class="bi bi-cart">&nbsp;</span>' . lang('Sales.register'), ['class' => 'btn btn-info btn-sm float-end', 'id' => 'show_sales_button']) ?>
 </div>
 
 <div id="toolbar">
-    <div class="pull-left form-inline" role="toolbar">
-        <button id="delete" class="btn btn-default btn-sm print_hide">
+    <div class="float-start d-flex flex-wrap gap-2 align-items-center" role="toolbar">
+        <button id="delete" class="btn btn-outline-secondary btn-sm print_hide">
             <span class="bi bi-trash">&nbsp;</span><?= lang('Common.delete') ?>
         </button>
 
-        <?= form_input(['name' => 'daterangepicker', 'class' => 'form-control input-sm', 'id' => 'daterangepicker']) ?>
+        <?= form_input(['name' => 'daterangepicker', 'class' => 'form-control form-control-sm', 'id' => 'daterangepicker']) ?>
         <?= form_multiselect('filters[]', $filters, $selected_filters, [
             'id'                        => 'filters',
             'data-none-selected-text'   => lang('Common.none_selected_text'),
             'class'                     => 'selectpicker show-menu-arrow',
             'data-selected-text-format' => 'count > 1',
-            'data-style'                => 'btn-default btn-sm',
+            'data-style'                => 'btn-outline-secondary btn-sm',
             'data-width'                => 'fit'
         ]) ?>
         <?= form_dropdown('payment_filter', $payment_filter_options, '', [
             'id'          => 'payment_filter',
             'class'       => 'selectpicker show-menu-arrow',
-            'data-style'  => 'btn-default btn-sm',
+            'data-style'  => 'btn-outline-secondary btn-sm',
             'data-width'  => 'fit'
         ]) ?>
         <?php if (!empty($show_location_filter) && !empty($stock_locations)): ?>
-            <?= form_dropdown('location_id_filter', ['all' => lang('Reports.all')] + $stock_locations, 'all', ['id' => 'location_id_filter', 'class' => 'form-control input-sm']) ?>
+            <?= form_dropdown('location_id_filter', ['all' => lang('Reports.all')] + $stock_locations, 'all', ['id' => 'location_id_filter', 'class' => 'form-select form-select-sm']) ?>
         <?php endif; ?>
     </div>
 </div>

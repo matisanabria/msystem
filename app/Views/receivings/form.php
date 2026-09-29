@@ -15,49 +15,49 @@
     <fieldset id="receiving_basic_info">
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Receivings.receipt_number'), 'supplier', ['class' => 'control-label col-xs-3']) ?>
-            <?= anchor('receivings/receipt/' . $receiving_info['receiving_id'], 'RECV ' . $receiving_info['receiving_id'], ['target' => '_blank', 'class' => 'control-label col-xs-8', "style" => "text-align: left"]) ?>
+            <?= form_label(lang('Receivings.receipt_number'), 'supplier', ['class' => 'control-label col-3']) ?>
+            <?= anchor('receivings/receipt/' . $receiving_info['receiving_id'], 'RECV ' . $receiving_info['receiving_id'], ['target' => '_blank', 'class' => 'control-label col-8', "style" => "text-align: left"]) ?>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Receivings.date'), 'date', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Receivings.date'), 'date', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_input([
                     'name'     => 'date',
                     'value'    => to_datetime(strtotime($receiving_info['receiving_time'])),
                     'id'       => 'datetime',
-                    'class'    => 'datetime form-control input-sm',
+                    'class'    => 'datetime form-control form-control-sm',
                     'readonly' => 'readonly'
                 ]) ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Receivings.supplier'), 'supplier', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <?= form_input(['name' => 'supplier_name', 'value' => $selected_supplier_name, 'id' => 'supplier_name', 'class' => 'form-control input-sm']) ?>
+            <?= form_label(lang('Receivings.supplier'), 'supplier', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
+                <?= form_input(['name' => 'supplier_name', 'value' => $selected_supplier_name, 'id' => 'supplier_name', 'class' => 'form-control form-control-sm']) ?>
                 <?= form_hidden('supplier_id', $selected_supplier_id ?? '') ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Receivings.reference'), 'reference', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <?= form_input(['name' => 'reference', 'value' => $receiving_info['reference'], 'id' => 'reference', 'class' => 'form-control input-sm']) ?>
+            <?= form_label(lang('Receivings.reference'), 'reference', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
+                <?= form_input(['name' => 'reference', 'value' => $receiving_info['reference'], 'id' => 'reference', 'class' => 'form-control form-control-sm']) ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Receivings.employee'), 'employee', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <?= form_dropdown('employee_id', $employees, $receiving_info['employee_id'], 'id="employee_id" class="form-control"') ?>
+            <?= form_label(lang('Receivings.employee'), 'employee', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
+                <?= form_dropdown('employee_id', $employees, $receiving_info['employee_id'], 'id="employee_id" class="form-select"') ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Receivings.comments'), 'comment', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <?= form_textarea(['name' => 'comment', 'value' => $receiving_info['comment'], 'id' => 'comment', 'class' => 'form-control input-sm']) ?>
+            <?= form_label(lang('Receivings.comments'), 'comment', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
+                <?= form_textarea(['name' => 'comment', 'value' => $receiving_info['comment'], 'id' => 'comment', 'class' => 'form-control form-control-sm']) ?>
             </div>
         </div>
 

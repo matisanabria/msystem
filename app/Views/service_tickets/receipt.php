@@ -62,7 +62,7 @@
         </div>
     </a>
     <a href="javascript:history.back();">
-        <div class="btn btn-default btn-sm">Volver</div>
+        <div class="btn btn-outline-secondary btn-sm">Volver</div>
     </a>
 </div>
 

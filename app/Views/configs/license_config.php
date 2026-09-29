@@ -13,8 +13,8 @@
             foreach ($licenses as $license) {
             ?>
                 <div class="form-group form-group-sm">
-                    <?= form_label($license['title'], 'license', ['class' => 'control-label col-xs-3']) ?>
-                    <div class="col-xs-6">
+                    <?= form_label($license['title'], 'license', ['class' => 'control-label col-3']) ?>
+                    <div class="col-6">
                         <?= form_textarea([
                             'name'     => 'license',
                             'id'       => 'license_' . $counter++,    // TODO: String Interpolation

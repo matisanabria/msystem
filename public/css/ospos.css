@@ -23,6 +23,12 @@ a.none {
     border-radius: 0;
 }
 
+/* Same navy as the .topbar so the header reads as one block */
+.navbar.navbar-ospos {
+    background-color: #182735;
+    border-top: 1px solid rgba(255, 255, 255, .08);
+}
+
 .tab-pane {
     padding-top: 10px;
 }
@@ -163,4 +169,60 @@ label.required {
 .no-gutter [class*="-1"] {
     padding-right: 0;
     padding-left: 0;
+}
+
+/*
+ * Bootstrap 3 -> 5 compatibility for legacy form markup.
+ * BS3 form-groups with grid columns acted as rows (form-horizontal); BS5 removed .form-group entirely.
+ */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group:has(> [class*="col-"]) {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: calc(var(--bs-gutter-x, 1.5rem) * -.5);
+    margin-left: calc(var(--bs-gutter-x, 1.5rem) * -.5);
+}
+
+.form-group > [class*="col-"] {
+    padding-right: calc(var(--bs-gutter-x, 1.5rem) * .5);
+    padding-left: calc(var(--bs-gutter-x, 1.5rem) * .5);
+}
+
+.form-horizontal .control-label {
+    padding-top: 7px;
+    margin-bottom: 0;
+    text-align: right;
+}
+
+.checkbox,
+.radio {
+    display: block;
+    margin-bottom: .5rem;
+}
+
+.checkbox label,
+.radio label,
+.checkbox-inline,
+.radio-inline {
+    font-weight: normal;
+}
+
+.checkbox-inline,
+.radio-inline {
+    display: inline-block;
+    margin-right: 1rem;
+}
+
+.checkbox input[type="checkbox"],
+.radio input[type="radio"],
+.checkbox-inline input,
+.radio-inline input {
+    margin-right: .4rem;
+}
+
+.input-group-btn {
+    display: contents;
 }

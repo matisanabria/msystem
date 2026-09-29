@@ -15,66 +15,66 @@
     <fieldset class="form-horizontal">
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Inventory_outputs.barcode'), 'view_barcode', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Inventory_outputs.barcode'), 'view_barcode', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <div class="input-group">
-                    <span class="input-group-addon input-sm"><span class="bi bi-upc-scan"></span></span>
-                    <?= form_input(['name' => 'view_barcode', 'id' => 'view_barcode', 'class' => 'form-control input-sm', 'value' => $output_info->item_number ?? '', 'disabled' => 'disabled']) ?>
+                    <span class="input-group-text form-control-sm"><span class="bi bi-upc-scan"></span></span>
+                    <?= form_input(['name' => 'view_barcode', 'id' => 'view_barcode', 'class' => 'form-control form-control-sm', 'value' => $output_info->item_number ?? '', 'disabled' => 'disabled']) ?>
                 </div>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Inventory_outputs.item_name'), 'view_item_name', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <?= form_input(['name' => 'view_item_name', 'id' => 'view_item_name', 'class' => 'form-control input-sm', 'value' => $output_info->item_name ?? '', 'disabled' => 'disabled']) ?>
+            <?= form_label(lang('Inventory_outputs.item_name'), 'view_item_name', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
+                <?= form_input(['name' => 'view_item_name', 'id' => 'view_item_name', 'class' => 'form-control form-control-sm', 'value' => $output_info->item_name ?? '', 'disabled' => 'disabled']) ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Common.location'), 'view_location', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Common.location'), 'view_location', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <div class="input-group">
-                    <span class="input-group-addon input-sm"><span class="bi bi-geo-alt"></span></span>
-                    <?= form_input(['name' => 'view_location', 'id' => 'view_location', 'class' => 'form-control input-sm', 'value' => $output_info->location_name ?? '', 'disabled' => 'disabled']) ?>
+                    <span class="input-group-text form-control-sm"><span class="bi bi-geo-alt"></span></span>
+                    <?= form_input(['name' => 'view_location', 'id' => 'view_location', 'class' => 'form-control form-control-sm', 'value' => $output_info->location_name ?? '', 'disabled' => 'disabled']) ?>
                 </div>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Inventory_outputs.quantity'), 'view_quantity', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-4">
-                <?= form_input(['name' => 'view_quantity', 'id' => 'view_quantity', 'class' => 'form-control input-sm', 'value' => to_quantity_decimals($output_info->quantity ?? 0), 'disabled' => 'disabled']) ?>
+            <?= form_label(lang('Inventory_outputs.quantity'), 'view_quantity', ['class' => 'control-label col-3']) ?>
+            <div class="col-4">
+                <?= form_input(['name' => 'view_quantity', 'id' => 'view_quantity', 'class' => 'form-control form-control-sm', 'value' => to_quantity_decimals($output_info->quantity ?? 0), 'disabled' => 'disabled']) ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Inventory_outputs.reason'), 'view_reason', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <?= form_input(['name' => 'view_reason', 'id' => 'view_reason', 'class' => 'form-control input-sm', 'value' => $reasons[$output_info->reason ?? ''] ?? '', 'disabled' => 'disabled']) ?>
+            <?= form_label(lang('Inventory_outputs.reason'), 'view_reason', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
+                <?= form_input(['name' => 'view_reason', 'id' => 'view_reason', 'class' => 'form-control form-control-sm', 'value' => $reasons[$output_info->reason ?? ''] ?? '', 'disabled' => 'disabled']) ?>
             </div>
         </div>
 
         <?php if (!empty($output_info->comment)): ?>
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Inventory_outputs.comment'), 'view_comment', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <?= form_textarea(['name' => 'view_comment', 'id' => 'view_comment', 'class' => 'form-control input-sm', 'value' => $output_info->comment ?? '', 'disabled' => 'disabled']) ?>
+            <?= form_label(lang('Inventory_outputs.comment'), 'view_comment', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
+                <?= form_textarea(['name' => 'view_comment', 'id' => 'view_comment', 'class' => 'form-control form-control-sm', 'value' => $output_info->comment ?? '', 'disabled' => 'disabled']) ?>
             </div>
         </div>
         <?php endif; ?>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Inventory_outputs.date'), 'view_date', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <?= form_input(['name' => 'view_date', 'id' => 'view_date', 'class' => 'form-control input-sm', 'value' => !empty($output_info->created_at) ? to_datetime(strtotime($output_info->created_at)) : '', 'disabled' => 'disabled']) ?>
+            <?= form_label(lang('Inventory_outputs.date'), 'view_date', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
+                <?= form_input(['name' => 'view_date', 'id' => 'view_date', 'class' => 'form-control form-control-sm', 'value' => !empty($output_info->created_at) ? to_datetime(strtotime($output_info->created_at)) : '', 'disabled' => 'disabled']) ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Inventory_outputs.employee'), 'view_employee', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <?= form_input(['name' => 'view_employee', 'id' => 'view_employee', 'class' => 'form-control input-sm', 'value' => trim(($output_info->first_name ?? '') . ' ' . ($output_info->last_name ?? '')), 'disabled' => 'disabled']) ?>
+            <?= form_label(lang('Inventory_outputs.employee'), 'view_employee', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
+                <?= form_input(['name' => 'view_employee', 'id' => 'view_employee', 'class' => 'form-control form-control-sm', 'value' => trim(($output_info->first_name ?? '') . ' ' . ($output_info->last_name ?? '')), 'disabled' => 'disabled']) ?>
             </div>
         </div>
 
@@ -90,9 +90,9 @@
 
             <?php if (!empty($show_location_select) && !empty($stock_locations)): ?>
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Common.location'), 'location_id', ['class' => 'control-label col-xs-3']) ?>
-                <div class="col-xs-8">
-                    <?= form_dropdown('location_id', $stock_locations, (string)$output_location_id, ['id' => 'location_id', 'class' => 'form-control']) ?>
+                <?= form_label(lang('Common.location'), 'location_id', ['class' => 'control-label col-3']) ?>
+                <div class="col-8">
+                    <?= form_dropdown('location_id', $stock_locations, (string)$output_location_id, ['id' => 'location_id', 'class' => 'form-select']) ?>
                 </div>
             </div>
             <?php else: ?>
@@ -100,9 +100,9 @@
             <?php endif; ?>
 
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Inventory_outputs.item'), 'item_search', ['class' => 'required control-label col-xs-3']) ?>
-                <div class="col-xs-8">
-                    <?= form_input(['name' => 'item_search', 'id' => 'item_search', 'class' => 'form-control input-sm', 'placeholder' => lang('Inventory_outputs.item_search_placeholder'), 'autocomplete' => 'off']) ?>
+                <?= form_label(lang('Inventory_outputs.item'), 'item_search', ['class' => 'required control-label col-3']) ?>
+                <div class="col-8">
+                    <?= form_input(['name' => 'item_search', 'id' => 'item_search', 'class' => 'form-control form-control-sm', 'placeholder' => lang('Inventory_outputs.item_search_placeholder'), 'autocomplete' => 'off']) ?>
                     <?= form_hidden('item_id', '') ?>
                 </div>
             </div>
@@ -110,59 +110,59 @@
             <div id="item_info_panel" style="display:none;">
 
                 <div class="form-group form-group-sm">
-                    <?= form_label(lang('Inventory_outputs.barcode'), 'item_info_barcode', ['class' => 'control-label col-xs-3']) ?>
-                    <div class="col-xs-8">
+                    <?= form_label(lang('Inventory_outputs.barcode'), 'item_info_barcode', ['class' => 'control-label col-3']) ?>
+                    <div class="col-8">
                         <div class="input-group">
-                            <span class="input-group-addon input-sm"><span class="bi bi-upc-scan"></span></span>
-                            <?= form_input(['name' => 'item_info_barcode', 'id' => 'item_info_barcode', 'class' => 'form-control input-sm', 'disabled' => 'disabled']) ?>
+                            <span class="input-group-text form-control-sm"><span class="bi bi-upc-scan"></span></span>
+                            <?= form_input(['name' => 'item_info_barcode', 'id' => 'item_info_barcode', 'class' => 'form-control form-control-sm', 'disabled' => 'disabled']) ?>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group form-group-sm">
-                    <?= form_label(lang('Inventory_outputs.item_name'), 'item_info_name', ['class' => 'control-label col-xs-3']) ?>
-                    <div class="col-xs-8">
-                        <?= form_input(['name' => 'item_info_name', 'id' => 'item_info_name', 'class' => 'form-control input-sm', 'disabled' => 'disabled']) ?>
+                    <?= form_label(lang('Inventory_outputs.item_name'), 'item_info_name', ['class' => 'control-label col-3']) ?>
+                    <div class="col-8">
+                        <?= form_input(['name' => 'item_info_name', 'id' => 'item_info_name', 'class' => 'form-control form-control-sm', 'disabled' => 'disabled']) ?>
                     </div>
                 </div>
 
                 <div class="form-group form-group-sm">
-                    <?= form_label(lang('Inventory_outputs.category'), 'item_info_category', ['class' => 'control-label col-xs-3']) ?>
-                    <div class="col-xs-8">
+                    <?= form_label(lang('Inventory_outputs.category'), 'item_info_category', ['class' => 'control-label col-3']) ?>
+                    <div class="col-8">
                         <div class="input-group">
-                            <span class="input-group-addon input-sm"><span class="bi bi-tag"></span></span>
-                            <?= form_input(['name' => 'item_info_category', 'id' => 'item_info_category', 'class' => 'form-control input-sm', 'disabled' => 'disabled']) ?>
+                            <span class="input-group-text form-control-sm"><span class="bi bi-tag"></span></span>
+                            <?= form_input(['name' => 'item_info_category', 'id' => 'item_info_category', 'class' => 'form-control form-control-sm', 'disabled' => 'disabled']) ?>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group form-group-sm">
-                    <?= form_label(lang('Inventory_outputs.stock_available'), 'item_info_stock', ['class' => 'control-label col-xs-3']) ?>
-                    <div class="col-xs-8">
-                        <?= form_input(['name' => 'item_info_stock', 'id' => 'item_info_stock', 'class' => 'form-control input-sm', 'disabled' => 'disabled']) ?>
+                    <?= form_label(lang('Inventory_outputs.stock_available'), 'item_info_stock', ['class' => 'control-label col-3']) ?>
+                    <div class="col-8">
+                        <?= form_input(['name' => 'item_info_stock', 'id' => 'item_info_stock', 'class' => 'form-control form-control-sm', 'disabled' => 'disabled']) ?>
                     </div>
                 </div>
 
             </div>
 
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Inventory_outputs.quantity'), 'quantity', ['class' => 'required control-label col-xs-3']) ?>
-                <div class="col-xs-4">
-                    <?= form_input(['name' => 'quantity', 'id' => 'quantity', 'class' => 'form-control input-sm', 'onClick' => 'this.select();']) ?>
+                <?= form_label(lang('Inventory_outputs.quantity'), 'quantity', ['class' => 'required control-label col-3']) ?>
+                <div class="col-4">
+                    <?= form_input(['name' => 'quantity', 'id' => 'quantity', 'class' => 'form-control form-control-sm', 'onClick' => 'this.select();']) ?>
                 </div>
             </div>
 
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Inventory_outputs.reason'), 'reason', ['class' => 'required control-label col-xs-3']) ?>
-                <div class="col-xs-8">
-                    <?= form_dropdown('reason', $reasons, '', ['id' => 'reason', 'class' => 'form-control']) ?>
+                <?= form_label(lang('Inventory_outputs.reason'), 'reason', ['class' => 'required control-label col-3']) ?>
+                <div class="col-8">
+                    <?= form_dropdown('reason', $reasons, '', ['id' => 'reason', 'class' => 'form-select']) ?>
                 </div>
             </div>
 
             <div id="comment_group" class="form-group form-group-sm" style="display:none;">
-                <?= form_label(lang('Inventory_outputs.comment'), 'comment', ['class' => 'required control-label col-xs-3']) ?>
-                <div class="col-xs-8">
-                    <?= form_textarea(['name' => 'comment', 'id' => 'comment', 'class' => 'form-control input-sm']) ?>
+                <?= form_label(lang('Inventory_outputs.comment'), 'comment', ['class' => 'required control-label col-3']) ?>
+                <div class="col-8">
+                    <?= form_textarea(['name' => 'comment', 'id' => 'comment', 'class' => 'form-control form-control-sm']) ?>
                 </div>
             </div>
 

@@ -15,108 +15,108 @@
     <fieldset id="bulk_item_basic_info">
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.name'), 'name', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Items.name'), 'name', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_input([
                     'name'  => 'name',
                     'id'    => 'name',
-                    'class' => 'form-control input-sm'
+                    'class' => 'form-control form-control-sm'
                 ]) ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.category'), 'category', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Items.category'), 'category', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <div class="input-group">
-                    <span class="input-group-addon input-sm"><span class="bi bi-tag"></span></span>
+                    <span class="input-group-text form-control-sm"><span class="bi bi-tag"></span></span>
                     <?= form_input([
                         'name'  => 'category',
                         'id'    => 'category',
-                        'class' => 'form-control input-sm'
+                        'class' => 'form-control form-control-sm'
                     ]) ?>
                 </div>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.supplier'), 'supplier', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <?= form_dropdown('supplier_id', $suppliers, '', ['class' => 'form-control']) ?>
+            <?= form_label(lang('Items.supplier'), 'supplier', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
+                <?= form_dropdown('supplier_id', $suppliers, '', ['class' => 'form-select']) ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.cost_price'), 'cost_price', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-4">
+            <?= form_label(lang('Items.cost_price'), 'cost_price', ['class' => 'control-label col-3']) ?>
+            <div class="col-4">
                 <div class="input-group input-group-sm">
                     <?php if (!is_right_side_currency_symbol()): ?>
-                        <span class="input-group-addon input-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
+                        <span class="input-group-text form-control-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
                     <?php endif; ?>
                     <?= form_input([
                         'name'  => 'cost_price',
                         'id'    => 'cost_price',
-                        'class' => 'form-control input-sm'
+                        'class' => 'form-control form-control-sm'
                     ]) ?>
                     <?php if (is_right_side_currency_symbol()): ?>
-                        <span class="input-group-addon input-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
+                        <span class="input-group-text form-control-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
 
         <div class="form-group form-group">
-            <?= form_label(lang('Items.unit_price'), 'unit_price', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-4">
+            <?= form_label(lang('Items.unit_price'), 'unit_price', ['class' => 'control-label col-3']) ?>
+            <div class="col-4">
                 <div class="input-group input-group-sm">
                     <?php if (!is_right_side_currency_symbol()): ?>
-                        <span class="input-group-addon input-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
+                        <span class="input-group-text form-control-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
                     <?php endif; ?>
                     <?= form_input([
                         'name'  => 'unit_price',
                         'id'    => 'unit_price',
-                        'class' => 'form-control input-sm'
+                        'class' => 'form-control form-control-sm'
                     ]) ?>
                     <?php if (is_right_side_currency_symbol()): ?>
-                        <span class="input-group-addon input-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
+                        <span class="input-group-text form-control-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.reorder_level'), 'reorder_level', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-4">
+            <?= form_label(lang('Items.reorder_level'), 'reorder_level', ['class' => 'control-label col-3']) ?>
+            <div class="col-4">
                 <?= form_input([
                     'name'  => 'reorder_level',
                     'id'    => 'reorder_level',
-                    'class' => 'form-control input-sm'
+                    'class' => 'form-control form-control-sm'
                 ]) ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.description'), 'description', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Items.description'), 'description', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_textarea([
                     'name'  => 'description',
                     'id'    => 'description',
-                    'class' => 'form-control input-sm'
+                    'class' => 'form-control form-control-sm'
                 ]) ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.allow_alt_description'), 'allow_alt_description', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <?= form_dropdown('allow_alt_description', $allow_alt_description_choices, '', ['class' => 'form-control']) ?>
+            <?= form_label(lang('Items.allow_alt_description'), 'allow_alt_description', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
+                <?= form_dropdown('allow_alt_description', $allow_alt_description_choices, '', ['class' => 'form-select']) ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.is_serialized'), 'is_serialized', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <?= form_dropdown('is_serialized', $serialization_choices, '', ['class' => 'form-control']) ?>
+            <?= form_label(lang('Items.is_serialized'), 'is_serialized', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
+                <?= form_dropdown('is_serialized', $serialization_choices, '', ['class' => 'form-select']) ?>
             </div>
         </div>
 

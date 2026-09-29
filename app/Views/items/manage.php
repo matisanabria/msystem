@@ -83,24 +83,24 @@ use App\Models\Employee;
 
 
 
-    <button class="btn btn-info btn-sm pull-right modal-dlg" data-btn-new="<?= lang('Common.new') ?>" data-btn-submit="<?= lang('Common.submit') ?>" data-hint-new="Guarda el artículo y deja el formulario abierto para agregar otro" data-href="<?= "$controller_name/view" ?>" title="<?= lang(ucfirst($controller_name) . '.new') ?>">
+    <button class="btn btn-info btn-sm float-end modal-dlg" data-btn-new="<?= lang('Common.new') ?>" data-btn-submit="<?= lang('Common.submit') ?>" data-hint-new="Guarda el artículo y deja el formulario abierto para agregar otro" data-href="<?= "$controller_name/view" ?>" title="<?= lang(ucfirst($controller_name) . '.new') ?>">
         <span class="bi bi-tag">&nbsp;</span><?= lang(ucfirst($controller_name) . '.new') ?>
     </button>
 </div>
 
 <div id="toolbar">
-    <div class="pull-left form-inline" role="toolbar">
-        <button id="delete" class="btn btn-default btn-sm print_hide">
+    <div class="float-start d-flex flex-wrap gap-2 align-items-center" role="toolbar">
+        <button id="delete" class="btn btn-outline-secondary btn-sm print_hide">
             <span class="bi bi-trash">&nbsp;</span><?= lang('Common.delete') ?>
         </button>
-        <button id="generate_barcodes" class="btn btn-default btn-sm print_hide" data-href="<?= "$controller_name/generateBarcodes" ?>" title="<?= lang('Items.generate_barcodes') ?>">
+        <button id="generate_barcodes" class="btn btn-outline-secondary btn-sm print_hide" data-href="<?= "$controller_name/generateBarcodes" ?>" title="<?= lang('Items.generate_barcodes') ?>">
             <span class="bi bi-upc-scan">&nbsp;</span><?= lang('Items.generate_barcodes') ?>
         </button>
-        <?= form_input(['name' => 'daterangepicker', 'class' => 'form-control input-sm', 'id' => 'daterangepicker']) ?>
+        <?= form_input(['name' => 'daterangepicker', 'class' => 'form-control form-control-sm', 'id' => 'daterangepicker']) ?>
         <?= form_dropdown('category', $categories, 'all', [
             'id'               => 'category_filter',
             'class'            => 'selectpicker show-menu-arrow',
-            'data-style'       => 'btn-default btn-sm',
+            'data-style'       => 'btn-outline-secondary btn-sm',
             'data-width'       => 'fit',
             'data-live-search' => 'true'
         ]) ?>
@@ -109,7 +109,7 @@ use App\Models\Employee;
             'class'                     => 'selectpicker show-menu-arrow',
             'data-none-selected-text'   => lang('Common.none_selected_text'),
             'data-selected-text-format' => 'count > 1',
-            'data-style'                => 'btn-default btn-sm',
+            'data-style'                => 'btn-outline-secondary btn-sm',
             'data-width'                => 'fit'
         ]) ?>
         <?php
@@ -121,7 +121,7 @@ use App\Models\Employee;
                 [
                     'id'         => 'stock_location',
                     'class'      => 'selectpicker show-menu-arrow',
-                    'data-style' => 'btn-default btn-sm',
+                    'data-style' => 'btn-outline-secondary btn-sm',
                     'data-width' => 'fit'
                 ]
             );

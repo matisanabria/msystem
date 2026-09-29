@@ -15,7 +15,7 @@ $logged_in_id = $emp_model->get_logged_in_employee_info()->person_id;
 <?= view('partial/header') ?>
 
 <div id="title_bar" class="btn-toolbar print_hide" style="display:none;">
-    <button class="btn btn-primary btn-sm pull-right modal-dlg"
+    <button class="btn btn-primary btn-sm float-end modal-dlg"
             data-btn-new="<?= lang('Common.new') ?>"
             data-btn-submit="<?= lang('Common.submit') ?>"
             data-href="employees/view"
@@ -25,8 +25,8 @@ $logged_in_id = $emp_model->get_logged_in_employee_info()->person_id;
 </div>
 
 <div id="toolbar" style="display:none;">
-    <div class="pull-left form-inline" role="toolbar">
-        <button id="delete" class="btn btn-default btn-sm print_hide" disabled>
+    <div class="float-start d-flex flex-wrap gap-2 align-items-center" role="toolbar">
+        <button id="delete" class="btn btn-outline-secondary btn-sm print_hide" disabled>
             <span class="bi bi-trash"></span>&nbsp;<?= lang('Common.delete') ?>
         </button>
     </div>
@@ -35,10 +35,10 @@ $logged_in_id = $emp_model->get_logged_in_employee_info()->person_id;
 <h4 style="margin: 12px 0 8px;">Panel de Administración</h4>
 
 <ul class="nav nav-tabs" id="admin_tabs">
-    <li class="active"><a href="#tab_branches"  data-toggle="tab">Sucursales</a></li>
-    <li>              <a href="#tab_employees"  data-toggle="tab">Empleados</a></li>
-    <li>              <a href="#tab_access"     data-toggle="tab">Accesos</a></li>
-    <li>              <a href="#tab_backup"     data-toggle="tab">Respaldo</a></li>
+    <li class="nav-item"><a class="nav-link active" href="#tab_branches"  data-bs-toggle="tab">Sucursales</a></li>
+    <li class="nav-item">              <a class="nav-link" href="#tab_employees"  data-bs-toggle="tab">Empleados</a></li>
+    <li class="nav-item">              <a class="nav-link" href="#tab_access"     data-bs-toggle="tab">Accesos</a></li>
+    <li class="nav-item">              <a class="nav-link" href="#tab_backup"     data-bs-toggle="tab">Respaldo</a></li>
 </ul>
 
 <div class="tab-content" style="padding-top:16px;">
@@ -46,8 +46,8 @@ $logged_in_id = $emp_model->get_logged_in_employee_info()->person_id;
     <!-- ========================== SUCURSALES ========================== -->
     <div class="tab-pane active" id="tab_branches">
         <div class="row">
-            <div class="col-xs-12 col-sm-6">
-                <table class="table table-condensed table-striped">
+            <div class="col-12 col-md-6">
+                <table class="table table-sm table-striped">
                     <thead>
                         <tr><th>Sucursal</th><th style="width:80px;"></th></tr>
                     </thead>
@@ -56,7 +56,7 @@ $logged_in_id = $emp_model->get_logged_in_employee_info()->person_id;
                         <tr id="branch_row_<?= $branch['location_id'] ?>">
                             <td><?= esc($branch['location_name']) ?></td>
                             <td>
-                                <button class="btn btn-danger btn-xs btn-delete-branch"
+                                <button class="btn btn-danger btn-sm btn-delete-branch"
                                         data-id="<?= $branch['location_id'] ?>"
                                         data-name="<?= esc($branch['location_name']) ?>">
                                     <span class="bi bi-trash"></span>
@@ -67,10 +67,10 @@ $logged_in_id = $emp_model->get_logged_in_employee_info()->person_id;
                     </tbody>
                 </table>
             </div>
-            <div class="col-xs-12 col-sm-5">
-                <div class="panel panel-default">
-                    <div class="panel-heading"><strong>Nueva Sucursal</strong></div>
-                    <div class="panel-body">
+            <div class="col-12 col-md-5">
+                <div class="card">
+                    <div class="card-header"><strong>Nueva Sucursal</strong></div>
+                    <div class="card-body">
                         <div class="form-group form-group-sm">
                             <input type="text" id="new_branch_name" class="form-control"
                                    placeholder="Nombre de la sucursal">
@@ -87,15 +87,15 @@ $logged_in_id = $emp_model->get_logged_in_employee_info()->person_id;
     <!-- ========================== EMPLEADOS ========================== -->
     <div class="tab-pane" id="tab_employees">
         <div id="emp_title_bar" class="btn-toolbar" style="margin-bottom:8px;">
-            <button class="btn btn-primary btn-sm pull-right modal-dlg"
+            <button class="btn btn-primary btn-sm float-end modal-dlg"
                     data-btn-new="<?= lang('Common.new') ?>"
                     data-btn-submit="<?= lang('Common.submit') ?>"
                     data-href="employees/view"
                     title="<?= lang('Employees.new') ?>">
                 <span class="bi bi-plus-lg"></span>&nbsp;<?= lang('Employees.new') ?>
             </button>
-            <div class="pull-left form-inline">
-                <button id="emp_delete" class="btn btn-default btn-sm" disabled>
+            <div class="float-start d-flex flex-wrap gap-2 align-items-center">
+                <button id="emp_delete" class="btn btn-outline-secondary btn-sm" disabled>
                     <span class="bi bi-trash"></span>&nbsp;<?= lang('Common.delete') ?>
                 </button>
             </div>
@@ -157,7 +157,7 @@ $logged_in_id = $emp_model->get_logged_in_employee_info()->person_id;
             }
         </style>
         <div class="table-responsive">
-            <table class="table table-condensed table-bordered table-hover table-striped" id="access_matrix">
+            <table class="table table-sm table-bordered table-hover table-striped" id="access_matrix">
                 <thead>
                     <tr>
                         <th>Empleado</th>
@@ -198,7 +198,7 @@ $logged_in_id = $emp_model->get_logged_in_employee_info()->person_id;
     <!-- ========================== RESPALDO ========================== -->
     <div class="tab-pane" id="tab_backup">
         <div class="row" style="margin-bottom:12px;">
-            <div class="col-xs-12">
+            <div class="col-12">
                 <button id="btn_create_backup" class="btn btn-primary btn-sm">
                     <span class="bi bi-download"></span> <?= lang('Backup.create_backup') ?>
                 </button>
@@ -220,7 +220,7 @@ $(document).ready(function() {
     var backupTabReady = false;
 
     // ---- Tab switching ----
-    $('#admin_tabs a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+    $('#admin_tabs a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
         var target = $(e.target).attr('href');
         if (target === '#tab_employees' && !empTableReady) {
             initEmpTable();
@@ -372,17 +372,17 @@ $(document).ready(function() {
                 '<td>' + b.date + '</td>' +
                 '<td>' + b.size + '</td>' +
                 '<td>' +
-                    '<a href="<?= site_url('backup/download') ?>/' + encodeURIComponent(b.filename) + '" class="btn btn-default btn-xs" title="<?= lang('Common.download') ?>">' +
+                    '<a href="<?= site_url('backup/download') ?>/' + encodeURIComponent(b.filename) + '" class="btn btn-outline-secondary btn-sm" title="<?= lang('Common.download') ?>">' +
                         '<span class="bi bi-download"></span>' +
                     '</a> ' +
-                    '<button class="btn btn-danger btn-xs btn-delete-backup" data-filename="' + $('<span>').text(b.filename).html() + '">' +
+                    '<button class="btn btn-danger btn-sm btn-delete-backup" data-filename="' + $('<span>').text(b.filename).html() + '">' +
                         '<span class="bi bi-trash"></span>' +
                     '</button>' +
                 '</td>' +
             '</tr>';
         });
         $container.html(
-            '<table class="table table-condensed table-striped">' +
+            '<table class="table table-sm table-striped">' +
                 '<thead><tr>' +
                     '<th>Archivo</th><th>Fecha</th><th>Tamaño</th><th style="width:80px;"></th>' +
                 '</tr></thead>' +

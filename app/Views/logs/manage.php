@@ -8,27 +8,27 @@
 <?= view('partial/header') ?>
 
 <div id="title_bar" class="btn-toolbar print_hide">
-    <h4 class="pull-left" style="margin: 4px 0 0;">
+    <h4 class="float-start" style="margin: 4px 0 0;">
         <span class="bi bi-card-list"></span>&nbsp;<?= lang('Logs.title') ?>
     </h4>
 </div>
 
-<div id="toolbar" class="form-inline print_hide" style="margin-bottom: 10px; flex-wrap: wrap; gap: 6px;">
+<div id="toolbar" class="d-flex flex-wrap gap-2 align-items-center print_hide" style="margin-bottom: 10px; flex-wrap: wrap; gap: 6px;">
     <div class="form-group">
-        <label class="sr-only"><?= lang('Logs.date_from') ?></label>
+        <label class="visually-hidden"><?= lang('Logs.date_from') ?></label>
         <div class="input-group input-group-sm">
-            <span class="input-group-addon"><?= lang('Logs.date_from') ?></span>
+            <span class="input-group-text"><?= lang('Logs.date_from') ?></span>
             <input type="date" id="filter_date_from" class="form-control" value="">
         </div>
     </div>
     <div class="form-group">
-        <label class="sr-only"><?= lang('Logs.date_to') ?></label>
+        <label class="visually-hidden"><?= lang('Logs.date_to') ?></label>
         <div class="input-group input-group-sm">
-            <span class="input-group-addon"><?= lang('Logs.date_to') ?></span>
+            <span class="input-group-text"><?= lang('Logs.date_to') ?></span>
             <input type="date" id="filter_date_to" class="form-control" value="">
         </div>
     </div>
-    <select id="filter_type" class="form-control input-sm" style="min-width:140px;">
+    <select id="filter_type" class="form-select form-select-sm" style="min-width:140px;">
         <option value=""><?= lang('Logs.filter_all_types') ?></option>
         <option value="inventory"><?= lang('Logs.type_inventory') ?></option>
         <option value="sale"><?= lang('Logs.type_sale') ?></option>
@@ -37,13 +37,13 @@
         <option value="ticket_status"><?= lang('Logs.type_ticket_status') ?></option>
         <option value="inventory_output"><?= lang('Logs.type_inventory_output') ?></option>
     </select>
-    <select id="filter_employee" class="form-control input-sm" style="min-width:160px;">
+    <select id="filter_employee" class="form-select form-select-sm" style="min-width:160px;">
         <option value="0"><?= lang('Logs.filter_all_employees') ?></option>
         <?php foreach ($employees as $emp): ?>
             <option value="<?= esc($emp['person_id']) ?>"><?= esc($emp['full_name']) ?></option>
         <?php endforeach; ?>
     </select>
-    <select id="filter_location" class="form-control input-sm" style="min-width:150px;">
+    <select id="filter_location" class="form-select form-select-sm" style="min-width:150px;">
         <option value="0"><?= lang('Logs.filter_all_locations') ?></option>
         <?php foreach ($stock_locations as $loc_id => $loc_name): ?>
             <option value="<?= esc($loc_id) ?>"><?= esc($loc_name) ?></option>
@@ -55,7 +55,7 @@
 </div>
 
 <div id="table_holder">
-    <table class="table table-condensed table-bordered table-hover" id="logs_table">
+    <table class="table table-sm table-bordered table-hover" id="logs_table">
         <thead>
             <tr>
                 <th style="width:150px;"><?= lang('Logs.col_date') ?></th>
@@ -71,7 +71,7 @@
         </tbody>
     </table>
     <div id="logs_pagination" class="text-center" style="margin-top:10px;"></div>
-    <div id="logs_total" class="text-right text-muted small" style="margin-top:4px;"></div>
+    <div id="logs_total" class="text-end text-muted small" style="margin-top:4px;"></div>
 </div>
 
 <script type="text/javascript">
@@ -91,16 +91,16 @@ $(document).ready(function() {
     var TYPE_CLASSES = {
         'inventory':     'info',
         'sale':          'success',
-        'login':         'default',
-        'logout':        'default',
+        'login':         'secondary',
+        'logout':        'secondary',
         'ticket_status': 'warning',
         'inventory_output': 'danger'
     };
 
     function typeLabel(type) {
         var label = TYPE_LABELS[type] || type;
-        var cls   = TYPE_CLASSES[type] || 'default';
-        return '<span class="label label-' + cls + '">' + label + '</span>';
+        var cls   = TYPE_CLASSES[type] || 'secondary';
+        return '<span class="badge text-bg-' + cls + '">' + label + '</span>';
     }
 
     function loadLogs(page) {

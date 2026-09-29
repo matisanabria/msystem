@@ -19,14 +19,14 @@
 <?php endif; ?>
 
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-lg-12">
         <h3><?= lang('Backup.heading') ?></h3>
         <p class="text-muted"><?= lang('Backup.info') ?></p>
     </div>
 </div>
 
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-lg-12">
         <form method="POST" action="<?= site_url('backup/create') ?>">
             <?= csrf_field() ?>
             <button type="submit" class="btn btn-primary">
@@ -38,7 +38,7 @@
 </div>
 
 <div class="row" style="margin-top: 20px;">
-    <div class="col-md-12">
+    <div class="col-lg-12">
         <?php if (empty($backups)) : ?>
             <p class="text-muted"><?= lang('Backup.no_backups') ?></p>
         <?php else : ?>
@@ -59,7 +59,7 @@
                             <td><?= esc($backup['size']) ?></td>
                             <td>
                                 <a href="<?= site_url('backup/download/' . urlencode($backup['filename'])) ?>"
-                                   class="btn btn-sm btn-default">
+                                   class="btn btn-sm btn-outline-secondary">
                                     <span class="bi bi-download"></span>
                                     <?= lang('Backup.download') ?>
                                 </a>

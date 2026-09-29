@@ -14,16 +14,16 @@
             <ul id="info_error_message_box" class="error_message_box"></ul>
 
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Config.company'), 'company', ['class' => 'control-label col-xs-2 required']) ?>
-                <div class="col-xs-6">
+                <?= form_label(lang('Config.company'), 'company', ['class' => 'control-label col-2 required']) ?>
+                <div class="col-6">
                     <div class="input-group">
-                        <span class="input-group-addon input-sm">
+                        <span class="input-group-text form-control-sm">
                             <span class="bi bi-house"></span>
                         </span>
                         <?= form_input([
                             'name'  => 'company',
                             'id'    => 'company',
-                            'class' => 'form-control input-sm required',
+                            'class' => 'form-control form-control-sm required',
                             'value' => $config['company']
                         ]) ?>
                     </div>
@@ -31,48 +31,48 @@
             </div>
 
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Config.company_logo'), 'company_logo', ['class' => 'control-label col-xs-2']) ?>
-                <div class="col-xs-6">
+                <?= form_label(lang('Config.company_logo'), 'company_logo', ['class' => 'control-label col-2']) ?>
+                <div class="col-6">
                     <div class="fileinput <?= $logo_exists ? 'fileinput-exists' : 'fileinput-new' ?>" data-provides="fileinput">
                         <div class="fileinput-new thumbnail" style="width: 200px; height: 200px;"></div>
                         <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 200px;">
                             <img data-src="holder.js/100%x100%" alt="<?= lang('Config.company_logo') ?>" src="<?php if ($logo_exists) echo base_url('uploads/' . $config['company_logo']); else echo '' ?>" style="max-height: 100%; max-width: 100%;">
                         </div>
                         <div>
-                            <span class="btn btn-default btn-sm btn-file">
+                            <span class="btn btn-outline-secondary btn-sm btn-file">
                                 <span class="fileinput-new"><?= lang('Config.company_select_image') ?></span>
                                 <span class="fileinput-exists"><?= lang('Config.company_change_image') ?></span>
                                 <input type="file" name="company_logo">
                             </span>
-                            <a href="#" class="btn btn-default btn-sm fileinput-exists" data-dismiss="fileinput"><?= lang('Config.company_remove_image') ?></a>
+                            <a href="#" class="btn btn-outline-secondary btn-sm fileinput-exists" data-dismiss="fileinput"><?= lang('Config.company_remove_image') ?></a>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Config.address'), 'address', ['class' => 'control-label col-xs-2 required']) ?>
-                <div class="col-xs-6">
+                <?= form_label(lang('Config.address'), 'address', ['class' => 'control-label col-2 required']) ?>
+                <div class="col-6">
                     <?= form_textarea([
                         'name'  => 'address',
                         'id'    => 'address',
-                        'class' => 'form-control input-sm required',
+                        'class' => 'form-control form-control-sm required',
                         'value' => $config['address']
                     ]) ?>
                 </div>
             </div>
 
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Config.website'), 'website', ['class' => 'control-label col-xs-2']) ?>
-                <div class="col-xs-6">
+                <?= form_label(lang('Config.website'), 'website', ['class' => 'control-label col-2']) ?>
+                <div class="col-6">
                     <div class="input-group">
-                        <span class="input-group-addon input-sm">
+                        <span class="input-group-text form-control-sm">
                             <span class="bi bi-globe"></span>
                         </span>
                         <?= form_input([
                             'name'  => 'website',
                             'id'    => 'website',
-                            'class' => 'form-control input-sm',
+                            'class' => 'form-control form-control-sm',
                             'value' => $config['website']
                         ]) ?>
                     </div>
@@ -80,17 +80,17 @@
             </div>
 
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Common.email'), 'email', ['class' => 'control-label col-xs-2']) ?>
-                <div class="col-xs-6">
+                <?= form_label(lang('Common.email'), 'email', ['class' => 'control-label col-2']) ?>
+                <div class="col-6">
                     <div class="input-group">
-                        <span class="input-group-addon input-sm">
+                        <span class="input-group-text form-control-sm">
                             <span class="bi bi-envelope"></span>
                         </span>
                         <?= form_input([
                             'name'  => 'email',
                             'id'    => 'email',
                             'type'  => 'email',
-                            'class' => 'form-control input-sm',
+                            'class' => 'form-control form-control-sm',
                             'value' => $config['email']
                         ]) ?>
                     </div>
@@ -98,16 +98,16 @@
             </div>
 
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Config.phone'), 'phone', ['class' => 'control-label col-xs-2 required']) ?>
-                <div class="col-xs-6">
+                <?= form_label(lang('Config.phone'), 'phone', ['class' => 'control-label col-2 required']) ?>
+                <div class="col-6">
                     <div class="input-group">
-                        <span class="input-group-addon input-sm">
+                        <span class="input-group-text form-control-sm">
                             <span class="bi bi-telephone"></span>
                         </span>
                         <?= form_input([
                             'name'  => 'phone',
                             'id'    => 'phone',
-                            'class' => 'form-control input-sm required',
+                            'class' => 'form-control form-control-sm required',
                             'value' => $config['phone']
                         ]) ?>
                     </div>
@@ -115,16 +115,16 @@
             </div>
 
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Config.fax'), 'fax', ['class' => 'control-label col-xs-2']) ?>
-                <div class="col-xs-6">
+                <?= form_label(lang('Config.fax'), 'fax', ['class' => 'control-label col-2']) ?>
+                <div class="col-6">
                     <div class="input-group">
-                        <span class="input-group-addon input-sm">
+                        <span class="input-group-text form-control-sm">
                             <span class="bi bi-telephone"></span>
                         </span>
                         <?= form_input([
                             'name'  => 'fax',
                             'id'    => 'fax',
-                            'class' => 'form-control input-sm',
+                            'class' => 'form-control form-control-sm',
                             'value' => $config['fax']
                         ]) ?>
                     </div>
@@ -132,12 +132,12 @@
             </div>
 
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Common.return_policy'), 'return_policy', ['class' => 'control-label col-xs-2 required']) ?>
-                <div class="col-xs-6">
+                <?= form_label(lang('Common.return_policy'), 'return_policy', ['class' => 'control-label col-2 required']) ?>
+                <div class="col-6">
                     <?= form_textarea([
                         'name'  => 'return_policy',
                         'id'    => 'return_policy',
-                        'class' => 'form-control input-sm required',
+                        'class' => 'form-control form-control-sm required',
                         'value' => $config['return_policy']
                     ]) ?>
                 </div>
@@ -147,7 +147,7 @@
                 'name'  => 'submit_info',
                 'id'    => 'submit_info',
                 'value' => lang('Common.submit'),
-                'class' => 'btn btn-primary btn-sm pull-right'
+                'class' => 'btn btn-primary btn-sm float-end'
             ]) ?>
 
         </fieldset>

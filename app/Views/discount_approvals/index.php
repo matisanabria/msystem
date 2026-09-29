@@ -8,10 +8,10 @@
 <?= view('partial/header') ?>
 
 <div id="title_bar" class="btn-toolbar print_hide">
-    <h4 class="pull-left" style="margin: 4px 0 0;">
+    <h4 class="float-start" style="margin: 4px 0 0;">
         <span class="bi bi-tag"></span>&nbsp;<?= lang('Module.discount_approvals') ?>
     </h4>
-    <span id="pending_badge" class="label label-danger" style="font-size:14px; margin-left:10px; display:none;"></span>
+    <span id="pending_badge" class="badge text-bg-danger" style="font-size:14px; margin-left:10px; display:none;"></span>
 </div>
 
 <?php if (empty($pending)): ?>
@@ -37,7 +37,7 @@
                 <p style="color:#888; font-size:12px; margin-top:8px;">El código expira en <strong>10 minutos</strong> y es de un solo uso.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success btn-block" data-dismiss="modal">Entendido</button>
+                <button type="button" class="btn btn-success btn-block" data-bs-dismiss="modal">Entendido</button>
             </div>
         </div>
     </div>

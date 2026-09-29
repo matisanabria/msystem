@@ -65,7 +65,7 @@ $this->dinner_table = model(Dinner_table::class);
                 <td>
                     <?= form_open('sales/unsuspend') ?>
                     <?= form_hidden('suspended_sale_id', $suspended_sale['sale_id']) ?>
-                    <input type="submit" name="submit" value="<?= lang('Sales.unsuspend') ?>" id="submit" class="btn btn-primary btn-xs pull-right">
+                    <input type="submit" name="submit" value="<?= lang('Sales.unsuspend') ?>" id="submit" class="btn btn-primary btn-sm float-end">
                     <?= form_close() ?>
                 </td>
             </tr>

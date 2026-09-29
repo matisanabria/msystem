@@ -18,18 +18,18 @@
     <fieldset id="item_basic_info">
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Expenses.info'), 'expenses_info', ['class' => 'control-label col-xs-3']) ?>
-            <?= form_label(!empty($expenses_info->expense_id) ? lang('Expenses.expense_id') . " $expenses_info->expense_id" : '', 'expenses_info_id', ['class' => 'control-label col-xs-8', 'style' => 'text-align: left']) ?>
+            <?= form_label(lang('Expenses.info'), 'expenses_info', ['class' => 'control-label col-3']) ?>
+            <?= form_label(!empty($expenses_info->expense_id) ? lang('Expenses.expense_id') . " $expenses_info->expense_id" : '', 'expenses_info_id', ['class' => 'control-label col-8', 'style' => 'text-align: left']) ?>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Expenses.date'), 'date', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-6">
+            <?= form_label(lang('Expenses.date'), 'date', ['class' => 'required control-label col-3']) ?>
+            <div class="col-6">
                 <div class="input-group">
-                    <span class="input-group-addon input-sm"><span class="bi bi-calendar3"></span></span>
+                    <span class="input-group-text form-control-sm"><span class="bi bi-calendar3"></span></span>
                     <?= form_input([
                         'name'     => 'date',
-                        'class'    => 'form-control input-sm datetime',
+                        'class'    => 'form-control form-control-sm datetime',
                         'value'    => to_datetime(strtotime($expenses_info->date)),
                         'readonly' => 'readonly'
                     ]) ?>
@@ -42,20 +42,20 @@
         <?= form_input(['type' => 'hidden', 'name' => 'supplier_tax_code', 'value' => $expenses_info->supplier_tax_code ?? '']) ?>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Expenses.amount'), 'amount', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-6">
+            <?= form_label(lang('Expenses.amount'), 'amount', ['class' => 'required control-label col-3']) ?>
+            <div class="col-6">
                 <div class="input-group input-group-sm">
                     <?php if (!is_right_side_currency_symbol()): ?>
-                        <span class="input-group-addon input-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
+                        <span class="input-group-text form-control-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
                     <?php endif; ?>
                     <?= form_input([
                         'name'  => 'amount',
                         'id'    => 'amount',
-                        'class' => 'form-control input-sm',
+                        'class' => 'form-control form-control-sm',
                         'value' => to_currency_no_money($expenses_info->amount)
                     ]) ?>
                     <?php if (is_right_side_currency_symbol()): ?>
-                        <span class="input-group-addon input-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
+                        <span class="input-group-text form-control-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
                     <?php endif; ?>
                 </div>
             </div>
@@ -64,24 +64,24 @@
         <?= form_input(['type' => 'hidden', 'name' => 'tax_amount', 'id' => 'tax_amount', 'value' => to_currency_no_money($expenses_info->tax_amount ?? 0)]) ?>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Expenses.payment'), 'payment_type', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-6">
-                <?= form_dropdown('payment_type', $payment_options, $expenses_info->payment_type, ['class' => 'form-control', 'id' => 'payment_type']) ?>
+            <?= form_label(lang('Expenses.payment'), 'payment_type', ['class' => 'control-label col-3']) ?>
+            <div class="col-6">
+                <?= form_dropdown('payment_type', $payment_options, $expenses_info->payment_type, ['class' => 'form-select', 'id' => 'payment_type']) ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Expenses.employee'), 'employee', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-6">
-                <?= form_dropdown('employee_id', $employees, $expenses_info->employee_id, 'id="employee_id" class="form-control"') ?>
+            <?= form_label(lang('Expenses.employee'), 'employee', ['class' => 'control-label col-3']) ?>
+            <div class="col-6">
+                <?= form_dropdown('employee_id', $employees, $expenses_info->employee_id, 'id="employee_id" class="form-select"') ?>
             </div>
         </div>
 
         <?php if (!empty($show_location_select) && !empty($stock_locations)): ?>
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Expenses.location'), 'location_id', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-6">
-                <?= form_dropdown('location_id', $stock_locations, $expenses_info->location_id ?? '', ['id' => 'location_id', 'class' => 'form-control']) ?>
+            <?= form_label(lang('Expenses.location'), 'location_id', ['class' => 'control-label col-3']) ?>
+            <div class="col-6">
+                <?= form_dropdown('location_id', $stock_locations, $expenses_info->location_id ?? '', ['id' => 'location_id', 'class' => 'form-select']) ?>
             </div>
         </div>
         <?php else: ?>
@@ -89,12 +89,12 @@
         <?php endif; ?>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Expenses.description'), 'description', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-6">
+            <?= form_label(lang('Expenses.description'), 'description', ['class' => 'control-label col-3']) ?>
+            <div class="col-6">
                 <?= form_textarea([
                     'name'  => 'description',
                     'id'    => 'description',
-                    'class' => 'form-control input-sm',
+                    'class' => 'form-control form-control-sm',
                     'value' => $expenses_info->description
                 ]) ?>
             </div>
@@ -102,8 +102,8 @@
 
         <?php if (!empty($expenses_info->expense_id)) { ?>
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Expenses.is_deleted') . ':', 'deleted', ['class' => 'control-label col-xs-3']) ?>
-                <div class="col-xs-5">
+                <?= form_label(lang('Expenses.is_deleted') . ':', 'deleted', ['class' => 'control-label col-3']) ?>
+                <div class="col-5">
                     <?= form_checkbox([
                         'name'    => 'deleted',
                         'id'      => 'deleted',

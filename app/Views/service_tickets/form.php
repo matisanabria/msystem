@@ -22,13 +22,13 @@
     <fieldset id="service_ticket_info">
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Service_tickets.customer'), 'customer_search', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Service_tickets.customer'), 'customer_search', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <div class="input-group">
                     <?= form_input([
                         'name'        => 'customer_search',
                         'id'          => 'customer_search',
-                        'class'       => 'form-control input-sm',
+                        'class'       => 'form-control form-control-sm',
                         'placeholder' => 'Buscar cliente...',
                         'value'       => $selected_customer_name,
                         'autocomplete' => 'off'
@@ -43,45 +43,45 @@
             </div>
         </div>
 
-        <div id="customer_info_panel" class="col-xs-offset-3 col-xs-8" style="display:none; margin-bottom:8px;">
-            <table class="table table-condensed" style="margin-bottom:0; font-size:12px;">
+        <div id="customer_info_panel" class="offset-3 col-8" style="display:none; margin-bottom:8px;">
+            <table class="table table-sm" style="margin-bottom:0; font-size:12px;">
                 <tbody id="customer_info_body"></tbody>
             </table>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Service_tickets.receiver'), 'employee_id_receiver', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <?= form_dropdown('employee_id_receiver', $employees, $selected_receiver, ['class' => 'form-control', 'id' => 'employee_id_receiver']) ?>
+            <?= form_label(lang('Service_tickets.receiver'), 'employee_id_receiver', ['class' => 'required control-label col-3']) ?>
+            <div class="col-8">
+                <?= form_dropdown('employee_id_receiver', $employees, $selected_receiver, ['class' => 'form-select', 'id' => 'employee_id_receiver']) ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Service_tickets.technician'), 'employee_id_technician', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <?= form_dropdown('employee_id_technician', $employees, $selected_technician, ['class' => 'form-control', 'id' => 'employee_id_technician']) ?>
+            <?= form_label(lang('Service_tickets.technician'), 'employee_id_technician', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
+                <?= form_dropdown('employee_id_technician', $employees, $selected_technician, ['class' => 'form-select', 'id' => 'employee_id_technician']) ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Service_tickets.device_name'), 'device_name', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Service_tickets.device_name'), 'device_name', ['class' => 'required control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_input([
                     'name'  => 'device_name',
                     'id'    => 'device_name',
-                    'class' => 'form-control input-sm',
+                    'class' => 'form-control form-control-sm',
                     'value' => $ticket_info->device_name
                 ]) ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Service_tickets.issue_description'), 'issue_description', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Service_tickets.issue_description'), 'issue_description', ['class' => 'required control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_textarea([
                     'name'  => 'issue_description',
                     'id'    => 'issue_description',
-                    'class' => 'form-control input-sm',
+                    'class' => 'form-control form-control-sm',
                     'value' => $ticket_info->issue_description,
                     'rows'  => 3
                 ]) ?>
@@ -89,17 +89,17 @@
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Service_tickets.status'), 'status', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <?= form_dropdown('status', $statuses, $selected_status, ['class' => 'form-control', 'id' => 'status']) ?>
+            <?= form_label(lang('Service_tickets.status'), 'status', ['class' => 'required control-label col-3']) ?>
+            <div class="col-8">
+                <?= form_dropdown('status', $statuses, $selected_status, ['class' => 'form-select', 'id' => 'status']) ?>
             </div>
         </div>
 
         <?php if (!empty($show_location_select) && !empty($stock_locations)): ?>
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Common.location'), 'location_id', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <?= form_dropdown('location_id', $stock_locations, (string)$ticket_location_id, ['id' => 'location_id', 'class' => 'form-control']) ?>
+            <?= form_label(lang('Common.location'), 'location_id', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
+                <?= form_dropdown('location_id', $stock_locations, (string)$ticket_location_id, ['id' => 'location_id', 'class' => 'form-select']) ?>
             </div>
         </div>
         <?php else: ?>
@@ -107,24 +107,24 @@
         <?php endif; ?>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Service_tickets.estimated_price'), 'estimated_price', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Service_tickets.estimated_price'), 'estimated_price', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_input([
                     'name'  => 'estimated_price',
                     'id'    => 'estimated_price',
-                    'class' => 'form-control input-sm',
+                    'class' => 'form-control form-control-sm',
                     'value' => to_currency_no_money($ticket_info->estimated_price)
                 ]) ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Service_tickets.notes'), 'notes', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Service_tickets.notes'), 'notes', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_textarea([
                     'name'  => 'notes',
                     'id'    => 'notes',
-                    'class' => 'form-control input-sm',
+                    'class' => 'form-control form-control-sm',
                     'value' => $ticket_info->notes,
                     'rows'  => 3
                 ]) ?>
@@ -214,7 +214,7 @@
                     }
                 }, {
                     label: 'Cancelar',
-                    cssClass: 'btn-default',
+                    cssClass: 'btn-outline-secondary',
                     action: function(dialog) {
                         dialog.close();
                     }

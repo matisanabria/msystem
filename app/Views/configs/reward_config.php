@@ -13,8 +13,8 @@
             <ul id="reward_error_message_box" class="error_message_box"></ul>
 
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Config.customer_reward_enable'), 'customer_reward_enable', ['class' => 'control-label col-xs-2']) ?>
-                <div class="col-xs-1">
+                <?= form_label(lang('Config.customer_reward_enable'), 'customer_reward_enable', ['class' => 'control-label col-2']) ?>
+                <div class="col-1">
                     <?= form_checkbox([
                         'name'    => 'customer_reward_enable',
                         'value'   => 'customer_reward_enable',
@@ -32,7 +32,7 @@
                 'name'  => 'submit_reward',
                 'id'    => 'submit_reward',
                 'value' => lang('Common.submit'),
-                'class' => 'btn btn-primary btn-sm pull-right'
+                'class' => 'btn btn-primary btn-sm float-end'
             ]) ?>
 
         </fieldset>
@@ -77,8 +77,8 @@
             var new_block_id = 'customer_reward_' + ++id;
             var new_block_id_next = 'reward_points_' + id;
             $(new_block).find('label').html("<?= lang('Config.customer_reward') ?> " + ++table_count).attr('for', new_block_id).attr('class', 'control-label col-xs-2');
-            $(new_block).find("input[id='" + previous_id + "']").attr('id', new_block_id).removeAttr('disabled').attr('name', new_block_id).attr('class', 'form-control input-sm').val('');
-            $(new_block).find("input[id='" + previous_id_next + "']").attr('id', new_block_id_next).removeAttr('disabled').attr('name', new_block_id_next).attr('class', 'form-control input-sm').val('');
+            $(new_block).find("input[id='" + previous_id + "']").attr('id', new_block_id).removeAttr('disabled').attr('name', new_block_id).attr('class', 'form-control form-control-sm').val('');
+            $(new_block).find("input[id='" + previous_id_next + "']").attr('id', new_block_id_next).removeAttr('disabled').attr('name', new_block_id_next).attr('class', 'form-control form-control-sm').val('');
             hide_show_remove();
         };
 

@@ -14,14 +14,14 @@
     <fieldset id="inv_item_basic_info">
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.item_number'), 'name', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Items.item_number'), 'name', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <div class="input-group">
-                    <span class="input-group-addon input-sm"><span class="bi bi-upc-scan"></span></span>
+                    <span class="input-group-text form-control-sm"><span class="bi bi-upc-scan"></span></span>
                     <?= form_input([
                         'name'     => 'item_number',
                         'id'       => 'item_number',
-                        'class'    => 'form-control input-sm',
+                        'class'    => 'form-control form-control-sm',
                         'disabled' => '',
                         'value'    => $item_info->item_number
                     ]) ?>
@@ -30,12 +30,12 @@
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.name'), 'name', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Items.name'), 'name', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_input([
                     'name'     => 'name',
                     'id'       => 'name',
-                    'class'    => 'form-control input-sm',
+                    'class'    => 'form-control form-control-sm',
                     'disabled' => '',
                     'value'    => $item_info->name
                 ]) ?>
@@ -43,14 +43,14 @@
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.category'), 'category', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Items.category'), 'category', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <div class="input-group">
-                    <span class="input-group-addon input-sm"><span class="bi bi-tag"></span></span>
+                    <span class="input-group-text form-control-sm"><span class="bi bi-tag"></span></span>
                     <?= form_input([
                         'name'     => 'category',
                         'id'       => 'category',
-                        'class'    => 'form-control input-sm',
+                        'class'    => 'form-control form-control-sm',
                         'disabled' => '',
                         'value'    => $item_info->category
                     ]) ?>
@@ -59,19 +59,19 @@
         </div>
 
         <div class="form-group form-group-sm" style="display:none">
-            <?= form_label(lang('Items.stock_location'), 'stock_location', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <?= form_dropdown('stock_location', $stock_locations, current($stock_locations), ['onchange' => 'fill_quantity(this.value)', 'class' => 'form-control']) ?>
+            <?= form_label(lang('Items.stock_location'), 'stock_location', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
+                <?= form_dropdown('stock_location', $stock_locations, current($stock_locations), ['onchange' => 'fill_quantity(this.value)', 'class' => 'form-select']) ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.current_quantity'), 'quantity', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-4">
+            <?= form_label(lang('Items.current_quantity'), 'quantity', ['class' => 'control-label col-3']) ?>
+            <div class="col-4">
                 <?= form_input([
                     'name'     => 'quantity',
                     'id'       => 'quantity',
-                    'class'    => 'form-control input-sm',
+                    'class'    => 'form-control form-control-sm',
                     'disabled' => '',
                     'value'    => to_quantity_decimals(current($item_quantities))
                 ]) ?>
@@ -79,23 +79,23 @@
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.add_minus'), 'quantity', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-4">
+            <?= form_label(lang('Items.add_minus'), 'quantity', ['class' => 'required control-label col-3']) ?>
+            <div class="col-4">
                 <?= form_input([
                     'name'  => 'newquantity',
                     'id'    => 'newquantity',
-                    'class' => 'form-control input-sm'
+                    'class' => 'form-control form-control-sm'
                 ]) ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.inventory_comments'), 'description', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Items.inventory_comments'), 'description', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_textarea([
                     'name'  => 'trans_comment',
                     'id'    => 'trans_comment',
-                    'class' => 'form-control input-sm'
+                    'class' => 'form-control form-control-sm'
                 ]) ?>
             </div>
         </div>

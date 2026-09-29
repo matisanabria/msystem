@@ -13,24 +13,24 @@
     <fieldset id="supplier_basic_info">
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Suppliers.company_name'), 'company_name', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Suppliers.company_name'), 'company_name', ['class' => 'required control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_input([
                     'name'  => 'company_name',
                     'id'    => 'company_name_input',
-                    'class' => 'form-control input-sm',
+                    'class' => 'form-control form-control-sm',
                     'value' => html_entity_decode($person_info->company_name)
                 ]) ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Suppliers.agency_name'), 'agency_name', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Suppliers.agency_name'), 'agency_name', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_input([
                     'name'  => 'agency_name',
                     'id'    => 'agency_name_input',
-                    'class' => 'form-control input-sm',
+                    'class' => 'form-control form-control-sm',
                     'value' => $person_info->agency_name
                 ]) ?>
             </div>

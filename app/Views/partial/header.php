@@ -42,7 +42,7 @@ $request = Services::request();
         <link rel="stylesheet" href="resources/css/bootstrap-292fc0ad3b.autocomplete.css">
         <link rel="stylesheet" href="resources/css/invoice-1eae5e39b9.css">
         <link rel="stylesheet" href="resources/css/ospos_print-2ba645b044.css">
-        <link rel="stylesheet" href="resources/css/ospos-417a9fb4a0.css">
+        <link rel="stylesheet" href="resources/css/ospos-dc0f19cf3d.css">
         <link rel="stylesheet" href="resources/css/popupbox-7b616030b0.css">
         <link rel="stylesheet" href="resources/css/receipt-a171207d8e.css">
         <link rel="stylesheet" href="resources/css/register-58be93b261.css">
@@ -85,7 +85,7 @@ $request = Services::request();
         <!-- endinject -->
     <?php else : ?>
         <!--inject:prod:css -->
-        <link rel="stylesheet" href="resources/opensourcepos-8e0799e22a.min.css">
+        <link rel="stylesheet" href="resources/opensourcepos-755104c41c.min.css">
         <!-- endinject -->
 
         <!-- Tweaks to the UI for a particular theme should drop here  -->
@@ -227,7 +227,7 @@ $request = Services::request();
             </div>
         </div>
 
-        <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <nav class="navbar navbar-expand-md navbar-dark navbar-ospos">
             <div class="container">
                 <a class="navbar-brand d-md-none d-lg-inline" href="<?= site_url() ?>">Sistema de Gestión</a>
 

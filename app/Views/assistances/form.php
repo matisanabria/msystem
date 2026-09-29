@@ -24,9 +24,9 @@
 
         <?php if (!empty($show_location_select) && !empty($stock_locations)): ?>
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Common.location'), 'location_id', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <?= form_dropdown('location_id', $stock_locations, (string)$assistance_location_id, ['id' => 'location_id', 'class' => 'form-control']) ?>
+            <?= form_label(lang('Common.location'), 'location_id', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
+                <?= form_dropdown('location_id', $stock_locations, (string)$assistance_location_id, ['id' => 'location_id', 'class' => 'form-select']) ?>
             </div>
         </div>
         <?php else: ?>
@@ -35,12 +35,12 @@
 
         <!-- Product (autocomplete) -->
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Assistances.item'), 'item_search', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Assistances.item'), 'item_search', ['class' => 'required control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_input([
                     'name'         => 'item_search',
                     'id'           => 'item_search',
-                    'class'        => 'form-control input-sm',
+                    'class'        => 'form-control form-control-sm',
                     'placeholder'  => 'Buscar por nombre o código de barras...',
                     'value'        => $assistance_info->item_name ?? '',
                     'autocomplete' => 'off'
@@ -51,21 +51,21 @@
         </div>
 
         <!-- Item info panel -->
-        <div id="item_info_panel" class="col-xs-offset-3 col-xs-8" style="display:none; margin-bottom:8px;">
-            <table class="table table-condensed" style="margin-bottom:0; font-size:12px;">
+        <div id="item_info_panel" class="offset-3 col-8" style="display:none; margin-bottom:8px;">
+            <table class="table table-sm" style="margin-bottom:0; font-size:12px;">
                 <tbody id="item_info_body"></tbody>
             </table>
         </div>
 
         <!-- Customer (autocomplete) -->
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Assistances.customer'), 'customer_search', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Assistances.customer'), 'customer_search', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <div class="input-group">
                     <?= form_input([
                         'name'         => 'customer_search',
                         'id'           => 'customer_search',
-                        'class'        => 'form-control input-sm',
+                        'class'        => 'form-control form-control-sm',
                         'placeholder'  => 'Buscar cliente...',
                         'value'        => $selected_customer_name,
                         'autocomplete' => 'off'
@@ -81,20 +81,20 @@
         </div>
 
         <!-- Customer info panel -->
-        <div id="customer_info_panel" class="col-xs-offset-3 col-xs-8" style="display:none; margin-bottom:8px;">
-            <table class="table table-condensed" style="margin-bottom:0; font-size:12px;">
+        <div id="customer_info_panel" class="offset-3 col-8" style="display:none; margin-bottom:8px;">
+            <table class="table table-sm" style="margin-bottom:0; font-size:12px;">
                 <tbody id="customer_info_body"></tbody>
             </table>
         </div>
 
         <!-- Supplier (autocomplete) -->
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Assistances.supplier'), 'supplier_search', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Assistances.supplier'), 'supplier_search', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_input([
                     'name'         => 'supplier_search',
                     'id'           => 'supplier_search',
-                    'class'        => 'form-control input-sm',
+                    'class'        => 'form-control form-control-sm',
                     'placeholder'  => 'Buscar proveedor...',
                     'value'        => $selected_supplier_name,
                     'autocomplete' => 'off'
@@ -105,8 +105,8 @@
 
         <!-- Affects Stock checkbox -->
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Assistances.affects_stock'), 'affects_stock', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Assistances.affects_stock'), 'affects_stock', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <div class="checkbox" style="margin-top:0;">
                     <label>
                         <?= form_checkbox([
@@ -123,12 +123,12 @@
 
         <!-- Problem Description -->
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Assistances.problem_description'), 'problem_description', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Assistances.problem_description'), 'problem_description', ['class' => 'required control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_textarea([
                     'name'        => 'problem_description',
                     'id'          => 'problem_description',
-                    'class'       => 'form-control input-sm',
+                    'class'       => 'form-control form-control-sm',
                     'value'       => $assistance_info->problem_description,
                     'rows'        => 3,
                     'placeholder' => 'Ej: No enciende, pantalla rota, no carga...'
@@ -138,21 +138,21 @@
 
         <!-- Status -->
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Assistances.status'), 'status', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <?= form_dropdown('status', $statuses, $selected_status, ['class' => 'form-control', 'id' => 'status']) ?>
+            <?= form_label(lang('Assistances.status'), 'status', ['class' => 'required control-label col-3']) ?>
+            <div class="col-8">
+                <?= form_dropdown('status', $statuses, $selected_status, ['class' => 'form-select', 'id' => 'status']) ?>
             </div>
         </div>
 
         <!-- Sent Date -->
         <div class="form-group form-group-sm date-field" id="sent_date_group">
-            <?= form_label(lang('Assistances.sent_date'), 'sent_date', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Assistances.sent_date'), 'sent_date', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_input([
                     'name'  => 'sent_date',
                     'id'    => 'sent_date',
                     'type'  => 'date',
-                    'class' => 'form-control input-sm',
+                    'class' => 'form-control form-control-sm',
                     'value' => $assistance_info->sent_date
                 ]) ?>
             </div>
@@ -160,13 +160,13 @@
 
         <!-- Return Date -->
         <div class="form-group form-group-sm date-field" id="return_date_group">
-            <?= form_label(lang('Assistances.return_date'), 'return_date', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Assistances.return_date'), 'return_date', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_input([
                     'name'  => 'return_date',
                     'id'    => 'return_date',
                     'type'  => 'date',
-                    'class' => 'form-control input-sm',
+                    'class' => 'form-control form-control-sm',
                     'value' => $assistance_info->return_date
                 ]) ?>
             </div>
@@ -174,13 +174,13 @@
 
         <!-- Delivered Date -->
         <div class="form-group form-group-sm date-field" id="delivered_date_group">
-            <?= form_label(lang('Assistances.delivered_date'), 'delivered_date', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Assistances.delivered_date'), 'delivered_date', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_input([
                     'name'  => 'delivered_date',
                     'id'    => 'delivered_date',
                     'type'  => 'date',
-                    'class' => 'form-control input-sm',
+                    'class' => 'form-control form-control-sm',
                     'value' => $assistance_info->delivered_date
                 ]) ?>
             </div>
@@ -188,12 +188,12 @@
 
         <!-- Supplier Notes -->
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Assistances.supplier_notes'), 'supplier_notes', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Assistances.supplier_notes'), 'supplier_notes', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_textarea([
                     'name'        => 'supplier_notes',
                     'id'          => 'supplier_notes',
-                    'class'       => 'form-control input-sm',
+                    'class'       => 'form-control form-control-sm',
                     'value'       => $assistance_info->supplier_notes,
                     'rows'        => 2,
                     'placeholder' => 'Respuesta del proveedor: diagnóstico, observaciones, si aplica garantía...'
@@ -203,12 +203,12 @@
 
         <!-- Resolution -->
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Assistances.resolution'), 'resolution', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Assistances.resolution'), 'resolution', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_textarea([
                     'name'        => 'resolution',
                     'id'          => 'resolution',
-                    'class'       => 'form-control input-sm',
+                    'class'       => 'form-control form-control-sm',
                     'value'       => $assistance_info->resolution,
                     'rows'        => 2,
                     'placeholder' => 'Ej: Se reemplazó equipo, se reparó, no tiene garantía...'
@@ -218,9 +218,9 @@
 
         <!-- Employee -->
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Assistances.employee'), 'employee_id', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <?= form_dropdown('employee_id', $employees, $selected_employee, ['class' => 'form-control', 'id' => 'employee_id']) ?>
+            <?= form_label(lang('Assistances.employee'), 'employee_id', ['class' => 'required control-label col-3']) ?>
+            <div class="col-8">
+                <?= form_dropdown('employee_id', $employees, $selected_employee, ['class' => 'form-select', 'id' => 'employee_id']) ?>
             </div>
         </div>
 
@@ -389,7 +389,7 @@
                     }
                 }, {
                     label: 'Cancelar',
-                    cssClass: 'btn-default',
+                    cssClass: 'btn-outline-secondary',
                     action: function(dialog) {
                         dialog.close();
                     }

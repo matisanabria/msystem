@@ -48,7 +48,7 @@ class Pager extends BaseConfig
         'num_tag_open'     => '<li>',
         'num_tag_close'    => '</li>',
         'cur_tag_open'     => '<li class="disabled"><li class="active"><a href="#">',
-        'cur_tag_close'    => '<span class="sr-only"></span></a></li>',
+        'cur_tag_close'    => '<span class="visually-hidden"></span></a></li>',
         'next_tag_open'    => '<li>',
         'next_tagl_close'  => '</li>',
         'prev_tag_open'    => '<li>',

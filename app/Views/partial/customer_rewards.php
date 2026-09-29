@@ -15,23 +15,23 @@ foreach ($customer_rewards as $reward_key => $reward_category) {
 ?>
 
     <div class="form-group form-group-sm" style="<?= $reward_category['deleted'] ? 'display: none;' : 'display: block;' ?>">
-        <?= form_label(lang('Config.customer_reward') . " $i", "customer_reward_$i", ['class' => 'required control-label col-xs-2']) ?>
-        <div class="col-xs-2">
+        <?= form_label(lang('Config.customer_reward') . " $i", "customer_reward_$i", ['class' => 'required control-label col-2']) ?>
+        <div class="col-2">
             <?php $form_data = [
                 'name'  => 'customer_reward_' . $customer_reward_id,
                 'id'    => 'customer_reward_' . $customer_reward_id,
-                'class' => 'customer_reward valid_chars form-control input-sm required',
+                'class' => 'customer_reward valid_chars form-control form-control-sm required',
                 'value' => $customer_reward_name
             ];
             $reward_category['deleted'] && $form_data['disabled'] = 'disabled';
             echo form_input($form_data);
             ?>
         </div>
-        <div class="col-xs-2">
+        <div class="col-2">
             <?php $form_data = [
                 'name'  => 'reward_points_' . $customer_reward_id,
                 'id'    => 'reward_points_' . $customer_reward_id,
-                'class' => 'customer_reward valid_chars form-control input-sm required',
+                'class' => 'customer_reward valid_chars form-control form-control-sm required',
                 'value' => $customer_points_percent
             ];
             $reward_category['deleted'] && $form_data['disabled'] = 'disabled';

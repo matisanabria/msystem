@@ -957,10 +957,10 @@ function get_service_ticket_data_row(object $ticket): array
     $controller = get_controller();
 
     $status_labels = [
-        'received'  => '<span class="label label-info">' . lang('Service_tickets.status_received') . '</span>',
-        'waiting'   => '<span class="label label-warning">' . lang('Service_tickets.status_waiting') . '</span>',
-        'in_repair' => '<span class="label label-primary">' . lang('Service_tickets.status_in_repair') . '</span>',
-        'repaired'  => '<span class="label label-success">' . lang('Service_tickets.status_repaired') . '</span>',
+        'received'  => '<span class="badge text-bg-info">' . lang('Service_tickets.status_received') . '</span>',
+        'waiting'   => '<span class="badge text-bg-warning">' . lang('Service_tickets.status_waiting') . '</span>',
+        'in_repair' => '<span class="badge text-bg-primary">' . lang('Service_tickets.status_in_repair') . '</span>',
+        'repaired'  => '<span class="badge text-bg-success">' . lang('Service_tickets.status_repaired') . '</span>',
     ];
 
     return [
@@ -1022,11 +1022,11 @@ function get_assistance_data_row(object $assistance): array
     $controller = get_controller();
 
     $status_labels = [
-        'received'              => '<span class="label label-info">' . lang('Assistances.status_received') . '</span>',
-        'sent_to_supplier'      => '<span class="label label-warning">' . lang('Assistances.status_sent_to_supplier') . '</span>',
-        'in_repair'             => '<span class="label label-primary">' . lang('Assistances.status_in_repair') . '</span>',
-        'returned'              => '<span class="label label-success">' . lang('Assistances.status_returned') . '</span>',
-        'delivered_to_customer' => '<span class="label label-default">' . lang('Assistances.status_delivered_to_customer') . '</span>',
+        'received'              => '<span class="badge text-bg-info">' . lang('Assistances.status_received') . '</span>',
+        'sent_to_supplier'      => '<span class="badge text-bg-warning">' . lang('Assistances.status_sent_to_supplier') . '</span>',
+        'in_repair'             => '<span class="badge text-bg-primary">' . lang('Assistances.status_in_repair') . '</span>',
+        'returned'              => '<span class="badge text-bg-success">' . lang('Assistances.status_returned') . '</span>',
+        'delivered_to_customer' => '<span class="badge text-bg-secondary">' . lang('Assistances.status_delivered_to_customer') . '</span>',
     ];
 
     return [

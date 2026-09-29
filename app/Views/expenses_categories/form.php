@@ -12,24 +12,24 @@
     <fieldset id="expenses_categories">
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Expenses_categories.name'), 'category_name', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Expenses_categories.name'), 'category_name', ['class' => 'required control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_input([
                     'name'  => 'category_name',
                     'id'    => 'category_name',
-                    'class' => 'form-control input-sm',
+                    'class' => 'form-control form-control-sm',
                     'value' => $category_info->category_name
                 ]) ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Expenses_categories.description'), 'category_description', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Expenses_categories.description'), 'category_description', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_textarea([
                     'name'  => 'category_description',
                     'id'    => 'category_description',
-                    'class' => 'form-control input-sm',
+                    'class' => 'form-control form-control-sm',
                     'value' => $category_info->category_description
                 ]) ?>
             </div>

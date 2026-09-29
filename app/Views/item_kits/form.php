@@ -15,14 +15,14 @@
     <fieldset id="item_kit_basic_info">
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Item_kits.item_kit_number'), 'item_kit_number', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Item_kits.item_kit_number'), 'item_kit_number', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <div class="input-group">
-                    <span class="input-group-addon input-sm"><span class="bi bi-upc-scan"></span></span>
+                    <span class="input-group-text form-control-sm"><span class="bi bi-upc-scan"></span></span>
                     <?= form_input([
                         'name'  => 'item_kit_number',
                         'id'    => 'item_kit_number',
-                        'class' => 'form-control input-sm',
+                        'class' => 'form-control form-control-sm',
                         'value' => $item_kit_info->item_kit_number
                     ]) ?>
                 </div>
@@ -30,25 +30,25 @@
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Item_kits.name'), 'name', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Item_kits.name'), 'name', ['class' => 'required control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_input([
                     'name'  => 'name',
                     'id'    => 'name',
-                    'class' => 'form-control input-sm',
+                    'class' => 'form-control form-control-sm',
                     'value' => $item_kit_info->name
                 ]) ?>
             </div>
         </div>
 
-        <div class="form-group  form-group-sm">
-            <?= form_label(lang('Item_kits.find_kit_item'), 'item_name', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+        <div class="form-group form-group-sm">
+            <?= form_label(lang('Item_kits.find_kit_item'), 'item_name', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <div class="input-group input-group-sm">
                     <?= form_input([
                         'name'  => 'item_name',
                         'id'    => 'item_name',
-                        'class' => 'form-control input-sm',
+                        'class' => 'form-control form-control-sm',
                         'size'  => '50',
                         'value' => $selected_kit_item
                     ]) ?>
@@ -59,8 +59,8 @@
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Item_kits.discount_type'), 'kit_discount_type', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Item_kits.discount_type'), 'kit_discount_type', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <label class="radio-inline">
                     <?= form_radio([
                         'name'    => 'kit_discount_type',
@@ -81,15 +81,15 @@
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Item_kits.discount'), 'kit_discount', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-3">
+            <?= form_label(lang('Item_kits.discount'), 'kit_discount', ['class' => 'control-label col-3']) ?>
+            <div class="col-3">
                 <div class="input-group input-group-sm">
                     <?= form_input([
                         'name'      => 'kit_discount',
                         'size'      => '5',
                         'maxlength' => '5',
                         'id'        => 'kit_discount',
-                        'class'     => 'form-control input-sm',
+                        'class'     => 'form-control form-control-sm',
                         'value'     => $item_kit_info->kit_discount_type === FIXED ? to_currency_no_money($item_kit_info->kit_discount) : to_decimals($item_kit_info->kit_discount)
                     ]) ?>
                 </div>
@@ -97,8 +97,8 @@
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Item_kits.price_option'), 'price_option', !empty($basic_version) ? ['class' => 'required control-label col-xs-3'] : ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Item_kits.price_option'), 'price_option', !empty($basic_version) ? ['class' => 'required control-label col-3'] : ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <label class="radio-inline">
                     <?= form_radio([
                         'name'    => 'price_option',
@@ -127,8 +127,8 @@
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Item_kits.print_option'), 'print_option', !empty($basic_version) ? ['class' => 'required control-label col-xs-3'] : ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Item_kits.print_option'), 'print_option', !empty($basic_version) ? ['class' => 'required control-label col-3'] : ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <label class="radio-inline">
                     <?= form_radio([
                         'name'    => 'print_option',
@@ -158,24 +158,24 @@
 
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Item_kits.description'), 'description', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Item_kits.description'), 'description', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_textarea([
                     'name'  => 'description',
                     'id'    => 'description',
-                    'class' => 'form-control input-sm',
+                    'class' => 'form-control form-control-sm',
                     'value' => $item_kit_info->description
                 ]) ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Item_kits.add_item'), 'item', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Item_kits.add_item'), 'item', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_input([
                     'name'  => 'item',
                     'id'    => 'item',
-                    'class' => 'form-control input-sm'
+                    'class' => 'form-control form-control-sm'
                 ]) ?>
             </div>
         </div>
@@ -193,9 +193,9 @@
                 <?php foreach ($item_kit_items as $item_kit_item) { ?>
                     <tr>
                         <td><a href="#" onclick="return delete_item_kit_row(this);"><span class="bi bi-trash"></span></a></td>
-                        <td><input class="quantity form-control input-sm" id="item_seq_<?= $item_kit_item['item_id'] ?>" name="item_kit_seq[<?= $item_kit_item['item_id'] ?>]" value="<?= parse_decimals($item_kit_item['kit_sequence'], 0) ?>"></td>
+                        <td><input class="quantity form-control form-control-sm" id="item_seq_<?= $item_kit_item['item_id'] ?>" name="item_kit_seq[<?= $item_kit_item['item_id'] ?>]" value="<?= parse_decimals($item_kit_item['kit_sequence'], 0) ?>"></td>
                         <td><?= esc($item_kit_item['name']) ?></td>
-                        <td><input class="quantity form-control input-sm" id="item_qty_<?= $item_kit_item['item_id'] ?>" name="item_kit_qty[<?= $item_kit_item['item_id'] ?>]" value="<?= to_quantity_decimals($item_kit_item['quantity']) ?>"></td>
+                        <td><input class="quantity form-control form-control-sm" id="item_qty_<?= $item_kit_item['item_id'] ?>" name="item_kit_qty[<?= $item_kit_item['item_id'] ?>]" value="<?= to_quantity_decimals($item_kit_item['quantity']) ?>"></td>
                     </tr>
                 <?php } ?>
             </tbody>
@@ -219,9 +219,9 @@
                 } else {
                     $('#item_kit_items').append('<tr>' +
                         '<td><a href="#" onclick="return delete_item_kit_row(this);"><span class="bi bi-trash"></span></a></td>' +
-                        '<td><input class="quantity form-control input-sm" id="item_seq_' + ui.item.value + '" name="item_kit_seq[' + ui.item.value + ']" value="0"></td>' +
+                        '<td><input class="quantity form-control form-control-sm" id="item_seq_' + ui.item.value + '" name="item_kit_seq[' + ui.item.value + ']" value="0"></td>' +
                         '<td>' + DOMPurify.sanitize(ui.item.label) + '</td>' +
-                        '<td><input class="quantity form-control input-sm" id="item_qty_' + ui.item.value + '" name="item_kit_qty[' + ui.item.value + ']" value="1"></td>' +
+                        '<td><input class="quantity form-control form-control-sm" id="item_qty_' + ui.item.value + '" name="item_kit_qty[' + ui.item.value + ']" value="1"></td>' +
                         '</tr>');
                 }
                 $('#item').val('');

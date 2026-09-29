@@ -7,7 +7,7 @@
 
 <div id="config_wrapper">
     <fieldset id="config_info">
-        <div class="well well-sm">
+        <div class="border rounded p-2 bg-body-tertiary">
             <h4>IVA 10% (Paraguay)</h4>
             <p>El sistema utiliza IVA 10% incluido en el precio. El calculo es automatico: <strong>Precio / 11</strong></p>
             <p>No se requiere configuracion adicional.</p>

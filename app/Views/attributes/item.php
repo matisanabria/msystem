@@ -8,13 +8,13 @@
 ?>
 
 <div class="form-group form-group-sm">
-    <?= form_label(lang('Attributes.definition_name'), 'definition_name_label', ['class' => 'control-label col-xs-3']) ?>
-    <div class="col-xs-8">
+    <?= form_label(lang('Attributes.definition_name'), 'definition_name_label', ['class' => 'control-label col-3']) ?>
+    <div class="col-8">
         <?= form_dropdown([
             'name'     => 'definition_name',
             'options'  => $definition_names,
             'selected' => -1,
-            'class'    => 'form-control',
+            'class'    => 'form-select',
             'id'       => 'definition_name'
         ]) ?>
     </div>
@@ -23,8 +23,8 @@
 <?php foreach ($definition_values as $definition_id => $definition_value) { ?>
 
     <div class="form-group form-group-sm">
-        <?= form_label($definition_value['definition_name'], $definition_value['definition_name'], ['class' => 'control-label col-xs-3']) ?>
-        <div class="col-xs-8">
+        <?= form_label($definition_value['definition_name'], $definition_value['definition_name'], ['class' => 'control-label col-3']) ?>
+        <div class="col-8">
             <div class="input-group">
                 <?php
                 echo form_hidden("attribute_ids[$definition_id]", strval($definition_value['attribute_id']));
@@ -36,7 +36,7 @@
                         echo form_input([
                             'name'               => "attribute_links[$definition_id]",
                             'value'              => to_date($value),
-                            'class'              => 'form-control input-sm datetime',
+                            'class'              => 'form-control form-control-sm datetime',
                             'data-definition-id' => $definition_id,
                             'readonly'           => 'true'
                         ]);
@@ -47,7 +47,7 @@
                             'name'               => "attribute_links[$definition_id]",
                             'options'            => $definition_value['values'],
                             'selected'           => $selected_value,
-                            'class'              => 'form-control',
+                            'class'              => 'form-select',
                             'data-definition-id' => $definition_id
                         ]);
                         break;
@@ -91,7 +91,7 @@
                         break;
                 }
                 ?>
-                <span class="input-group-addon input-sm btn btn-default remove_attribute_btn">
+                <span class="input-group-text form-control-sm btn btn-outline-secondary remove_attribute_btn">
                     <span class="bi bi-trash"></span>
                 </span>
             </div>

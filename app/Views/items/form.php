@@ -33,9 +33,9 @@
 
         <?php if (!empty($show_location_select) && count($allowed_locations) > 1): ?>
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Common.location'), 'location_id', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <?= form_dropdown('location_id', $allowed_locations, (string)$item_location_id, ['id' => 'location_id', 'class' => 'form-control']) ?>
+            <?= form_label(lang('Common.location'), 'location_id', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
+                <?= form_dropdown('location_id', $allowed_locations, (string)$item_location_id, ['id' => 'location_id', 'class' => 'form-select']) ?>
             </div>
         </div>
         <?php else: ?>
@@ -43,14 +43,14 @@
         <?php endif; ?>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.item_number'), 'item_number', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Items.item_number'), 'item_number', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <div class="input-group">
-                    <span class="input-group-addon input-sm"><span class="bi bi-upc-scan"></span></span>
+                    <span class="input-group-text form-control-sm"><span class="bi bi-upc-scan"></span></span>
                     <?= form_input([
                         'name'  => 'item_number',
                         'id'    => 'item_number',
-                        'class' => 'form-control input-sm',
+                        'class' => 'form-control form-control-sm',
                         'value' => $item_info->item_number
                     ]) ?>
                 </div>
@@ -58,30 +58,30 @@
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.name'), 'name', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Items.name'), 'name', ['class' => 'required control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_input([
                     'name'  => 'name',
                     'id'    => 'name',
-                    'class' => 'form-control input-sm',
+                    'class' => 'form-control form-control-sm',
                     'value' => $item_info->name
                 ]) ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.category'), 'category', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Items.category'), 'category', ['class' => 'required control-label col-3']) ?>
+            <div class="col-8">
                 <div class="input-group">
-                    <span class="input-group-addon input-sm"><span class="bi bi-tag"></span></span>
+                    <span class="input-group-text form-control-sm"><span class="bi bi-tag"></span></span>
                     <?php
                     if ($config['category_dropdown']) {
-                        echo form_dropdown('category', $categories, $selected_category, ['class' => 'form-control']);
+                        echo form_dropdown('category', $categories, $selected_category, ['class' => 'form-select']);
                     } else {
                         echo form_input([
                             'name'  => 'category',
                             'id'    => 'category',
-                            'class' => 'form-control input-sm',
+                            'class' => 'form-control form-control-sm',
                             'value' => $item_info->category
                         ]);
                     }
@@ -91,91 +91,91 @@
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.supplier'), 'supplier', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
-                <?= form_dropdown('supplier_id', $suppliers, $selected_supplier, ['class' => 'form-control']) ?>
+            <?= form_label(lang('Items.supplier'), 'supplier', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
+                <?= form_dropdown('supplier_id', $suppliers, $selected_supplier, ['class' => 'form-select']) ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.cost_price'), 'cost_price', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-4">
+            <?= form_label(lang('Items.cost_price'), 'cost_price', ['class' => 'required control-label col-3']) ?>
+            <div class="col-4">
                 <div class="input-group input-group-sm">
                     <?php if (!is_right_side_currency_symbol()): ?>
-                        <span class="input-group-addon input-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
+                        <span class="input-group-text form-control-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
                     <?php endif; ?>
                     <?= form_input([
                         'name'    => 'cost_price',
                         'id'      => 'cost_price',
-                        'class'   => 'form-control input-sm',
+                        'class'   => 'form-control form-control-sm',
                         'onClick' => 'this.select();',
                         'value'   => to_currency_no_money($item_info->cost_price)
                     ]) ?>
                     <?php if (is_right_side_currency_symbol()): ?>
-                        <span class="input-group-addon input-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
+                        <span class="input-group-text form-control-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.unit_price'), 'unit_price', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-4">
+            <?= form_label(lang('Items.unit_price'), 'unit_price', ['class' => 'required control-label col-3']) ?>
+            <div class="col-4">
                 <div class="input-group input-group-sm">
                     <?php if (!is_right_side_currency_symbol()): ?>
-                        <span class="input-group-addon input-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
+                        <span class="input-group-text form-control-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
                     <?php endif; ?>
                     <?= form_input([
                         'name'    => 'unit_price',
                         'id'      => 'unit_price',
-                        'class'   => 'form-control input-sm',
+                        'class'   => 'form-control form-control-sm',
                         'onClick' => 'this.select();',
                         'value'   => to_currency_no_money($item_info->unit_price)
                     ]) ?>
                     <?php if (is_right_side_currency_symbol()): ?>
-                        <span class="input-group-addon input-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
+                        <span class="input-group-text form-control-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.price_wholesale'), 'price_wholesale', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-4">
+            <?= form_label(lang('Items.price_wholesale'), 'price_wholesale', ['class' => 'required control-label col-3']) ?>
+            <div class="col-4">
                 <div class="input-group input-group-sm">
                     <?php if (!is_right_side_currency_symbol()): ?>
-                        <span class="input-group-addon input-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
+                        <span class="input-group-text form-control-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
                     <?php endif; ?>
                     <?= form_input([
                         'name'    => 'price_wholesale',
                         'id'      => 'price_wholesale',
-                        'class'   => 'form-control input-sm',
+                        'class'   => 'form-control form-control-sm',
                         'onClick' => 'this.select();',
                         'value'   => to_currency_no_money($item_info->price_wholesale ?? $item_info->unit_price)
                     ]) ?>
                     <?php if (is_right_side_currency_symbol()): ?>
-                        <span class="input-group-addon input-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
+                        <span class="input-group-text form-control-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.price_reseller'), 'price_reseller', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-4">
+            <?= form_label(lang('Items.price_reseller'), 'price_reseller', ['class' => 'required control-label col-3']) ?>
+            <div class="col-4">
                 <div class="input-group input-group-sm">
                     <?php if (!is_right_side_currency_symbol()): ?>
-                        <span class="input-group-addon input-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
+                        <span class="input-group-text form-control-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
                     <?php endif; ?>
                     <?= form_input([
                         'name'    => 'price_reseller',
                         'id'      => 'price_reseller',
-                        'class'   => 'form-control input-sm',
+                        'class'   => 'form-control form-control-sm',
                         'onClick' => 'this.select();',
                         'value'   => to_currency_no_money($item_info->price_reseller ?? $item_info->unit_price)
                     ]) ?>
                     <?php if (is_right_side_currency_symbol()): ?>
-                        <span class="input-group-addon input-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
+                        <span class="input-group-text form-control-sm"><b><?= esc($config['currency_symbol']) ?></b></span>
                     <?php endif; ?>
                 </div>
             </div>
@@ -183,13 +183,13 @@
 
         <?php if ($include_hsn): ?>
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Items.hsn_code'), 'category', ['class' => 'control-label col-xs-3']) ?>
-                <div class="col-xs-8">
+                <?= form_label(lang('Items.hsn_code'), 'category', ['class' => 'control-label col-3']) ?>
+                <div class="col-8">
                     <div class="input-group">
                         <?= form_input([
                             'name'  => 'hsn_code',
                             'id'    => 'hsn_code',
-                            'class' => 'form-control input-sm',
+                            'class' => 'form-control form-control-sm',
                             'value' => $hsn_code
                         ]) ?>
                     </div>
@@ -199,8 +199,8 @@
 
         <?php foreach ($stock_locations as $key => $location_detail) { ?>
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Items.current_quantity') . (count($stock_locations) > 1 ? ' ' . $location_detail['location_name'] : ''), "quantity_$key", ['class' => 'required control-label col-xs-3']) ?>
-                <div class="col-xs-4">
+                <?= form_label(lang('Items.current_quantity') . (count($stock_locations) > 1 ? ' ' . $location_detail['location_name'] : ''), "quantity_$key", ['class' => 'required control-label col-3']) ?>
+                <div class="col-4">
                     <?= form_input([
                         'name'    => "quantity_$key",
                         'id'      => "quantity_$key",
@@ -213,12 +213,12 @@
         <?php } ?>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.receiving_quantity'), 'receiving_quantity', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-4">
+            <?= form_label(lang('Items.receiving_quantity'), 'receiving_quantity', ['class' => 'required control-label col-3']) ?>
+            <div class="col-4">
                 <?= form_input([
                     'name'    => 'receiving_quantity',
                     'id'      => 'receiving_quantity',
-                    'class'   => 'required form-control input-sm',
+                    'class'   => 'required form-control form-control-sm',
                     'onClick' => 'this.select();',
                     'value'   => isset($item_info->item_id) ? to_quantity_decimals($item_info->receiving_quantity) : to_quantity_decimals(0)
                 ]) ?>
@@ -226,12 +226,12 @@
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.reorder_level'), 'reorder_level', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-4">
+            <?= form_label(lang('Items.reorder_level'), 'reorder_level', ['class' => 'required control-label col-3']) ?>
+            <div class="col-4">
                 <?= form_input([
                     'name'    => 'reorder_level',
                     'id'      => 'reorder_level',
-                    'class'   => 'form-control input-sm',
+                    'class'   => 'form-control form-control-sm',
                     'onClick' => 'this.select();',
                     'value'   => isset($item_info->item_id) ? to_quantity_decimals($item_info->reorder_level) : to_quantity_decimals(0)
                 ]) ?>
@@ -239,20 +239,20 @@
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.description'), 'description', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Items.description'), 'description', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <?= form_textarea([
                     'name'  => 'description',
                     'id'    => 'description',
-                    'class' => 'form-control input-sm',
+                    'class' => 'form-control form-control-sm',
                     'value' => $item_info->description
                 ]) ?>
             </div>
         </div>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.image'), 'items_image', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+            <?= form_label(lang('Items.image'), 'items_image', ['class' => 'control-label col-3']) ?>
+            <div class="col-8">
                 <div class="fileinput <?= $logo_exists ? 'fileinput-exists' : 'fileinput-new' ?>" data-provides="fileinput">
                     <div class="fileinput-new thumbnail" style="width: 100px; height: 100px;"></div>
                     <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 100px; max-height: 100px;">
@@ -261,12 +261,12 @@
                             style="max-height: 100%; max-width: 100%;">
                     </div>
                     <div>
-                        <span class="btn btn-default btn-sm btn-file">
+                        <span class="btn btn-outline-secondary btn-sm btn-file">
                             <span class="fileinput-new"><?= lang('Items.select_image') ?></span>
                             <span class="fileinput-exists"><?= lang('Items.change_image') ?></span>
                             <input type="file" name="items_image" accept="image/*">
                         </span>
-                        <a href="#" class="btn btn-default btn-sm fileinput-exists" data-dismiss="fileinput"><?= lang('Items.remove_image') ?></a>
+                        <a href="#" class="btn btn-outline-secondary btn-sm fileinput-exists" data-dismiss="fileinput"><?= lang('Items.remove_image') ?></a>
                     </div>
                 </div>
             </div>
@@ -274,35 +274,35 @@
 
         <?php if ($config['multi_pack_enabled'] == '1') { ?>
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Items.qty_per_pack'), 'qty_per_pack', ['class' => 'control-label col-xs-3']) ?>
-                <div class="col-xs-4">
+                <?= form_label(lang('Items.qty_per_pack'), 'qty_per_pack', ['class' => 'control-label col-3']) ?>
+                <div class="col-4">
                     <?= form_input([
                         'name'  => 'qty_per_pack',
                         'id'    => 'qty_per_pack',
-                        'class' => 'form-control input-sm',
+                        'class' => 'form-control form-control-sm',
                         'value' => isset($item_info->item_id) ? to_quantity_decimals($item_info->qty_per_pack) : to_quantity_decimals(0)
                     ]) ?>
                 </div>
             </div>
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Items.pack_name'), 'name', ['class' => 'control-label col-xs-3']) ?>
-                <div class="col-xs-8">
+                <?= form_label(lang('Items.pack_name'), 'name', ['class' => 'control-label col-3']) ?>
+                <div class="col-8">
                     <?= form_input([
                         'name'  => 'pack_name',
                         'id'    => 'pack_name',
-                        'class' => 'form-control input-sm',
+                        'class' => 'form-control form-control-sm',
                         'value' => $item_info->pack_name
                     ]) ?>
                 </div>
             </div>
-            <div class="form-group  form-group-sm">
-                <?= form_label(lang('Items.low_sell_item'), 'low_sell_item_name', ['class' => 'control-label col-xs-3']) ?>
-                <div class="col-xs-8">
+            <div class="form-group form-group-sm">
+                <?= form_label(lang('Items.low_sell_item'), 'low_sell_item_name', ['class' => 'control-label col-3']) ?>
+                <div class="col-8">
                     <div class="input-group input-group-sm">
                         <?= form_input([
                             'name'  => 'low_sell_item_name',
                             'id'    => 'low_sell_item_name',
-                            'class' => 'form-control input-sm',
+                            'class' => 'form-control form-control-sm',
                             'value' => $selected_low_sell_item
                         ]) ?>
                         <?= form_hidden('low_sell_item_id', $selected_low_sell_item_id) ?>
@@ -312,8 +312,8 @@
         <?php } ?>
 
         <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.is_deleted'), 'is_deleted', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-1">
+            <?= form_label(lang('Items.is_deleted'), 'is_deleted', ['class' => 'control-label col-3']) ?>
+            <div class="col-1">
                 <?= form_checkbox([
                     'name'    => 'is_deleted',
                     'id'      => 'is_deleted',

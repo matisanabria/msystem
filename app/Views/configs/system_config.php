@@ -1,11 +1,11 @@
 <br>
 <div class="container-fluid">
-    <ul class="nav nav-tabs" id="myTabs" data-toggle="tab">
-        <li class="active"><a href="#system_tabs" data-toggle="tab" title="<?= lang('Config.system_conf') ?>"><?= lang('Config.system_conf') ?></a></li>
-        <li><a href="#email_tabs" data-toggle="tab" title="<?= lang('Config.email_configuration') ?>"><?= lang('Config.email') ?></a></li>
-        <li><a href="#message_tabs" data-toggle="tab" title="<?= lang('Config.message_configuration') ?>"><?= lang('Config.message') ?></a></li>
-        <li><a href="#integrations_tabs" data-toggle="tab" title="<?= lang('Config.integrations_configuration') ?>"><?= lang('Config.integrations') ?></a></li>
-        <li><a href="#license_tabs" data-toggle="tab" title="<?= lang('Config.license_configuration') ?>"><?= lang('Config.license') ?></a></li>
+    <ul class="nav nav-tabs" id="myTabs">
+        <li class="nav-item"><a class="nav-link active" href="#system_tabs" data-bs-toggle="tab" title="<?= lang('Config.system_conf') ?>"><?= lang('Config.system_conf') ?></a></li>
+        <li class="nav-item"><a class="nav-link" href="#email_tabs" data-bs-toggle="tab" title="<?= lang('Config.email_configuration') ?>"><?= lang('Config.email') ?></a></li>
+        <li class="nav-item"><a class="nav-link" href="#message_tabs" data-bs-toggle="tab" title="<?= lang('Config.message_configuration') ?>"><?= lang('Config.message') ?></a></li>
+        <li class="nav-item"><a class="nav-link" href="#integrations_tabs" data-bs-toggle="tab" title="<?= lang('Config.integrations_configuration') ?>"><?= lang('Config.integrations') ?></a></li>
+        <li class="nav-item"><a class="nav-link" href="#license_tabs" data-bs-toggle="tab" title="<?= lang('Config.license_configuration') ?>"><?= lang('Config.license') ?></a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="system_tabs"><?= view('configs/system_info') ?></div>

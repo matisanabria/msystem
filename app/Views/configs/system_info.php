@@ -20,18 +20,18 @@ use Config\OSPOS;
 
 <script type="text/javascript" src="js/clipboard.min.js"></script>
 
-<div id="config_wrapper" class="col-sm-12">
+<div id="config_wrapper" class="col-md-12">
     <?= lang('Config.server_notice') ?>
     <div class="container">
         <div class="row">
-            <div class="col-sm-2" style="text-align: left;"><br>
+            <div class="col-md-2" style="text-align: left;"><br>
                 <strong>
                     <p style="min-height: 14.7em;">General Info</p>
                     <p style="min-height: 10.5em;">User Setup</p><br>
                     <p>Permissions</p>
                 </strong>
             </div>
-            <div class="col-sm-8" id="issuetemplate" style="text-align: left;"><br>
+            <div class="col-md-8" id="issuetemplate" style="text-align: left;"><br>
                 <?= lang('Config.ospos_info') . ':' ?>
                 <?= esc(config('App')->application_version) ?> - <?= esc(substr(config(OSPOS::class)->commit_sha1, 0, 6)) ?><br>
                 Language Code: <?= current_language_code() ?><br><br>

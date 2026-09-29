@@ -14,41 +14,41 @@
             <ul id="mailchimp_error_message_box" class="error_message_box"></ul>
 
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Config.mailchimp_api_key'), 'mailchimp_api_key', ['class' => 'control-label col-xs-2']) ?>
-                <div class="col-xs-4">
+                <?= form_label(lang('Config.mailchimp_api_key'), 'mailchimp_api_key', ['class' => 'control-label col-2']) ?>
+                <div class="col-4">
                     <div class="input-group">
-                        <span class="input-group-addon input-sm">
+                        <span class="input-group-text form-control-sm">
                             <span class="bi bi-cloud"></span>
                         </span>
                         <?= form_input([
                             'name'  => 'mailchimp_api_key',
                             'id'    => 'mailchimp_api_key',
-                            'class' => 'form-control input-sm',
+                            'class' => 'form-control form-control-sm',
                             'value' => $mailchimp['api_key']
                         ]) ?>
                     </div>
                 </div>
-                <div class="col-xs-1">
+                <div class="col-1">
                     <label class="control-label">
                         <a href="https://eepurl.com/b9a05b" target="_blank">
-                            <span class="bi bi-info-circle" data-toggle="tooltip" data-placement="right" title="<?= lang('Config.mailchimp_tooltip') ?>"></span>
+                            <span class="bi bi-info-circle" data-bs-toggle="tooltip" data-bs-placement="right" title="<?= lang('Config.mailchimp_tooltip') ?>"></span>
                         </a>
                     </label>
                 </div>
             </div>
 
             <div class="form-group form-group-sm">
-                <?= form_label(lang('Config.mailchimp_lists'), 'mailchimp_list_id', ['class' => 'control-label col-xs-2']) ?>
-                <div class="col-xs-4">
+                <?= form_label(lang('Config.mailchimp_lists'), 'mailchimp_list_id', ['class' => 'control-label col-2']) ?>
+                <div class="col-4">
                     <div class="input-group">
-                        <span class="input-group-addon input-sm">
+                        <span class="input-group-text form-control-sm">
                             <span class="bi bi-person"></span>
                         </span>
                         <?= form_dropdown(
                             'mailchimp_list_id',
                             $mailchimp['lists'],
                             $mailchimp['list_id'],
-                            'id="mailchimp_list_id" class="form-control input-sm"'
+                            'id="mailchimp_list_id" class="form-select form-select-sm"'
                         ) ?>
                     </div>
                 </div>
@@ -58,7 +58,7 @@
                 'name'  => 'submit_mailchimp',
                 'id'    => 'submit_mailchimp',
                 'value' => lang('Common.submit'),
-                'class' => 'btn btn-primary btn-sm pull-right'
+                'class' => 'btn btn-primary btn-sm float-end'
             ]) ?>
 
         </fieldset>

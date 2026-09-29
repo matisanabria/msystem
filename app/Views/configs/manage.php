@@ -5,35 +5,35 @@
 </script>
 
 <ul class="nav nav-tabs" data-tabs="tabs">
-    <li class="active" role="presentation">
-        <a data-toggle="tab" href="#info_tab" title="<?= lang('Config.info_configuration') ?>"><?= lang('Config.info') ?></a>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active" data-bs-toggle="tab" href="#info_tab" title="<?= lang('Config.info_configuration') ?>"><?= lang('Config.info') ?></a>
     </li>
-    <li role="presentation">
-        <a data-toggle="tab" href="#general_tab" title="<?= lang('Config.general_configuration') ?>"><?= lang('Config.general') ?></a>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" data-bs-toggle="tab" href="#general_tab" title="<?= lang('Config.general_configuration') ?>"><?= lang('Config.general') ?></a>
     </li>
-    <li role="presentation">
-        <a data-toggle="tab" href="#locale_tab" title="<?= lang('Config.locale_configuration') ?>"><?= lang('Config.locale') ?></a>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" data-bs-toggle="tab" href="#locale_tab" title="<?= lang('Config.locale_configuration') ?>"><?= lang('Config.locale') ?></a>
     </li>
-    <li role="presentation">
-        <a data-toggle="tab" href="#barcode_tab" title="<?= lang('Config.barcode_configuration') ?>"><?= lang('Config.barcode') ?></a>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" data-bs-toggle="tab" href="#barcode_tab" title="<?= lang('Config.barcode_configuration') ?>"><?= lang('Config.barcode') ?></a>
     </li>
-    <li role="presentation">
-        <a data-toggle="tab" href="#stock_tab" title="<?= lang('Config.location_configuration') ?>"><?= lang('Config.location') ?></a>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" data-bs-toggle="tab" href="#stock_tab" title="<?= lang('Config.location_configuration') ?>"><?= lang('Config.location') ?></a>
     </li>
-    <li role="presentation">
-        <a data-toggle="tab" href="#receipt_tab" title="<?= lang('Config.receipt_configuration') ?>"><?= lang('Config.receipt') ?></a>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" data-bs-toggle="tab" href="#receipt_tab" title="<?= lang('Config.receipt_configuration') ?>"><?= lang('Config.receipt') ?></a>
     </li>
-    <li role="presentation">
-        <a data-toggle="tab" href="#invoice_tab" title="<?= lang('Config.invoice_configuration') ?>"><?= lang('Config.invoice') ?></a>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" data-bs-toggle="tab" href="#invoice_tab" title="<?= lang('Config.invoice_configuration') ?>"><?= lang('Config.invoice') ?></a>
     </li>
-    <li role="presentation">
-        <a data-toggle="tab" href="#reward_tab" title="<?= lang('Config.reward_configuration') ?>"><?= lang('Config.reward') ?></a>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" data-bs-toggle="tab" href="#reward_tab" title="<?= lang('Config.reward_configuration') ?>"><?= lang('Config.reward') ?></a>
     </li>
-    <li role="presentation">
-        <a data-toggle="tab" href="#table_tab" title="<?= lang('Config.table_configuration') ?>"><?= lang('Config.table') ?></a>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" data-bs-toggle="tab" href="#table_tab" title="<?= lang('Config.table_configuration') ?>"><?= lang('Config.table') ?></a>
     </li>
-    <li role="presentation">
-        <a data-toggle="tab" href="#system_tab" title="<?= lang('Config.system_conf') ?>"><?= lang('Config.system_conf') ?></a>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" data-bs-toggle="tab" href="#system_tab" title="<?= lang('Config.system_conf') ?>"><?= lang('Config.system_conf') ?></a>
     </li>
 </ul>
 

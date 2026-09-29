@@ -21,14 +21,14 @@
 </script>
 
 <div id="title_bar" class="btn-toolbar">
-    <button class="btn btn-info btn-sm pull-right modal-dlg" data-btn-submit="<?= lang('Common.submit') ?>" data-href="<?= esc("$controller_name/view") ?>" title="<?= lang(ucfirst($controller_name) . '.new') ?>">
+    <button class="btn btn-info btn-sm float-end modal-dlg" data-btn-submit="<?= lang('Common.submit') ?>" data-href="<?= esc("$controller_name/view") ?>" title="<?= lang(ucfirst($controller_name) . '.new') ?>">
         <span class="bi bi-heart">&nbsp;</span><?= lang(ucfirst($controller_name) . '.new') ?>
     </button>
 </div>
 
 <div id="toolbar">
-    <div class="pull-left btn-toolbar">
-        <button id="delete" class="btn btn-default btn-sm">
+    <div class="float-start btn-toolbar">
+        <button id="delete" class="btn btn-outline-secondary btn-sm">
             <span class="bi bi-trash">&nbsp;</span><?= lang('Common.delete') ?>
         </button>
     </div>

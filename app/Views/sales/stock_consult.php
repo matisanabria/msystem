@@ -7,22 +7,22 @@
 <?= view('partial/header') ?>
 
 <div id="title_bar" class="btn-toolbar print_hide">
-    <a href="<?= site_url('sales') ?>" class="btn btn-default btn-sm">
+    <a href="<?= site_url('sales') ?>" class="btn btn-outline-secondary btn-sm">
         <span class="bi bi-arrow-left"></span>&nbsp;<?= lang('Sales.pin_back') ?>
     </a>
-    <h4 class="pull-left" style="margin: 4px 15px 0;">
+    <h4 class="float-start" style="margin: 4px 15px 0;">
         <span class="bi bi-list-ul"></span>&nbsp;<?= lang('Sales.stock_consult_title') ?>
     </h4>
 </div>
 
-<div id="toolbar" class="form-inline print_hide" style="margin-bottom: 10px;">
-    <input type="text" id="stock_search" class="form-control input-sm"
+<div id="toolbar" class="d-flex flex-wrap gap-2 align-items-center print_hide" style="margin-bottom: 10px;">
+    <input type="text" id="stock_search" class="form-control form-control-sm"
            placeholder="<?= lang('Sales.stock_consult_search') ?>" style="width: 280px;">
-    <?= form_dropdown('stock_category', $categories, 'all', ['id' => 'stock_category', 'class' => 'form-control input-sm', 'style' => 'min-width: 180px;']) ?>
+    <?= form_dropdown('stock_category', $categories, 'all', ['id' => 'stock_category', 'class' => 'form-select form-select-sm', 'style' => 'min-width: 180px;']) ?>
 </div>
 
 <div id="table_holder">
-    <table id="stock_table" class="table table-condensed table-bordered table-hover">
+    <table id="stock_table" class="table table-sm table-bordered table-hover">
         <thead>
             <tr>
                 <th><?= lang('Items.name') ?></th>

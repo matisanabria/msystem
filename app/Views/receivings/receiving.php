@@ -38,31 +38,31 @@ if (isset($success)) {
 
     <!-- Top register controls -->
 
-    <?= form_open("$controller_name/changeMode", ['id' => 'mode_form', 'class' => 'form-horizontal panel panel-default']) ?>
+    <?= form_open("$controller_name/changeMode", ['id' => 'mode_form', 'class' => 'form-horizontal card']) ?>
 
-    <div class="panel-body form-group">
+    <div class="card-body form-group">
         <ul>
-            <li class="pull-left first_li">
+            <li class="float-start first_li">
                 <label class="control-label"><?= lang(ucfirst($controller_name) . '.mode') ?></label>
             </li>
-            <li class="pull-left">
-                <?= form_dropdown('mode', $modes, $mode, ['onchange' => "$('#mode_form').submit();", 'class' => 'selectpicker show-menu-arrow', 'data-style' => 'btn-default btn-sm', 'data-width' => 'fit']) ?>
+            <li class="float-start">
+                <?= form_dropdown('mode', $modes, $mode, ['onchange' => "$('#mode_form').submit();", 'class' => 'selectpicker show-menu-arrow', 'data-style' => 'btn-outline-secondary btn-sm', 'data-width' => 'fit']) ?>
             </li>
 
             <?php if ($show_stock_locations) { ?>
-                <li class="pull-left">
+                <li class="float-start">
                     <label class="control-label"><?= lang(ucfirst($controller_name) . '.stock_source') ?></label>
                 </li>
-                <li class="pull-left">
-                    <?= form_dropdown('stock_source', $stock_locations, $stock_source, ['onchange' => "$('#mode_form').submit();", 'class' => 'selectpicker show-menu-arrow', 'data-style' => 'btn-default btn-sm', 'data-width' => 'fit']) ?>
+                <li class="float-start">
+                    <?= form_dropdown('stock_source', $stock_locations, $stock_source, ['onchange' => "$('#mode_form').submit();", 'class' => 'selectpicker show-menu-arrow', 'data-style' => 'btn-outline-secondary btn-sm', 'data-width' => 'fit']) ?>
                 </li>
 
                 <?php if ($mode == 'requisition') { ?>
-                    <li class="pull-left">
+                    <li class="float-start">
                         <label class="control-label"><?= lang(ucfirst($controller_name) . '.stock_destination') ?></label>
                     </li>
-                    <li class="pull-left">
-                        <?= form_dropdown('stock_destination', $stock_locations, $stock_destination, ['onchange' => "$('#mode_form').submit();", 'class' => 'selectpicker show-menu-arrow', 'data-style' => 'btn-default btn-sm', 'data-width' => 'fit']) ?>
+                    <li class="float-start">
+                        <?= form_dropdown('stock_destination', $stock_locations, $stock_destination, ['onchange' => "$('#mode_form').submit();", 'class' => 'selectpicker show-menu-arrow', 'data-style' => 'btn-outline-secondary btn-sm', 'data-width' => 'fit']) ?>
                     </li>
             <?php
                 }
@@ -73,11 +73,11 @@ if (isset($success)) {
 
     <?= form_close() ?>
 
-    <?= form_open("$controller_name/add", ['id' => 'add_item_form', 'class' => 'form-horizontal panel panel-default']) ?>
+    <?= form_open("$controller_name/add", ['id' => 'add_item_form', 'class' => 'form-horizontal card']) ?>
 
-    <div class="panel-body form-group">
+    <div class="card-body form-group">
         <ul>
-            <li class="pull-left first_li">
+            <li class="float-start first_li">
                 <label for="item" class="control-label">
                     <?php if ($mode == 'receive' or $mode == 'requisition') { ?>
                         <?= lang(ucfirst($controller_name) . '.find_or_scan_item') ?>
@@ -87,12 +87,12 @@ if (isset($success)) {
                 </label>
             </li>
 
-            <li class="pull-left">
-                <?= form_input(['name' => 'item', 'id' => 'item', 'class' => 'form-control input-sm', 'size' => '50', 'tabindex' => '1']) ?>
+            <li class="float-start">
+                <?= form_input(['name' => 'item', 'id' => 'item', 'class' => 'form-control form-control-sm', 'size' => '50', 'tabindex' => '1']) ?>
             </li>
 
-            <li class="pull-right">
-                <button id="new_item_button" class="btn btn-info btn-sm pull-right modal-dlg" data-btn-submit="<?= lang('Common.submit') ?>" data-btn-new="<?= lang('Common.new') ?>" data-href="<?= "items/view" ?>" title="<?= lang('Sales.new_item') ?>">
+            <li class="float-end">
+                <button id="new_item_button" class="btn btn-info btn-sm float-end modal-dlg" data-btn-submit="<?= lang('Common.submit') ?>" data-btn-new="<?= lang('Common.new') ?>" data-href="<?= "items/view" ?>" title="<?= lang('Sales.new_item') ?>">
                     <span class="bi bi-tag">&nbsp;</span><?= lang('Sales.new_item') ?>
                 </button>
             </li>
@@ -143,7 +143,7 @@ if (isset($success)) {
                             <td>
                                 <?= form_input([
                                     'name'    => 'price',
-                                    'class'   => 'form-control input-sm',
+                                    'class'   => 'form-control form-control-sm',
                                     'value'   => to_currency_no_money($item['price']),
                                     'onClick' => 'this.select();'
                                 ]) ?>
@@ -156,7 +156,7 @@ if (isset($success)) {
                         <?php } ?>
 
                         <td>
-                            <?= form_input(['name' => 'quantity', 'class' => 'form-control input-sm', 'value' => to_quantity_decimals($item['quantity']), 'onClick' => 'this.select();']) ?>
+                            <?= form_input(['name' => 'quantity', 'class' => 'form-control form-control-sm', 'value' => to_quantity_decimals($item['quantity']), 'onClick' => 'this.select();']) ?>
                             <?= form_hidden('receiving_quantity', (string)$item['receiving_quantity']) ?>
                         </td>
 
@@ -180,7 +180,7 @@ if (isset($success)) {
                             if ($item['allow_alt_description'] == 1) {    // TODO: ===?
                                 echo form_input([
                                     'name'  => 'description',
-                                    'class' => 'form-control input-sm',
+                                    'class' => 'form-control form-control-sm',
                                     'value' => $item['description']
                                 ]);
                             } else {
@@ -209,8 +209,8 @@ if (isset($success)) {
 
 <!-- Overall Receiving -->
 
-<div id="overall_sale" class="panel panel-default">
-    <div class="panel-body">
+<div id="overall_sale" class="card">
+    <div class="card-body">
         <?php if (isset($supplier)) { ?>
 
             <table class="sales_table_100">
@@ -259,7 +259,7 @@ if (isset($success)) {
                 <?= form_input([
                     'name'  => 'supplier',
                     'id'    => 'supplier',
-                    'class' => 'form-control input-sm',
+                    'class' => 'form-control form-control-sm',
                     'value' => lang(ucfirst($controller_name) . '.start_typing_supplier_name')
                 ]) ?>
 
@@ -296,15 +296,15 @@ if (isset($success)) {
                         <?= form_textarea([
                             'name'  => 'comment',
                             'id'    => 'comment',
-                            'class' => 'form-control input-sm',
+                            'class' => 'form-control form-control-sm',
                             'value' => $comment,
                             'rows'  => '4'
                         ]) ?>
 
-                        <div class="btn btn-sm btn-danger pull-left" id="cancel_receiving_button">
+                        <div class="btn btn-sm btn-danger float-start" id="cancel_receiving_button">
                             <span class="bi bi-x-lg">&nbsp;</span><?= lang(ucfirst($controller_name) . '.cancel_receiving') ?>
                         </div>
-                        <div class="btn btn-sm btn-success pull-right" id="finish_receiving_button">
+                        <div class="btn btn-sm btn-success float-end" id="finish_receiving_button">
                             <span class="bi bi-check-lg">&nbsp;</span><?= lang(ucfirst($controller_name) . '.complete_receiving') ?>
                         </div>
                     </div>
@@ -320,7 +320,7 @@ if (isset($success)) {
                         <?= form_textarea([
                             'name'  => 'comment',
                             'id'    => 'comment',
-                            'class' => 'form-control input-sm',
+                            'class' => 'form-control form-control-sm',
                             'value' => $comment,
                             'rows'  => '4'
                         ]) ?>
@@ -345,7 +345,7 @@ if (isset($success)) {
                                             <?= form_input([
                                                 'name'  => 'recv_reference',
                                                 'id'    => 'recv_reference',
-                                                'class' => 'form-control input-sm',
+                                                'class' => 'form-control form-control-sm',
                                                 'value' => $reference,
                                                 'size'  => 5
                                             ]) ?>
@@ -362,7 +362,7 @@ if (isset($success)) {
                                             [
                                                 'id'         => 'payment_types',
                                                 'class'      => 'selectpicker show-menu-arrow',
-                                                'data-style' => 'btn-default btn-sm',
+                                                'data-style' => 'btn-outline-secondary btn-sm',
                                                 'data-width' => 'auto'
                                             ]
                                         ) ?>
@@ -374,7 +374,7 @@ if (isset($success)) {
                                         <?= form_input([
                                             'name'  => 'amount_tendered',
                                             'value' => '',
-                                            'class' => 'form-control input-sm',
+                                            'class' => 'form-control form-control-sm',
                                             'size'  => '5'
                                         ]) ?>
                                     </td>
@@ -382,10 +382,10 @@ if (isset($success)) {
                             </table>
                         </div>
 
-                        <div class="btn btn-sm btn-danger pull-left" id="cancel_receiving_button">
+                        <div class="btn btn-sm btn-danger float-start" id="cancel_receiving_button">
                             <span class="bi bi-x-lg">&nbsp;</span><?= lang(ucfirst($controller_name) . '.cancel_receiving') ?>
                         </div>
-                        <div class="btn btn-sm btn-success pull-right" id="finish_receiving_button">
+                        <div class="btn btn-sm btn-success float-end" id="finish_receiving_button">
                             <span class="bi bi-check-lg">&nbsp;</span><?= lang(ucfirst($controller_name) . '.complete_receiving') ?>
                         </div>
                     </div>
