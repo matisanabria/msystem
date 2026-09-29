@@ -139,3 +139,63 @@ input#amount_tendered:disabled {
 .alert {
     margin-bottom: 5px;
 }
+
+/* Segmented control (price tier, discount type): a native hidden field keeps the value */
+.segmented {
+    display: inline-flex;
+    overflow: hidden;
+    border: 1px solid #c9d3dc;
+    border-radius: .3rem;
+    background: #fff;
+}
+
+.segmented-option {
+    padding: .125rem .5rem;
+    border: 0;
+    background: transparent;
+    font-size: .75rem;
+    line-height: 1.4;
+    color: #5b6773;
+    cursor: pointer;
+}
+
+.segmented-option + .segmented-option {
+    border-left: 1px solid #c9d3dc;
+}
+
+.segmented-option:hover:not(.active) {
+    background: #eef1f4;
+}
+
+.segmented-option.active {
+    background: #2c3e50;
+    color: #fff;
+    font-weight: 700;
+}
+
+.segmented-option:focus-visible {
+    outline: 2px solid #18bc9c;
+    outline-offset: -2px;
+}
+
+.segmented.price-type {
+    display: flex;
+    width: 100%;
+    margin-top: .25rem;
+}
+
+.segmented.price-type .segmented-option {
+    flex: 1 1 0;
+    padding-right: .25rem;
+    padding-left: .25rem;
+}
+
+.input-group > .segmented.discount-type {
+    margin-left: -1px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.segmented.discount-type .segmented-option {
+    min-width: 2.25rem;
+}

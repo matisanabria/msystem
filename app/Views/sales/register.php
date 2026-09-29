@@ -163,8 +163,8 @@ helper('url');
             <tr>
                 <th style="width: 5%;"><?= lang('Common.delete') ?></th>
                 <th style="width: 15%;"><?= lang(ucfirst($controller_name) . '.item_number') ?></th>
-                <th style="width: 30%;"><?= lang(ucfirst($controller_name) . '.item_name') ?></th>
-                <th style="width: 10%;"><?= lang(ucfirst($controller_name) . '.price') ?></th>
+                <th style="width: 24%;"><?= lang(ucfirst($controller_name) . '.item_name') ?></th>
+                <th style="width: 16%;"><?= lang(ucfirst($controller_name) . '.price') ?></th>
                 <th style="width: 10%;"><?= lang(ucfirst($controller_name) . '.quantity') ?></th>
                 <th style="width: 15%;"><?= lang(ucfirst($controller_name) . '.discount') ?></th>
                 <th style="width: 10%;"><?= lang(ucfirst($controller_name) . '.total') ?></th>
@@ -227,22 +227,29 @@ helper('url');
                                 }
                                 $current_price_type = (int)($item['price_type'] ?? 0);
                                 if ($items_module_allowed && $change_price) {
+                                    $price_types = [
+                                        0 => ['label' => lang('Sales.price_type_sale'), 'short' => lang('Sales.price_type_sale_short')],
+                                        1 => ['label' => lang('Sales.price_type_wholesale'), 'short' => lang('Sales.price_type_wholesale_short')],
+                                        2 => ['label' => lang('Sales.price_type_reseller'), 'short' => lang('Sales.price_type_reseller_short')],
+                                    ];
                                     echo form_dropdown(
                                         'price_type',
-                                        [
-                                            0 => lang('Sales.price_type_sale'),
-                                            1 => lang('Sales.price_type_wholesale'),
-                                            2 => lang('Sales.price_type_reseller'),
-                                        ],
+                                        array_map(static fn ($type) => $type['label'], $price_types),
                                         $current_price_type,
                                         [
-                                            'class'         => 'form-select form-select-sm price_type_select',
-                                            'style'         => 'margin-top:4px;',
-                                            'data-original' => (string)$current_price_type,
+                                            'class'          => 'price_type_select d-none',
+                                            'data-original'  => (string)$current_price_type,
                                             'data-wholesale' => to_currency_no_money($item['price_wholesale'] ?? $item['price']),
                                             'data-reseller'  => to_currency_no_money($item['price_reseller'] ?? $item['price']),
                                         ]
                                     );
+                                    ?>
+                                    <div class="segmented price-type" role="group" aria-label="<?= esc(lang('Sales.price_type_sale')) ?>">
+                                        <?php foreach ($price_types as $type_value => $type) { ?>
+                                            <button type="button" class="segmented-option<?= $current_price_type === $type_value ? ' active' : '' ?>" data-value="<?= $type_value ?>" title="<?= esc($type['label']) ?>" aria-pressed="<?= $current_price_type === $type_value ? 'true' : 'false' ?>"><?= esc($type['short']) ?></button>
+                                        <?php } ?>
+                                    </div>
+                                    <?php
                                 } else {
                                     echo form_hidden('price_type', (string)$current_price_type);
                                 }
@@ -261,11 +268,13 @@ helper('url');
                             </td>
 
                             <td>
-                                <div class="input-group">
+                                <div class="input-group input-group-sm">
                                     <?= form_input(['name' => 'discount', 'class' => 'form-control form-control-sm', 'value' => $item['discount_type'] ? to_currency_no_money($item['discount']) : to_decimals($item['discount']), 'tabindex' => ++$tabindex, 'onClick' => 'this.select();', 'data-original' => $item['discount_type'] ? to_currency_no_money($item['discount']) : to_decimals($item['discount']), 'data-original-type' => (string)(int)$item['discount_type']]) ?>
-                                    <span class="input-group-btn">
-                                        <?= form_checkbox(['id' => 'discount_toggle', 'name' => 'discount_toggle', 'value' => 1, 'data-toggle' => "toggle", 'data-size' => 'small', 'data-onstyle' => 'success', 'data-on' => '<b>' . $config['currency_symbol'] . '</b>', 'data-off' => '<b>%</b>', 'data-line' => $line, 'checked' => $item['discount_type'] == 1]) ?>
-                                    </span>
+                                    <?= form_checkbox(['id' => "discount_toggle_$line", 'name' => 'discount_toggle', 'value' => 1, 'class' => 'd-none', 'data-line' => $line, 'checked' => $item['discount_type'] == 1]) ?>
+                                    <div class="segmented discount-type" role="group" aria-label="<?= esc(lang(ucfirst($controller_name) . '.discount')) ?>">
+                                        <button type="button" class="segmented-option<?= $item['discount_type'] == 1 ? '' : ' active' ?>" data-value="0" aria-pressed="<?= $item['discount_type'] == 1 ? 'false' : 'true' ?>">%</button>
+                                        <button type="button" class="segmented-option<?= $item['discount_type'] == 1 ? ' active' : '' ?>" data-value="1" aria-pressed="<?= $item['discount_type'] == 1 ? 'true' : 'false' ?>"><?= esc($config['currency_symbol']) ?></button>
+                                    </div>
                                 </div>
                             </td>
 
@@ -1110,6 +1119,26 @@ helper('url');
             $(this).parents('tr').prevAll('form:first').submit()
         });
 
+        // Segmented controls drive the (hidden) native price_type select and discount_toggle checkbox
+        var segmentedSet = function($group, value) {
+            $group.find('.segmented-option').each(function() {
+                var on = String($(this).data('value')) === String(value);
+                $(this).toggleClass('active', on).attr('aria-pressed', on ? 'true' : 'false');
+            });
+        };
+
+        $(document).on('click', '.price-type .segmented-option', function() {
+            var $select = $(this).closest('td').find('[name="price_type"]');
+            segmentedSet($(this).closest('.segmented'), $(this).data('value'));
+            $select.val($(this).data('value')).trigger('change');
+        });
+
+        $(document).on('click', '.discount-type .segmented-option', function() {
+            var $toggle = $(this).closest('td').find('[name="discount_toggle"]');
+            segmentedSet($(this).closest('.segmented'), $(this).data('value'));
+            $toggle.prop('checked', String($(this).data('value')) === '1').trigger('change');
+        });
+
         $('[name="price_type"]').change(function() {
             $(this).parents('tr').prevAll('form:first').submit();
         });
@@ -1420,6 +1449,11 @@ helper('url');
                 var $row = _daPendingForm.nextAll('tr:first');
                 var $di  = $row.find('[name="discount"]');
                 $di.val($di.data('original'));
+                var originalType = String($di.data('original-type') || 0);
+                $row.find('[name="discount_toggle"]').prop('checked', originalType === '1');
+                $row.find('.discount-type .segmented-option').each(function() {
+                    $(this).toggleClass('active', String($(this).data('value')) === originalType);
+                });
             }
             _daApprovalId  = null;
             _daPendingForm = null;
@@ -1616,6 +1650,9 @@ helper('url');
             priceAuthStopTimers();
             if (_paPendingSelect) {
                 _paPendingSelect.val(_paPendingSelect.data('original'));
+                _paPendingSelect.closest('td').find('.price-type .segmented-option').each(function() {
+                    $(this).toggleClass('active', String($(this).data('value')) === String(_paPendingSelect.data('original')));
+                });
             }
             _paApprovalId    = null;
             _paPendingForm   = null;
