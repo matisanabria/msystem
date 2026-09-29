@@ -226,3 +226,8 @@ label.required {
 .input-group-btn {
     display: contents;
 }
+
+/* Filter selects in toolbars should size to their content, not stretch (BS3 .form-control was inline in a form-inline) */
+#toolbar .form-select {
+    width: auto;
+}

@@ -603,7 +603,7 @@ helper('url');
 </div>
 
 <!-- Discount Authorization Modal -->
-<div class="modal fade" id="da_modal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-keyboard="false">
+<div class="modal fade" id="da_modal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
 
@@ -728,7 +728,7 @@ helper('url');
 </div>
 
 <!-- Price Type Authorization Modal -->
-<div class="modal fade" id="pa_modal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-keyboard="false">
+<div class="modal fade" id="pa_modal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
 
@@ -834,14 +834,14 @@ helper('url');
 
 <!-- PIN Identification Modal -->
 <div class="modal fade" id="pin_modal" tabindex="-1" role="dialog"
-     data-bs-backdrop="static" data-keyboard="false" aria-labelledby="pin_modal_label">
+     data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="pin_modal_label">
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <a href="<?= site_url('home') ?>" class="btn-close float-end" title="<?= lang('Common.home') ?>" aria-label="<?= lang('Common.home') ?>"></a>
-                <h4 class="modal-title" id="pin_modal_label">
+                <h5 class="modal-title" id="pin_modal_label">
                     <span class="bi bi-person"></span>&nbsp;<?= lang('Sales.pin_identify') ?>
-                </h4>
+                </h5>
+                <a href="<?= site_url('home') ?>" class="btn-close" title="<?= lang('Common.home') ?>" aria-label="<?= lang('Common.home') ?>"></a>
             </div>
             <div class="modal-body" style="text-align:center;">
                 <p class="text-muted"><?= lang('Sales.pin_enter_prompt') ?></p>
