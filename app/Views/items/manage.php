@@ -83,6 +83,7 @@ use App\Models\Employee;
 
 
 
+<div id="title_bar" class="btn-toolbar">
     <button class="btn btn-info btn-sm float-end modal-dlg" data-btn-new="<?= lang('Common.new') ?>" data-btn-submit="<?= lang('Common.submit') ?>" data-hint-new="Guarda el artículo y deja el formulario abierto para agregar otro" data-href="<?= "$controller_name/view" ?>" title="<?= lang(ucfirst($controller_name) . '.new') ?>">
         <span class="bi bi-tag">&nbsp;</span><?= lang(ucfirst($controller_name) . '.new') ?>
     </button>

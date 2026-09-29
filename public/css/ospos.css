@@ -244,3 +244,13 @@ label.required {
 #toolbar .form-select {
     width: auto;
 }
+
+/* bootstrap5-dialog colors the header via bg-* but does not set a readable text/close color */
+.bootstrap-dialog .modal-header:is(.bg-primary, .bg-secondary, .bg-success, .bg-danger, .bg-dark) {
+    color: #fff;
+}
+
+.bootstrap-dialog .modal-header:is(.bg-primary, .bg-secondary, .bg-success, .bg-danger, .bg-dark) .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
