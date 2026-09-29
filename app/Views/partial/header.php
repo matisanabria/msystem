@@ -25,17 +25,15 @@ $request = Services::request();
     <?php if (ENVIRONMENT == 'development' || get_cookie('debug') == 'true' || $request->getGet('debug') == 'true') : ?>
         <!-- inject:debug:css -->
         <link rel="stylesheet" href="resources/css/jquery-ui-fe010342cb.css">
-        <link rel="stylesheet" href="resources/css/bootstrap-dialog-1716ef6e7c.css">
-        <link rel="stylesheet" href="resources/css/jasny-bootstrap-40bf85f3ed.css">
-        <link rel="stylesheet" href="resources/css/bootstrap-datetimepicker-66374fba71.css">
-        <link rel="stylesheet" href="resources/css/bootstrap-select-66d5473b84.css">
+        <link rel="stylesheet" href="resources/css/bootstrap-dialog-535f55a401.css">
+        <link rel="stylesheet" href="resources/css/tempus-dominus-ccd380cd8e.css">
+        <link rel="stylesheet" href="resources/css/bootstrap-select-e0658d7d20.css">
         <link rel="stylesheet" href="resources/css/bootstrap-table-ed9d1a3360.css">
         <link rel="stylesheet" href="resources/css/bootstrap-table-sticky-header-07d65e7533.css">
         <link rel="stylesheet" href="resources/css/daterangepicker-85523b7dfe.css">
         <link rel="stylesheet" href="resources/css/chartist-c19aedb81a.css">
         <link rel="stylesheet" href="resources/css/chartist-plugin-tooltip-2e0ec92e60.css">
         <link rel="stylesheet" href="resources/css/bootstrap-tagsinput-5a6d46a06c.css">
-        <link rel="stylesheet" href="resources/css/bootstrap-toggle-e12db6c1f3.css">
         <link rel="stylesheet" href="resources/css/bootstrap-292fc0ad3b.autocomplete.css">
         <link rel="stylesheet" href="resources/css/invoice-1eae5e39b9.css">
         <link rel="stylesheet" href="resources/css/ospos_print-2ba645b044.css">
@@ -50,11 +48,11 @@ $request = Services::request();
         <script src="resources/js/jquery-4fa896f615.form.js"></script>
         <script src="resources/js/jquery-a0350e8820.validate.js"></script>
         <script src="resources/js/jquery-ui-cbc65ff85e.js"></script>
-        <script src="resources/js/bootstrap-894d79839f.js"></script>
-        <script src="resources/js/bootstrap-dialog-27123abb65.js"></script>
-        <script src="resources/js/jasny-bootstrap-7c6d7b8adf.js"></script>
-        <script src="resources/js/bootstrap-datetimepicker-25e39b7ef8.js"></script>
-        <script src="resources/js/bootstrap-select-b01896a67b.js"></script>
+        <script src="resources/js/popper-063a0fe0ef.js"></script>
+        <script src="resources/js/bootstrap-52de67605c.js"></script>
+        <script src="resources/js/bootstrap-dialog-ea1d8d45a8.js"></script>
+        <script src="resources/js/tempus-dominus-610b31b9fd.js"></script>
+        <script src="resources/js/bootstrap-select-146babba2b.js"></script>
         <script src="resources/js/bootstrap-table-bdb06552ea.js"></script>
         <script src="resources/js/bootstrap-table-export-6389dc2aa5.js"></script>
         <script src="resources/js/bootstrap-table-mobile-fc655b68ab.js"></script>
@@ -73,17 +71,15 @@ $request = Services::request();
         <script src="resources/js/chartist-plugin-tooltip-116cb48831.js"></script>
         <script src="resources/js/chartist-plugin-axistitle-80a1198058.js"></script>
         <script src="resources/js/chartist-plugin-barlabels-4165273742.js"></script>
-        <script src="resources/js/bootstrap-notify-376bc6eb87.js"></script>
         <script src="resources/js/bootstrap-tagsinput-855a7c7670.js"></script>
-        <script src="resources/js/bootstrap-toggle-1c7a19a049.js"></script>
         <script src="resources/js/clipboard-908af414ab.js"></script>
         <script src="resources/js/imgpreview-62e42c15a0.full.jquery.js"></script>
-        <script src="resources/js/manage_tables-7a86e208b7.js"></script>
+        <script src="resources/js/manage_tables-1ebb4e769a.js"></script>
         <script src="resources/js/nominatim-599d9d6f9c.autocomplete.js"></script>
         <!-- endinject -->
     <?php else : ?>
         <!--inject:prod:css -->
-        <link rel="stylesheet" href="resources/opensourcepos-8f45024eca.min.css">
+        <link rel="stylesheet" href="resources/opensourcepos-b66b189952.min.css">
         <!-- endinject -->
 
         <!-- Tweaks to the UI for a particular theme should drop here  -->
@@ -92,7 +88,7 @@ $request = Services::request();
         <?php } ?>
         <!-- inject:prod:js -->
         <script src="resources/jquery-2c872dbe60.min.js"></script>
-        <script src="resources/opensourcepos-60f9a94e38.min.js"></script>
+        <script src="resources/opensourcepos-457880a635.min.js"></script>
         <!-- endinject -->
     <?php endif; ?>
 

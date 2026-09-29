@@ -46,50 +46,14 @@ gulp.task('update-licenses', function() {
 });
 
 
-// Copy the bootswatch styles into their own folder so OSPOS can select one from the collection
+// Copy the bootswatch (Bootstrap 5) styles into their own folder so OSPOS can select one from the collection
 gulp.task('copy-bootswatch', function() {
-    pipeline(gulp.src('./node_modules/bootswatch/cerulean/*.min.css'),gulp.dest('public/resources/bootswatch/cerulean'));
-    pipeline(gulp.src('./node_modules/bootswatch/cosmo/*.min.css'),gulp.dest('public/resources/bootswatch/cosmo'));
-    pipeline(gulp.src('./node_modules/bootswatch/cyborg/*.min.css'),gulp.dest('public/resources/bootswatch/cyborg'));
-    pipeline(gulp.src('./node_modules/bootswatch/darkly/*.min.css'),gulp.dest('public/resources/bootswatch/darkly'));
-    pipeline(gulp.src('./node_modules/bootswatch/flatly/*.min.css'),gulp.dest('public/resources/bootswatch/flatly'));
-    pipeline(gulp.src('./node_modules/bootswatch/journal/*.min.css'),gulp.dest('public/resources/bootswatch/journal'));
-    pipeline(gulp.src('./node_modules/bootswatch/lumen/*.min.css'),gulp.dest('public/resources/bootswatch/lumen'));
-    pipeline(gulp.src('./node_modules/bootswatch/paper/*.min.css'),gulp.dest('public/resources/bootswatch/paper'));
-    pipeline(gulp.src('./node_modules/bootswatch/readable/*.min.css'),gulp.dest('public/resources/bootswatch/readable'));
-    pipeline(gulp.src('./node_modules/bootswatch/sandstone/*.min.css'),gulp.dest('public/resources/bootswatch/sandstone'));
-    pipeline(gulp.src('./node_modules/bootswatch/simplex/*.min.css'),gulp.dest('public/resources/bootswatch/simplex'));
-    pipeline(gulp.src('./node_modules/bootswatch/slate/*.min.css'),gulp.dest('public/resources/bootswatch/slate'));
-    pipeline(gulp.src('./node_modules/bootswatch/spacelab/*.min.css'),gulp.dest('public/resources/bootswatch/spacelab'));
-    pipeline(gulp.src('./node_modules/bootswatch/superhero/*.min.css'),gulp.dest('public/resources/bootswatch/superhero'));
-    pipeline(gulp.src('./node_modules/bootswatch/united/*.min.css'),gulp.dest('public/resources/bootswatch/united'));
-    pipeline(gulp.src('./node_modules/bootswatch/yeti/*.min.css'),gulp.dest('public/resources/bootswatch/yeti'));
-    return pipeline(gulp.src('./node_modules/bootswatch/fonts/*.*', {encoding:false}),gulp.dest('public/resources/bootswatch/fonts'));
+    return pipeline(gulp.src('./node_modules/bootswatch/dist/*/*.min.css'),gulp.dest('public/resources/bootswatch'));
 });
 
-// Copy the bootswatch styles into their own folder so OSPOS can select one from the collection
-gulp.task('copy-bootswatch5', function() {
-    pipeline(gulp.src('./node_modules/bootswatch5/dist/cerulean/*.min.css'),gulp.dest('public/resources/bootswatch5/cerulean'));
-    pipeline(gulp.src('./node_modules/bootswatch5/dist/cosmo/*.min.css'),gulp.dest('public/resources/bootswatch5/cosmo'));
-    pipeline(gulp.src('./node_modules/bootswatch5/dist/cyborg/*.min.css'),gulp.dest('public/resources/bootswatch5/cyborg'));
-    pipeline(gulp.src('./node_modules/bootswatch5/dist/darkly/*.min.css'),gulp.dest('public/resources/bootswatch5/darkly'));
-    pipeline(gulp.src('./node_modules/bootswatch5/dist/flatly/*.min.css'),gulp.dest('public/resources/bootswatch5/flatly'));
-    pipeline(gulp.src('./node_modules/bootswatch5/dist/journal/*.min.css'),gulp.dest('public/resources/bootswatch5/journal'));
-    pipeline(gulp.src('./node_modules/bootswatch5/dist/lumen/*.min.css'),gulp.dest('public/resources/bootswatch5/lumen'));
-    pipeline(gulp.src('./node_modules/bootswatch5/dist/sandstone/*.min.css'),gulp.dest('public/resources/bootswatch5/sandstone'));
-    pipeline(gulp.src('./node_modules/bootswatch5/dist/simplex/*.min.css'),gulp.dest('public/resources/bootswatch5/simplex'));
-    pipeline(gulp.src('./node_modules/bootswatch5/dist/slate/*.min.css'),gulp.dest('public/resources/bootswatch5/slate'));
-    pipeline(gulp.src('./node_modules/bootswatch5/dist/spacelab/*.min.css'),gulp.dest('public/resources/bootswatch5/spacelab'));
-    pipeline(gulp.src('./node_modules/bootswatch5/dist/superhero/*.min.css'),gulp.dest('public/resources/bootswatch5/superhero'));
-    pipeline(gulp.src('./node_modules/bootswatch5/dist/united/*.min.css'),gulp.dest('public/resources/bootswatch5/united'));
-    return pipeline(gulp.src('./node_modules/bootswatch5/dist/yeti/*.min.css'),gulp.dest('public/resources/bootswatch5/yeti'));
-});
-
-// Copy the bootstrap style into its own folder so OSPOS can select it from the collection
+// Copy the plain bootstrap style into its own folder so OSPOS can select it from the collection
 gulp.task('copy-bootstrap', function() {
-    pipeline(gulp.src('./node_modules/bootstrap/dist/css/bootstrap.min.css*'),gulp.dest('public/resources/bootswatch/bootstrap'));
-    pipeline(gulp.src('./node_modules/bootstrap5/dist/css/bootstrap.min.css*'),gulp.dest('public/resources/bootswatch5/bootstrap'));
-    return pipeline(gulp.src('./node_modules/bootstrap5/dist/css/bootstrap.rtl.min.css*'),gulp.dest('public/resources/bootswatch5/bootstrap'));
+    return pipeline(gulp.src('./node_modules/bootstrap/dist/css/bootstrap*.min.css*'),gulp.dest('public/resources/bootswatch/bootstrap'));
 });
 
 // /public/resources/ospos - contains the minimized files to be packed into opensourcepos.min.[css/js]
@@ -106,10 +70,10 @@ gulp.task('debug-js', function() {
         './node_modules/jquery-form/src/jquery.form.js',
         './node_modules/jquery-validation/dist/jquery.validate.js',
         './node_modules/jquery-ui-dist/jquery-ui.js',
+        './node_modules/@popperjs/core/dist/umd/popper.js',
         './node_modules/bootstrap/dist/js/bootstrap.js',
-        './node_modules/bootstrap3-dialog/dist/js/bootstrap-dialog.js',
-        './node_modules/jasny-bootstrap/dist/js/jasny-bootstrap.js',
-        './node_modules/bootstrap-datetime-picker/js/bootstrap-datetimepicker.js',
+        './node_modules/bootstrap5-dialog/dist/js/bootstrap-dialog.js',
+        './node_modules/@eonasdan/tempus-dominus/dist/js/tempus-dominus.js',
         './node_modules/bootstrap-select/dist/js/bootstrap-select.js',
         './node_modules/bootstrap-table/dist/bootstrap-table.js',
         './node_modules/bootstrap-table/dist/extensions/export/bootstrap-table-export.js',
@@ -129,9 +93,7 @@ gulp.task('debug-js', function() {
         './node_modules/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.js',
         './node_modules/chartist-plugin-axistitle/dist/chartist-plugin-axistitle.js',
         './node_modules/chartist-plugin-barlabels/dist/chartist-plugin-barlabels.js',
-        './node_modules/bootstrap-notify/bootstrap-notify.js',
         './node_modules/bootstrap-tagsinput-2021/dist/bootstrap-tagsinput.js',
-        './node_modules/bootstrap-toggle/js/bootstrap-toggle.js',
         './node_modules/clipboard/dist/clipboard.js',
         './public/js/imgpreview.full.jquery.js',
         './public/js/manage_tables.js',
@@ -143,23 +105,21 @@ gulp.task('prod-js', function() {
 
     var prod0js = gulp.src('./node_modules/jquery/dist/jquery.min.js').pipe(rev()).pipe(gulp.dest('public/resources'));
 
-    var opensourcepos1js = gulp.src(['./node_modules/bootstrap/dist/js/bootstrap.min.js',
+    var opensourcepos1js = gulp.src(['./node_modules/@popperjs/core/dist/umd/popper.min.js',
+        './node_modules/bootstrap/dist/js/bootstrap.min.js',
         './node_modules/bootstrap-table/dist/bootstrap-table.min.js',
         './node_modules/moment/min/moment.min.js',
         './node_modules/jquery-ui-dist/jquery-ui.min.js',
-        './node_modules/bootstrap3-dialog/dist/js/bootstrap-dialog.min.js',
-        './node_modules/jasny-bootstrap/dist/js/jasny-bootstrap.min.js',
+        './node_modules/bootstrap5-dialog/dist/js/bootstrap-dialog.min.js',
         './node_modules/bootstrap-select/dist/js/bootstrap-select.min.js',
         './node_modules/bootstrap-table/dist/extensions/sticky-header/bootstrap-table-sticky-header.min.js',
         './node_modules/bootstrap-tagsinput-2021/dist/bootstrap-tagsinput.min.js',
-        './node_modules/bootstrap-toggle/js/bootstrap-toggle.min.js',
         './node_modules/bootstrap-table/dist/extensions/export/bootstrap-table-export.min.js',
         './node_modules/bootstrap-table/dist/extensions/mobile/bootstrap-table-mobile.min.js',
-        './node_modules/bootstrap-notify/bootstrap-notify.min.js',
         './node_modules/clipboard/dist/clipboard.min.js',
         './node_modules/jquery-form/dist/jquery.form.min.js',
         './node_modules/jquery-validation/dist/jquery.validate.min.js',
-        './node_modules/bootstrap-datetime-picker/js/bootstrap-datetimepicker.min.js',
+        './node_modules/@eonasdan/tempus-dominus/dist/js/tempus-dominus.min.js',
         './node_modules/es6-promise/dist/es6-promise.min.js',
         './node_modules/file-saver/dist/FileSaver.min.js',
         './node_modules/file-saver/dist/FileSaver.js',
@@ -193,9 +153,8 @@ gulp.task('prod-js', function() {
 
 gulp.task('debug-css', function() {
     var debugcss = gulp.src(['./node_modules/jquery-ui-dist/jquery-ui.css',
-        './node_modules/bootstrap3-dialog/dist/css/bootstrap-dialog.css',
-        './node_modules/jasny-bootstrap/dist/css/jasny-bootstrap.css',
-        './node_modules/bootstrap-datetime-picker/css/bootstrap-datetimepicker.css',
+        './node_modules/bootstrap5-dialog/dist/css/bootstrap-dialog.css',
+        './node_modules/@eonasdan/tempus-dominus/dist/css/tempus-dominus.css',
         './node_modules/bootstrap-select/dist/css/bootstrap-select.css',
         './node_modules/bootstrap-table/dist/bootstrap-table.css',
         './node_modules/bootstrap-table/dist/extensions/sticky-header/bootstrap-table-sticky-header.css',
@@ -203,7 +162,6 @@ gulp.task('debug-css', function() {
         './node_modules/chartist/dist/chartist.css',
         './node_modules/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.css',
         './node_modules/bootstrap-tagsinput-2021/src/bootstrap-tagsinput.css',
-        './node_modules/bootstrap-toggle/css/bootstrap-toggle.css',
         './public/css/bootstrap.autocomplete.css',
         './public/css/invoice.css',
         './public/css/ospos_print.css',
@@ -219,9 +177,8 @@ gulp.task('debug-css', function() {
 
 gulp.task('prod-css', function() {
     var opensourcepos1css = gulp.src(['./node_modules/jquery-ui-dist/jquery-ui.min.css',
-        './node_modules/bootstrap3-dialog/dist/css/bootstrap-dialog.min.css',
-        './node_modules/jasny-bootstrap/dist/css/jasny-bootstrap.min.css',
-        './node_modules/bootstrap-datetime-picker/css/bootstrap-datetimepicker.min.css']);
+        './node_modules/bootstrap5-dialog/dist/css/bootstrap-dialog.min.css',
+        './node_modules/@eonasdan/tempus-dominus/dist/css/tempus-dominus.min.css']);
 
     var opensourcepos2css = gulp.src(['./node_modules/bootstrap-daterangepicker/daterangepicker.css',
         './node_modules/bootstrap-tagsinput-2021/src/bootstrap-tagsinput.css']).pipe(cleanCSS({compatibility: 'ie8'}));
@@ -229,7 +186,6 @@ gulp.task('prod-css', function() {
     var opensourcepos3css = gulp.src(['./node_modules/bootstrap-select/dist/css/bootstrap-select.min.css',
         './node_modules/bootstrap-table/dist/bootstrap-table.min.css',
         './node_modules/bootstrap-table/dist/extensions/sticky-header/bootstrap-table-sticky-header.min.css',
-        './node_modules/bootstrap-toggle/css/bootstrap-toggle.min.css',
         './node_modules/chartist/dist/chartist.min.css']);
 
     var opensourcepos4css = gulp.src('./node_modules/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.css').pipe(cleanCSS({compatibility: 'ie8'}));
@@ -253,8 +209,10 @@ gulp.task('prod-css', function() {
 });
 
 
+// Bootstrap Icons: css + fonts kept together so the relative font urls in the css keep working
 gulp.task('copy-fonts', function() {
-    return pipeline(gulp.src('./node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.*', {encoding: false}),rev(),gulp.dest('public/resources'));
+    pipeline(gulp.src('./node_modules/bootstrap-icons/font/bootstrap-icons.min.css'),gulp.dest('public/resources/bootstrap-icons'));
+    return pipeline(gulp.src('./node_modules/bootstrap-icons/font/fonts/*.*', {encoding: false}),gulp.dest('public/resources/bootstrap-icons/fonts'));
 });
 
 
@@ -292,7 +250,6 @@ gulp.task('build-database', function() {
 gulp.task('default',
     gulp.series('clean',
         'copy-bootswatch',
-        'copy-bootswatch5',
         'copy-bootstrap',
         'debug-js',
         'prod-js',
