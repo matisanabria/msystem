@@ -38,11 +38,10 @@ $request = Services::request();
         <link rel="stylesheet" href="resources/css/daterangepicker-85523b7dfe.css">
         <link rel="stylesheet" href="resources/css/chartist-c19aedb81a.css">
         <link rel="stylesheet" href="resources/css/chartist-plugin-tooltip-2e0ec92e60.css">
-        <link rel="stylesheet" href="resources/css/bootstrap-tagsinput-5a6d46a06c.css">
         <link rel="stylesheet" href="resources/css/bootstrap-292fc0ad3b.autocomplete.css">
         <link rel="stylesheet" href="resources/css/invoice-1eae5e39b9.css">
         <link rel="stylesheet" href="resources/css/ospos_print-2ba645b044.css">
-        <link rel="stylesheet" href="resources/css/ospos-eab314b45a.css">
+        <link rel="stylesheet" href="resources/css/ospos-297aa86e33.css">
         <link rel="stylesheet" href="resources/css/popupbox-7b616030b0.css">
         <link rel="stylesheet" href="resources/css/receipt-a171207d8e.css">
         <link rel="stylesheet" href="resources/css/register-58be93b261.css">
@@ -77,15 +76,14 @@ $request = Services::request();
         <script src="resources/js/chartist-plugin-tooltip-116cb48831.js"></script>
         <script src="resources/js/chartist-plugin-axistitle-80a1198058.js"></script>
         <script src="resources/js/chartist-plugin-barlabels-4165273742.js"></script>
-        <script src="resources/js/bootstrap-tagsinput-855a7c7670.js"></script>
         <script src="resources/js/clipboard-908af414ab.js"></script>
         <script src="resources/js/imgpreview-62e42c15a0.full.jquery.js"></script>
-        <script src="resources/js/manage_tables-65ebc226c1.js"></script>
+        <script src="resources/js/manage_tables-8279a34ebb.js"></script>
         <script src="resources/js/nominatim-599d9d6f9c.autocomplete.js"></script>
         <!-- endinject -->
     <?php else : ?>
         <!--inject:prod:css -->
-        <link rel="stylesheet" href="resources/opensourcepos-8d9763314a.min.css">
+        <link rel="stylesheet" href="resources/opensourcepos-a502e53486.min.css">
         <!-- endinject -->
 
         <!-- Tweaks to the UI for a particular theme should drop here  -->
@@ -94,7 +92,7 @@ $request = Services::request();
         <?php } ?>
         <!-- inject:prod:js -->
         <script src="resources/jquery-2c872dbe60.min.js"></script>
-        <script src="resources/opensourcepos-757b137a21.min.js"></script>
+        <script src="resources/opensourcepos-c7c1edcb65.min.js"></script>
         <!-- endinject -->
     <?php endif; ?>
 

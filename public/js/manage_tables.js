@@ -461,6 +461,69 @@
 
 })(jQuery);
 
+/**
+ * Tag chips for <select multiple data-role="tagsinput"> (replaces bootstrap-tagsinput).
+ * The select stays in the form (hidden) with every tag as a selected option, so the POST is unchanged.
+ */
+(function($) {
+
+    var init = function(select) {
+        var $select = $(select);
+        if ($select.data('tags-input')) {
+            return;
+        }
+        $select.data('tags-input', true).addClass('d-none').find('option').prop('selected', true);
+
+        var $box = $('<div class="tags-input form-control form-control-sm d-flex flex-wrap gap-1 align-items-center"></div>');
+        var $input = $('<input type="text" autocomplete="off">');
+        $box.append($input).insertAfter($select);
+
+        var exists = function(value) {
+            return $select.find('option').filter(function() { return this.value === value; }).length > 0;
+        };
+
+        var add_chip = function(value) {
+            var $chip = $('<span class="badge text-bg-secondary d-inline-flex align-items-center"></span>').text(value);
+            $('<button type="button" class="btn-close btn-close-white ms-1" aria-label="Remove"></button>')
+                .appendTo($chip)
+                .on('click', function() {
+                    $select.find('option').filter(function() { return this.value === value; }).remove();
+                    $chip.remove();
+                    $input.trigger('focus');
+                });
+            $chip.insertBefore($input);
+        };
+
+        var add = function() {
+            var value = $.trim($input.val()).replace(/,+$/, '');
+            $input.val('');
+            if (value === '' || exists(value)) {
+                return;
+            }
+            $('<option></option>').val(value).text(value).prop('selected', true).appendTo($select);
+            add_chip(value);
+        };
+
+        $select.find('option').each(function() { add_chip(this.value); });
+
+        $input.on('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ',') {
+                e.preventDefault();
+                add();
+            } else if (e.key === 'Backspace' && $input.val() === '') {
+                $box.find('.btn-close').last().trigger('click');
+            }
+        }).on('blur', add);
+
+        $box.on('click', function() { $input.trigger('focus'); });
+    };
+
+    $(function() {
+        $('select[data-role="tagsinput"]').each(function() { init(this); });
+    });
+
+})(jQuery);
+
 function number_sorter(a, b) {
     a = +a.replace(/[^\-0-9]+/g, '');
     b = +b.replace(/[^\-0-9]+/g, '');

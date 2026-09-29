@@ -94,7 +94,6 @@ gulp.task('debug-js', function() {
         './node_modules/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.js',
         './node_modules/chartist-plugin-axistitle/dist/chartist-plugin-axistitle.js',
         './node_modules/chartist-plugin-barlabels/dist/chartist-plugin-barlabels.js',
-        './node_modules/bootstrap-tagsinput-2021/dist/bootstrap-tagsinput.js',
         './node_modules/clipboard/dist/clipboard.js',
         './public/js/imgpreview.full.jquery.js',
         './public/js/manage_tables.js',
@@ -115,7 +114,6 @@ gulp.task('prod-js', function() {
         './node_modules/bootstrap5-dialog/dist/js/bootstrap-dialog.min.js',
         './node_modules/bootstrap-select/dist/js/bootstrap-select.min.js',
         './node_modules/bootstrap-table/dist/extensions/sticky-header/bootstrap-table-sticky-header.min.js',
-        './node_modules/bootstrap-tagsinput-2021/dist/bootstrap-tagsinput.min.js',
         './node_modules/bootstrap-table/dist/extensions/export/bootstrap-table-export.min.js',
         './node_modules/bootstrap-table/dist/extensions/mobile/bootstrap-table-mobile.min.js',
         './node_modules/clipboard/dist/clipboard.min.js',
@@ -163,7 +161,6 @@ gulp.task('debug-css', function() {
         './node_modules/bootstrap-daterangepicker/daterangepicker.css',
         './node_modules/chartist/dist/chartist.css',
         './node_modules/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.css',
-        './node_modules/bootstrap-tagsinput-2021/src/bootstrap-tagsinput.css',
         './public/css/bootstrap.autocomplete.css',
         './public/css/invoice.css',
         './public/css/ospos_print.css',
@@ -182,8 +179,7 @@ gulp.task('prod-css', function() {
         './node_modules/bootstrap5-dialog/dist/css/bootstrap-dialog.min.css',
         './node_modules/@eonasdan/tempus-dominus/dist/css/tempus-dominus.min.css']);
 
-    var opensourcepos2css = gulp.src(['./node_modules/bootstrap-daterangepicker/daterangepicker.css',
-        './node_modules/bootstrap-tagsinput-2021/src/bootstrap-tagsinput.css']).pipe(cleanCSS({compatibility: 'ie8'}));
+    var opensourcepos2css = gulp.src(['./node_modules/bootstrap-daterangepicker/daterangepicker.css']).pipe(cleanCSS({compatibility: 'ie8'}));
 
     var opensourcepos3css = gulp.src(['./node_modules/bootstrap-select/dist/css/bootstrap-select.min.css',
         './node_modules/bootstrap-table/dist/bootstrap-table.min.css',
