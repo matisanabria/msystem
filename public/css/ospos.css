@@ -19,6 +19,31 @@ a.none {
     padding: 0.2em;
 }
 
+/* Clock left, company centered, user right (the BS3 floats are gone) */
+.topbar .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 1.75rem;
+}
+
+.topbar .navbar-left {
+    order: 1;
+    flex: 1 1 0;
+}
+
+.topbar .navbar-center {
+    order: 2;
+    flex: 1 1 0;
+}
+
+.topbar .navbar-right {
+    order: 3;
+    flex: 1 1 0;
+    text-align: right;
+}
+
 .navbar {
     border-radius: 0;
 }
@@ -33,21 +58,7 @@ a.none {
     padding-top: 10px;
 }
 
-.navbar .navbar-nav>.nav-item>.nav-link.active,
-.navbar .navbar-nav>.nav-item>.nav-link.active:hover,
-.navbar .navbar-nav>.nav-item>.nav-link.active:focus {
-    color: #2C3E50;
-    background-color: #FFFFFF;
-}
 
-.navbar .menu-icon {
-    text-align: center;
-    font-size: 12px;
-}
-
-.navbar .menu-icon img {
-    width: 24px;
-}
 
 .wrapper {
     font-size: 13px;
@@ -161,10 +172,7 @@ label.required {
 }
 
 @media (min-width: 768px) {
-    .navbar-nav>.nav-item>a {
-        padding: 10px 10px 9px;
-    }
-
+    
     .modal-dlg .modal-dialog {
         max-width: 500px;
     }
@@ -254,3 +262,157 @@ label.required {
     filter: invert(1) grayscale(100%) brightness(200%);
 }
 
+/*
+ * Navbar: one row, icon + label inline, active module marked with the accent underline.
+ */
+.navbar.navbar-ospos {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.navbar-ospos .navbar-brand {
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: .01em;
+}
+
+.navbar-ospos .nav-link.menu-icon {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    padding: 1rem .75rem calc(1rem - 3px);
+    border-bottom: 3px solid transparent;
+    font-size: .8125rem;
+    color: rgba(255, 255, 255, .72);
+    text-align: left;
+    transition: color .15s ease, border-color .15s ease;
+}
+
+.navbar-ospos .nav-link.menu-icon .bi {
+    font-size: 1.05rem;
+    line-height: 1;
+}
+
+.navbar-ospos .nav-link.menu-icon:hover,
+.navbar-ospos .nav-link.menu-icon:focus-visible {
+    color: #fff;
+    border-bottom-color: rgba(255, 255, 255, .25);
+}
+
+.navbar-ospos .nav-link.menu-icon.active {
+    color: #fff;
+    border-bottom-color: #18bc9c;
+}
+
+/*
+ * Type and spacing scale (4px grid). Type: 12 / 13 / 14 / 16 / 18 / 24. Controls share one height.
+ */
+.wrapper {
+    font-size: .875rem;
+    line-height: 1.45;
+    color: #212b36;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+h1 { font-size: 1.5rem; }
+h2 { font-size: 1.25rem; }
+h3, h4 { font-size: 1.125rem; }
+h5, h6 { font-size: 1rem; }
+
+#title_bar {
+    height: auto;
+    margin-bottom: .75rem;
+}
+
+.card {
+    margin-bottom: .75rem;
+}
+
+.card-header {
+    padding: .5rem .875rem;
+    font-size: .9375rem;
+    font-weight: 700;
+}
+
+.card-body {
+    padding: .75rem .875rem;
+}
+
+.form-control,
+.form-select,
+.input-group-text {
+    min-height: 2rem;
+    padding: .25rem .625rem;
+    font-size: .875rem;
+}
+
+.form-control-sm,
+.form-select-sm {
+    min-height: 2rem;
+    font-size: .875rem;
+}
+
+.form-select,
+.form-select-sm {
+    padding-right: 2rem;
+    text-overflow: ellipsis;
+}
+
+textarea.form-control {
+    min-height: 4rem;
+}
+
+.btn {
+    padding: .3125rem .75rem;
+    font-size: .875rem;
+}
+
+.btn-sm,
+.btn-group-sm > .btn {
+    padding: .25rem .625rem;
+    font-size: .8125rem;
+}
+
+.form-group {
+    margin-bottom: .75rem;
+}
+
+.control-label {
+    font-weight: 400;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+    width: 1rem;
+    height: 1rem;
+    vertical-align: -.15rem;
+    accent-color: #2c3e50;
+}
+
+.table {
+    --bs-table-cell-padding-y: .375rem;
+    --bs-table-cell-padding-x: .625rem;
+}
+
+.table th {
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.table td,
+.fixed-table-container td {
+    font-size: .8125rem;
+}
+
+.modal-body {
+    padding: 1rem 1.25rem;
+}
+
+.modal-title {
+    font-size: 1.0625rem;
+    font-weight: 700;
+}

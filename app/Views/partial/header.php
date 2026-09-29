@@ -41,7 +41,7 @@ $request = Services::request();
         <link rel="stylesheet" href="resources/css/bootstrap-292fc0ad3b.autocomplete.css">
         <link rel="stylesheet" href="resources/css/invoice-1eae5e39b9.css">
         <link rel="stylesheet" href="resources/css/ospos_print-2ba645b044.css">
-        <link rel="stylesheet" href="resources/css/ospos-ccf884a232.css">
+        <link rel="stylesheet" href="resources/css/ospos-66d8156c40.css">
         <link rel="stylesheet" href="resources/css/popupbox-7b616030b0.css">
         <link rel="stylesheet" href="resources/css/receipt-a171207d8e.css">
         <link rel="stylesheet" href="resources/css/register-58be93b261.css">
@@ -83,7 +83,7 @@ $request = Services::request();
         <!-- endinject -->
     <?php else : ?>
         <!--inject:prod:css -->
-        <link rel="stylesheet" href="resources/opensourcepos-5c875715d3.min.css">
+        <link rel="stylesheet" href="resources/opensourcepos-1943cba926.min.css">
         <!-- endinject -->
 
         <!-- Tweaks to the UI for a particular theme should drop here  -->
@@ -162,8 +162,7 @@ $request = Services::request();
             /* Module menu: proper touch list instead of the desktop icon grid */
             .navbar .navbar-collapse.show,
             .navbar .navbar-collapse.collapsing {
-                box-shadow: inset 0 1px 0 rgba(0, 0, 0, .06), 0 6px 12px rgba(0, 0, 0, .1);
-                border-top: 1px solid #e7e7e7;
+                border-top: 1px solid rgba(255, 255, 255, .08);
             }
 
             .navbar .navbar-nav {
@@ -171,7 +170,7 @@ $request = Services::request();
             }
 
             .navbar .navbar-nav > .nav-item {
-                border-bottom: 1px solid #eef0f2;
+                border-bottom: 1px solid rgba(255, 255, 255, .08);
             }
 
             .navbar .navbar-nav > .nav-item:last-child {
@@ -188,23 +187,43 @@ $request = Services::request();
             }
 
             .navbar .navbar-nav > .nav-item > a.menu-icon.active {
-                background-color: #f4f6f8;
-                font-weight: 600;
+                border-bottom-color: transparent;
+                box-shadow: inset 3px 0 0 #18bc9c;
+                background-color: rgba(255, 255, 255, .06);
             }
 
-            .navbar .menu-icon br {
-                display: none;
-            }
-
-            .navbar .menu-icon img {
-                width: 22px;
-                height: 22px;
-                flex: none;
-            }
         }
     </style>
 </head>
 
+<?php
+$module_icons = [
+    'home'                => 'house-door',
+    'office'              => 'building',
+    'customers'           => 'people',
+    'employees'           => 'person-badge',
+    'service_tickets'     => 'phone',
+    'assistances'         => 'shield-check',
+    'items'               => 'box-seam',
+    'item_kits'           => 'boxes',
+    'suppliers'           => 'truck',
+    'reports'             => 'bar-chart-line',
+    'receivings'          => 'box-arrow-in-down',
+    'sales'               => 'cart3',
+    'giftcards'           => 'gift',
+    'logs'                => 'journal-text',
+    'messages'            => 'chat-dots',
+    'attributes'          => 'sliders',
+    'expenses'            => 'receipt',
+    'expenses_categories' => 'tags',
+    'cashups'             => 'cash-stack',
+    'admin_panel'         => 'gear',
+    'discount_approvals'  => 'patch-check',
+    'inventory_output'    => 'box-arrow-up',
+    'config'              => 'gear-wide-connected',
+    'taxes'               => 'receipt-cutoff',
+];
+?>
 <body>
     <div class="wrapper">
         <div class="topbar">
@@ -238,7 +257,7 @@ $request = Services::request();
                         <?php foreach ($allowed_modules as $module): ?>
                             <li class="nav-item">
                                 <a href="<?= base_url($module->module_id) ?>" title="<?= lang("Module.$module->module_id") ?>" class="nav-link menu-icon <?= $module->module_id == $request->getUri()->getSegment(1) ? 'active' : '' ?>">
-                                    <img src="<?= base_url("images/menubar/$module->module_id.svg") ?>" style="border: none;" alt="Module Icon"><br>
+                                    <span class="bi bi-<?= $module_icons[$module->module_id] ?? 'app' ?>" aria-hidden="true"></span>
                                     <?= lang('Module.' . $module->module_id) ?>
                                 </a>
                             </li>
@@ -248,7 +267,7 @@ $request = Services::request();
             </div>
         </nav>
 
-        <div class="container">
+        <div class="container pt-3">
             <div class="row">
 
 <?php
