@@ -252,45 +252,9 @@
     $(document).ready(function() {
         <?= view('partial/datepicker_locale') ?>
 
-        $('#open_date').datetimepicker({
-            format: "<?= dateformat_bootstrap($config['dateformat']) . ' ' . dateformat_bootstrap($config['timeformat']) ?>",
-            startDate: "<?= date($config['dateformat'] . ' ' . esc($config['timeformat'], 'js'), mktime(0, 0, 0, 1, 1, 2010)) ?>",
-            <?php
-            $t = $config['timeformat'];
-            $m = $t[strlen($t) - 1];
-            if (str_contains($config['timeformat'], 'a') || str_contains($config['timeformat'], 'A')) {
-            ?>
-                showMeridian: true,
-            <?php } else { ?>
-                showMeridian: false,
-            <?php } ?>
-            minuteStep: 1,
-            autoclose: true,
-            todayBtn: true,
-            todayHighlight: true,
-            bootcssVer: 3,
-            language: '<?= current_language_code() ?>'
-        });
+        new tempusDominus.TempusDominus($('#open_date')[0], pickerconfig({restrictions: {minDate: new Date(2010, 0, 1)}}));
 
-        $('#close_date').datetimepicker({
-            format: "<?= dateformat_bootstrap($config['dateformat']) . ' ' . dateformat_bootstrap($config['timeformat']) ?>",
-            startDate: "<?= date($config['dateformat'] . ' ' . esc($config['timeformat'], 'js'), mktime(0, 0, 0, 1, 1, 2010)) ?>",
-            <?php
-            $t = $config['timeformat'];
-            $m = $t[strlen($t) - 1];
-            if (str_contains($config['timeformat'], 'a') || str_contains($config['timeformat'], 'A')) {
-            ?>
-                showMeridian: true,
-            <?php } else { ?>
-                showMeridian: false,
-            <?php } ?>
-            minuteStep: 1,
-            autoclose: true,
-            todayBtn: true,
-            todayHighlight: true,
-            bootcssVer: 3,
-            language: '<?= current_language_code() ?>'
-        });
+        new tempusDominus.TempusDominus($('#close_date')[0], pickerconfig({restrictions: {minDate: new Date(2010, 0, 1)}}));
 
         $('#open_amount_cash, #transfer_amount_cash, #closed_amount_cash, #closed_amount_due, #closed_amount_card, #closed_amount_check').keyup(function() {
             $.post("<?= esc("$controller_name/ajax_cashup_total") ?>", {

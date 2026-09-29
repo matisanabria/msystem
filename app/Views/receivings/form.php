@@ -68,8 +68,6 @@
     $(document).ready(function() {
         <?= view('partial/datepicker_locale') ?>
 
-        $('#datetime').datetimepicker(pickerconfig);
-
         var fill_value = function(event, ui) {
             event.preventDefault();
             $("input[name='supplier_id']").val(ui.item.value);

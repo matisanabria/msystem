@@ -528,6 +528,53 @@ function dateformat_mysql(): string
 }
 
 /**
+ * Converts a PHP date format into a Tempus Dominus (v6) format string.
+ *
+ * @param string $php_format
+ * @return string
+ */
+function dateformat_tempus(string $php_format): string
+{
+    $SYMBOLS_MATCHING = [
+        // Day
+        'd' => 'dd',
+        'D' => 'ddd',
+        'j' => 'd',
+        'l' => 'dddd',
+        'N' => '',
+        'S' => '',
+        'w' => '',
+        'z' => '',
+        // Week
+        'W' => '',
+        // Month
+        'F' => 'MMMM',
+        'm' => 'MM',
+        'M' => 'MMM',
+        'n' => 'M',
+        't' => '',
+        // Year
+        'L' => '',
+        'o' => '',
+        'Y' => 'yyyy',
+        'y' => 'yy',
+        // Time
+        'a' => 't',
+        'A' => 'T',
+        'B' => '',
+        'g' => 'h',
+        'G' => 'H',
+        'h' => 'hh',
+        'H' => 'HH',
+        'i' => 'mm',
+        's' => 'ss',
+        'u' => ''
+    ];
+
+    return strtr($php_format, $SYMBOLS_MATCHING);
+}
+
+/**
  * @param string $php_format
  * @return string
  */

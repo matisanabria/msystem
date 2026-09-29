@@ -102,7 +102,7 @@
 
 <script type="text/javascript">
     (function() {
-        <?= view('partial/datepicker_locale', ['format' => dateformat_bootstrap($config['dateformat'])]) ?>
+        <?= view('partial/datepicker_locale', ['format' => dateformat_tempus($config['dateformat'])]) ?>
 
         var enable_delete = function() {
             $('.remove_attribute_btn').click(function() {
