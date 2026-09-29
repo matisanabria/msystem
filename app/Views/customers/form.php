@@ -35,7 +35,7 @@
     <?php endif; ?>
 
     <div class="tab-content">
-        <div class="tab-pane fade in active" id="customer_basic_info">
+        <div class="tab-pane fade show active" id="customer_basic_info">
             <fieldset>
                 <?= form_hidden('consent', '1') ?>
 

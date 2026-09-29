@@ -38,7 +38,7 @@
 </ul>
 
 <div class="tab-content">
-    <div class="tab-pane fade in active" id="info_tab">
+    <div class="tab-pane fade show active" id="info_tab">
         <?= view('configs/info_config') ?>
     </div>
     <div class="tab-pane" id="general_tab">

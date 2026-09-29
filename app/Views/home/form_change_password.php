@@ -9,7 +9,7 @@
 
 <?= form_open("home/save/$person_info->person_id", ['id' => 'employee_form', 'class' => 'form-horizontal']) ?>
     <div class="tab-content">
-        <div class="tab-pane fade in active" id="employee_login_info">
+        <div class="tab-pane fade show active" id="employee_login_info">
             <fieldset>
 
                 <div class="form-group form-group-sm">

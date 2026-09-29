@@ -55,6 +55,7 @@ $request = Services::request();
         <script src="resources/js/jquery-ui-cbc65ff85e.js"></script>
         <script src="resources/js/popper-063a0fe0ef.js"></script>
         <script src="resources/js/bootstrap-52de67605c.js"></script>
+        <script src="resources/js/bootstrap5_jquery_bridge-fba1c7bdd5.js"></script>
         <script src="resources/js/bootstrap-dialog-ea1d8d45a8.js"></script>
         <script src="resources/js/tempus-dominus-610b31b9fd.js"></script>
         <script src="resources/js/bootstrap-select-146babba2b.js"></script>
@@ -93,7 +94,7 @@ $request = Services::request();
         <?php } ?>
         <!-- inject:prod:js -->
         <script src="resources/jquery-2c872dbe60.min.js"></script>
-        <script src="resources/opensourcepos-b343656392.min.js"></script>
+        <script src="resources/opensourcepos-29d049f3a1.min.js"></script>
         <!-- endinject -->
     <?php endif; ?>
 

@@ -72,6 +72,7 @@ gulp.task('debug-js', function() {
         './node_modules/jquery-ui-dist/jquery-ui.js',
         './node_modules/@popperjs/core/dist/umd/popper.js',
         './node_modules/bootstrap/dist/js/bootstrap.js',
+        './public/js/bootstrap5_jquery_bridge.js',
         './node_modules/bootstrap5-dialog/dist/js/bootstrap-dialog.js',
         './node_modules/@eonasdan/tempus-dominus/dist/js/tempus-dominus.js',
         './node_modules/bootstrap-select/dist/js/bootstrap-select.js',
@@ -107,6 +108,7 @@ gulp.task('prod-js', function() {
 
     var opensourcepos1js = gulp.src(['./node_modules/@popperjs/core/dist/umd/popper.min.js',
         './node_modules/bootstrap/dist/js/bootstrap.min.js',
+        './public/js/bootstrap5_jquery_bridge.js',
         './node_modules/bootstrap-table/dist/bootstrap-table.min.js',
         './node_modules/moment/min/moment.min.js',
         './node_modules/jquery-ui-dist/jquery-ui.min.js',
