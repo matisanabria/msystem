@@ -33,18 +33,16 @@
             <div class="form-group form-group-sm">
                 <?= form_label(lang('Config.company_logo'), 'company_logo', ['class' => 'control-label col-2']) ?>
                 <div class="col-6">
-                    <div class="fileinput <?= $logo_exists ? 'fileinput-exists' : 'fileinput-new' ?>" data-provides="fileinput">
-                        <div class="fileinput-new thumbnail" style="width: 200px; height: 200px;"></div>
-                        <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 200px;">
-                            <img data-src="holder.js/100%x100%" alt="<?= lang('Config.company_logo') ?>" src="<?php if ($logo_exists) echo base_url('uploads/' . $config['company_logo']); else echo '' ?>" style="max-height: 100%; max-width: 100%;">
+                    <div class="image-input" data-image-input>
+                        <div class="image-input-preview border rounded p-1 mb-2 <?= $logo_exists ? '' : 'd-none' ?>" style="max-width: 200px; max-height: 200px;">
+                            <img alt="<?= lang('Config.company_logo') ?>" src="<?= $logo_exists ? base_url('uploads/' . $config['company_logo']) : '' ?>" style="max-height: 100%; max-width: 100%;">
                         </div>
-                        <div>
-                            <span class="btn btn-outline-secondary btn-sm btn-file">
-                                <span class="fileinput-new"><?= lang('Config.company_select_image') ?></span>
-                                <span class="fileinput-exists"><?= lang('Config.company_change_image') ?></span>
-                                <input type="file" name="company_logo">
-                            </span>
-                            <a href="#" class="btn btn-outline-secondary btn-sm fileinput-exists" data-dismiss="fileinput"><?= lang('Config.company_remove_image') ?></a>
+                        <div class="d-flex gap-2">
+                            <label class="btn btn-outline-secondary btn-sm mb-0">
+                                <span class="image-input-label" data-select="<?= esc(lang('Config.company_select_image'), 'attr') ?>" data-change="<?= esc(lang('Config.company_change_image'), 'attr') ?>"><?= $logo_exists ? lang('Config.company_change_image') : lang('Config.company_select_image') ?></span>
+                                <input type="file" name="company_logo" accept="image/*" class="d-none">
+                            </label>
+                            <button type="button" class="btn btn-outline-secondary btn-sm image-input-remove <?= $logo_exists ? '' : 'd-none' ?>"><?= lang('Config.company_remove_image') ?></button>
                         </div>
                     </div>
                 </div>
@@ -157,7 +155,7 @@
 <script type="text/javascript">
     // Validation and submit handling
     $(document).ready(function() {
-        $("a.fileinput-exists").click(function() {
+        $(".image-input-remove").click(function() {
             $.ajax({
                 type: 'POST',
                 url: '<?= "$controller_name/removeLogo"; ?>',

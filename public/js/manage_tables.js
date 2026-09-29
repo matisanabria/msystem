@@ -425,6 +425,42 @@
 
 })(window.form_support = window.form_support || {}, jQuery);
 
+/**
+ * Native file input with image preview and remove button (replaces jasny-bootstrap fileinput).
+ * Markup: [data-image-input] > .image-input-preview img, label > .image-input-label + input[type=file], .image-input-remove
+ */
+(function($) {
+
+    var set_state = function($root, exists) {
+        var $label = $root.find('.image-input-label');
+        $root.find('.image-input-preview').toggleClass('d-none', !exists);
+        $root.find('.image-input-remove').toggleClass('d-none', !exists);
+        $label.text($label.data(exists ? 'change' : 'select'));
+    };
+
+    $(document).on('change', '[data-image-input] input[type="file"]', function() {
+        var $root = $(this).closest('[data-image-input]');
+        var file = this.files && this.files[0];
+        if (!file) {
+            return;
+        }
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            $root.find('.image-input-preview img').attr('src', e.target.result);
+            set_state($root, true);
+        };
+        reader.readAsDataURL(file);
+    });
+
+    $(document).on('click', '[data-image-input] .image-input-remove', function() {
+        var $root = $(this).closest('[data-image-input]');
+        $root.find('input[type="file"]').val('');
+        $root.find('.image-input-preview img').attr('src', '');
+        set_state($root, false);
+    });
+
+})(jQuery);
+
 function number_sorter(a, b) {
     a = +a.replace(/[^\-0-9]+/g, '');
     b = +b.replace(/[^\-0-9]+/g, '');

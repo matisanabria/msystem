@@ -11,13 +11,7 @@
 
         <div class="form-group form-group-sm">
             <div class="col-12">
-                <div class="fileinput fileinput-new input-group" data-provides="fileinput">
-                    <div class="form-control" data-trigger="fileinput"><i class="bi bi-file-earmark fileinput-exists"></i><span class="fileinput-filename"></span></div>
-                    <span class="input-group-text form-control-sm btn btn-outline-secondary btn-file">
-                        <span class="fileinput-new"><?= lang('Common.import_select_file') ?></span><span class="fileinput-exists"><?= lang('Common.import_change_file') ?></span><input type="file" id="file_path" name="file_path" accept=".csv">
-                    </span>
-                    <a href="#" class="input-group-text form-control-sm btn btn-outline-secondary fileinput-exists" data-dismiss="fileinput"><?= lang('Common.import_remove_file') ?></a>
-                </div>
+                <input type="file" class="form-control form-control-sm" id="file_path" name="file_path" accept=".csv">
             </div>
         </div>
 

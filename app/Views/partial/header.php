@@ -80,7 +80,7 @@ $request = Services::request();
         <script src="resources/js/bootstrap-tagsinput-855a7c7670.js"></script>
         <script src="resources/js/clipboard-908af414ab.js"></script>
         <script src="resources/js/imgpreview-62e42c15a0.full.jquery.js"></script>
-        <script src="resources/js/manage_tables-efebf4d1ef.js"></script>
+        <script src="resources/js/manage_tables-65ebc226c1.js"></script>
         <script src="resources/js/nominatim-599d9d6f9c.autocomplete.js"></script>
         <!-- endinject -->
     <?php else : ?>
@@ -94,7 +94,7 @@ $request = Services::request();
         <?php } ?>
         <!-- inject:prod:js -->
         <script src="resources/jquery-2c872dbe60.min.js"></script>
-        <script src="resources/opensourcepos-29d049f3a1.min.js"></script>
+        <script src="resources/opensourcepos-757b137a21.min.js"></script>
         <!-- endinject -->
     <?php endif; ?>
 

@@ -253,20 +253,16 @@
         <div class="form-group form-group-sm">
             <?= form_label(lang('Items.image'), 'items_image', ['class' => 'control-label col-3']) ?>
             <div class="col-8">
-                <div class="fileinput <?= $logo_exists ? 'fileinput-exists' : 'fileinput-new' ?>" data-provides="fileinput">
-                    <div class="fileinput-new thumbnail" style="width: 100px; height: 100px;"></div>
-                    <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 100px; max-height: 100px;">
-                        <img data-src="holder.js/100%x100%" alt="<?= lang('Items.image') ?>"
-                            src="<?= $image_path ?>"
-                            style="max-height: 100%; max-width: 100%;">
+                <div class="image-input" data-image-input>
+                    <div class="image-input-preview border rounded p-1 mb-2 <?= $logo_exists ? '' : 'd-none' ?>" style="max-width: 100px; max-height: 100px;">
+                        <img alt="<?= lang('Items.image') ?>" src="<?= $image_path ?>" style="max-height: 100%; max-width: 100%;">
                     </div>
-                    <div>
-                        <span class="btn btn-outline-secondary btn-sm btn-file">
-                            <span class="fileinput-new"><?= lang('Items.select_image') ?></span>
-                            <span class="fileinput-exists"><?= lang('Items.change_image') ?></span>
-                            <input type="file" name="items_image" accept="image/*">
-                        </span>
-                        <a href="#" class="btn btn-outline-secondary btn-sm fileinput-exists" data-dismiss="fileinput"><?= lang('Items.remove_image') ?></a>
+                    <div class="d-flex gap-2">
+                        <label class="btn btn-outline-secondary btn-sm mb-0">
+                            <span class="image-input-label" data-select="<?= esc(lang('Items.select_image'), 'attr') ?>" data-change="<?= esc(lang('Items.change_image'), 'attr') ?>"><?= $logo_exists ? lang('Items.change_image') : lang('Items.select_image') ?></span>
+                            <input type="file" name="items_image" accept="image/*" class="d-none">
+                        </label>
+                        <button type="button" class="btn btn-outline-secondary btn-sm image-input-remove <?= $logo_exists ? '' : 'd-none' ?>"><?= lang('Items.remove_image') ?></button>
                     </div>
                 </div>
             </div>
@@ -360,7 +356,7 @@
             appendTo: '.modal-content'
         });
 
-        $('a.fileinput-exists').click(function() {
+        $('.image-input-remove').click(function() {
             $.ajax({
                 type: 'GET',
                 url: '<?= "$controller_name/removeLogo/$item_info->item_id" ?>',
