@@ -15,12 +15,47 @@ use Config\Services;
  */
 class Employees extends Persons
 {
+    /** Modules a newly ticked branch grants (same list the old Accesos switch used). */
+    private const BRANCH_MODULES = ['items', 'sales', 'receivings', 'expenses', 'service_tickets'];
+
     public function __construct()
     {
         parent::__construct('employees');
 
         $this->module = model('Module');
         $this->stock_location = model(Stock_location::class);
+    }
+
+    /**
+     * Branches the current session is working in (register and inventory selections).
+     *
+     * @return int[]
+     */
+    private function session_locations(): array
+    {
+        $ids = [];
+        foreach (['sales_location', 'item_location'] as $key) {
+            $value = session()->get($key);
+            if (!empty($value)) {
+                $ids[] = (int) $value;
+            }
+        }
+
+        return array_values(array_unique($ids));
+    }
+
+    /**
+     * @param array<string, bool> $grants permission_id => true
+     */
+    private function employee_has_location(array $grants, int $location_id): bool
+    {
+        foreach ($this->module->get_all_permissions()->getResult() as $permission) {
+            if ((int) $permission->location_id === $location_id && isset($grants[$permission->permission_id])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -33,15 +68,22 @@ class Employees extends Persons
         $search = $this->request->getGet('search');
         $limit  = $this->request->getGet('limit', FILTER_SANITIZE_NUMBER_INT);
         $offset = $this->request->getGet('offset', FILTER_SANITIZE_NUMBER_INT);
-        $sort   = $this->sanitizeSortColumn(person_headers(), $this->request->getGet('sort', FILTER_SANITIZE_FULL_SPECIAL_CHARS), 'people.person_id');
+        $sort   = $this->sanitizeSortColumn(employee_headers(), $this->request->getGet('sort', FILTER_SANITIZE_FULL_SPECIAL_CHARS), 'people.person_id');
         $order  = $this->request->getGet('order', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+        if ($sort === 'name') {
+            $sort = 'last_name';    // the list shows first + last name together
+        }
 
         $employees = $this->employee->search($search, $limit, $offset, $sort, $order);
         $total_rows = $this->employee->get_found_rows($search);
 
+        $rows = $employees->getResult();
+        $branch_names = $this->employee->get_branch_names(array_map(static fn ($person) => (int) $person->person_id, $rows));
+
         $data_rows = [];
-        foreach ($employees->getResult() as $person) {
-            $data_rows[] = get_person_data_row($person);
+        foreach ($rows as $person) {
+            $data_rows[] = get_employee_data_row($person, $branch_names[(int) $person->person_id] ?? []);
         }
 
         echo json_encode(['total' => $total_rows, 'rows' => $data_rows]);
@@ -101,6 +143,18 @@ class Employees extends Persons
         }
         $data['all_subpermissions'] = $permissions;
 
+        // Branch access (same rule the old Accesos matrix used) + what an employee cannot take away from themselves
+        $logged_in_id = (int) $this->employee->get_logged_in_employee_info()->person_id;
+        $is_self = $employee_id !== NEW_ENTRY && (int) $employee_id === $logged_in_id;
+
+        $data['branches'] = $this->stock_location->get_all()->getResultArray();
+        $data['branch_access'] = $employee_id === NEW_ENTRY ? [] : $this->employee->get_branch_access((int) $employee_id);
+        $data['is_self'] = $is_self;
+        $data['protected_locations'] = $is_self ? $this->session_locations() : [];
+        $data['protected_permissions'] = $is_self
+            ? array_values(array_filter(Module::SELF_PROTECTED_PERMISSIONS, fn ($id) => $this->employee->has_grant($id, $logged_in_id)))
+            : [];
+
         echo view('employees/form', $data);
     }
 
@@ -132,26 +186,54 @@ class Employees extends Persons
             'identification'      => $this->request->getPost('identification', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? ''
         ];
 
-        // TODO: the employee create form has no location picker yet (that's still only in Admin Panel > Accesos),
-        // so until that's added, default a brand-new employee to the lowest-id sucursal instead of leaving them
-        // locked out of every location-scoped module (items/sales/receivings/expenses/service_tickets).
-        $default_location_id = null;
-        if ($employee_id == NEW_ENTRY) {
-            $location_ids = array_column($this->stock_location->get_all()->getResultArray(), 'location_id');
-            $default_location_id = !empty($location_ids) ? min($location_ids) : null;
+        $errors = [];
+        $logged_in_id = (int) $this->employee->get_logged_in_employee_info()->person_id;
+        $is_self = $employee_id != NEW_ENTRY && (int) $employee_id === $logged_in_id;
+
+        // Branch access now comes from this form (checkboxes `branch_access[]`, marker `branch_access_sent`).
+        // Without the marker the old behavior stays: existing location grants are kept untouched.
+        $branches_sent = $this->request->getPost('branch_access_sent') !== null;
+        $active_locations = array_map('intval', array_column($this->stock_location->get_all()->getResultArray(), 'location_id'));
+        $posted_locations = array_values(array_intersect($active_locations, array_map('intval', (array) $this->request->getPost('branch_access'))));
+
+        if ($branches_sent && $is_self) {
+            // Cannot take away the branch the session is working in, nor every branch
+            foreach ($this->session_locations() as $location_id) {
+                if (in_array($location_id, $active_locations, true) && !in_array($location_id, $posted_locations, true)) {
+                    $errors['branch_access'] = lang('Employees.self_branch_protected', [$this->stock_location->get_location_name($location_id)]);
+                }
+            }
+            if (empty($posted_locations) && empty($errors['branch_access'])) {
+                $errors['branch_access'] = lang('Employees.self_branch_protected_all');
+            }
+        }
+
+        $current_location_grants = [];
+        if ($employee_id != NEW_ENTRY) {
+            foreach ($this->employee->get_employee_grants((int) $employee_id) as $grant_row) {
+                $current_location_grants[$grant_row['permission_id']] = true;
+            }
         }
 
         $grants_array = [];
         foreach ($this->module->get_all_permissions()->getResult() as $permission) {
-            // Location access (Recepciones/Ventas/Gastos/etc per sucursal) is managed from
-            // Admin Panel > Accesos, not from this form, so its grants must survive untouched.
+            // Location-scoped permissions (Ventas/Gastos/etc. per sucursal)
             if (!empty($permission->location_id)) {
-                if ($employee_id != NEW_ENTRY) {
-                    if ($this->employee->has_grant($permission->permission_id, $employee_id)) {
+                $location_id = (int) $permission->location_id;
+                $had_grant = isset($current_location_grants[$permission->permission_id]);
+
+                if (!$branches_sent || !in_array($location_id, $active_locations, true)) {
+                    // Not managed from this request: keep what the employee already has
+                    if ($had_grant) {
                         $grants_array[] = ['permission_id' => $permission->permission_id, 'menu_group' => '--'];
                     }
-                } elseif ($permission->location_id == $default_location_id) {
-                    $grants_array[] = ['permission_id' => $permission->permission_id, 'menu_group' => '--'];
+                } elseif (in_array($location_id, $posted_locations, true)) {
+                    // Checked: keep existing grants of that branch; a branch the employee did not have gets the
+                    // same modules the old Accesos switch gave
+                    $had_branch = $this->employee_has_location($current_location_grants, $location_id);
+                    if ($had_grant || (!$had_branch && in_array($permission->module_id, self::BRANCH_MODULES, true))) {
+                        $grants_array[] = ['permission_id' => $permission->permission_id, 'menu_group' => '--'];
+                    }
                 }
                 continue;
             }
@@ -166,14 +248,44 @@ class Employees extends Persons
             }
         }
 
+        if ($is_self) {
+            // Cannot take away the permissions that open this panel
+            $posted_ids = array_column($grants_array, 'permission_id');
+            foreach (Module::SELF_PROTECTED_PERMISSIONS as $protected_id) {
+                if ($this->employee->has_grant($protected_id, $logged_in_id) && !in_array($protected_id, $posted_ids, true)) {
+                    $errors['permissions'] = lang('Employees.self_permission_protected', [lang("Module.$protected_id")]);
+                }
+            }
+        }
+
         $app_config = config(\Config\OSPOS::class)->settings;
         $language_post = $this->request->getPost('language', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $exploded = !empty($language_post) ? explode(":", $language_post) : [];
         $language_code = !empty($exploded[0]) ? $exploded[0] : ($app_config['language_code'] ?? 'en');
         $language      = !empty($exploded[1]) ? $exploded[1] : ($app_config['language'] ?? 'english');
 
-        $pin_raw = $this->request->getPost('pin', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $pin = (ctype_digit((string)$pin_raw) && strlen((string)$pin_raw) === 4) ? $pin_raw : null;
+        $pin_raw = trim((string) $this->request->getPost('pin', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
+        $pin = null;
+        if ($pin_raw !== '') {
+            if (!ctype_digit($pin_raw) || strlen($pin_raw) !== 4) {
+                $errors['pin'] = lang('Employees.pin_invalid');
+            } elseif ($this->employee->pin_in_use($pin_raw, (int) $employee_id)) {
+                $errors['pin'] = lang('Employees.pin_in_use');
+            } else {
+                $pin = $pin_raw;
+            }
+        }
+
+        if (!empty($errors)) {
+            echo json_encode([
+                'success' => false,
+                'message' => reset($errors),
+                'errors'  => $errors,
+                'id'      => NEW_ENTRY
+            ]);
+
+            return;
+        }
 
         // Password has been changed OR first time password set
         if (!empty($this->request->getPost('password')) && ENVIRONMENT != 'testing') {

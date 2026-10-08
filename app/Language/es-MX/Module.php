@@ -64,4 +64,5 @@ return [
     "group_service" => "Servicio técnico",
     "group_stock" => "Mercadería",
     "group_admin" => "Administración",
+    "group_general" => "General",
 ];

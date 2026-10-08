@@ -263,7 +263,7 @@ return [
     "register_discount_label"          => "Discount of {0}",
     "register_total_label"             => "Total of {0}",
     "register_description_label"       => "Description of {0}",
-    "register_delete_label"            => "Remove {0}",
+    "register_delete_label"            => "Remove {0} from the cart",
     "register_update_label"            => "Update {0}",
     "pin_label"                        => "4-digit PIN",
     "add_comment"                      => "+ Add comment",
@@ -293,4 +293,7 @@ return [
     "price_auth_verifying" => "Verifying...",
     "price_auth_connection_error" => "Connection error",
     "price_auth_send_error" => "Could not send the request",
+    "stock_label"                      => "Stock: {0} in {1}",
+    "no_stock"                         => "Out of stock",
+    "stock_insufficient"               => "Not enough stock of {0}: you asked for {1}, there are {2} in {3}",
 ];

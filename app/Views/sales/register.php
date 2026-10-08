@@ -52,7 +52,28 @@ if (isset($error)) {
     echo '<div class="alert alert-dismissible alert-danger" role="alert">' . esc($error) . '</div>';
 }
 
-if (!empty($warning)) {
+// Insufficient stock is shown inside the affected cart line (computed from the cart, so it stays until fixed)
+$requested_by_stock = [];
+foreach ($cart as $cart_item) {
+    $stock_key = $cart_item['item_id'] . '|' . $cart_item['item_location'];
+    $requested_by_stock[$stock_key] = ($requested_by_stock[$stock_key] ?? 0) + (float) $cart_item['quantity'];
+}
+$stock_warnings = [];
+foreach ($cart as $cart_line => $cart_item) {
+    if ($cart_item['item_type'] != ITEM_TEMP && $cart_item['stock_type'] == '0') {
+        $requested = $requested_by_stock[$cart_item['item_id'] . '|' . $cart_item['item_location']];
+        if ((float) $cart_item['in_stock'] - $requested < 0) {
+            $stock_warnings[$cart_line] = lang('Sales.stock_insufficient', [
+                $cart_item['name'],
+                to_quantity_decimals($requested),
+                to_quantity_decimals($cart_item['in_stock']),
+                $cart_item['stock_name']
+            ]);
+        }
+    }
+}
+
+if (!empty($warning) && !($warning === lang('Sales.quantity_less_than_zero') && !empty($stock_warnings))) {
     echo '<div class="alert alert-dismissible alert-warning" role="alert">' . esc($warning) . '</div>';
 }
 
@@ -156,6 +177,7 @@ helper('url');
 
     <!-- Sale Items List -->
 
+    <?= view('partial/photo_modal') ?>
     <table class="sales_table_100" id="register">
         <thead>
             <tr>
@@ -182,10 +204,27 @@ helper('url');
                 foreach (array_reverse($cart, true) as $line => $item) {
             ?>
                     <?= form_open("$controller_name/editItem/$line", ['class' => 'form-horizontal', 'id' => "cart_$line"]) ?>
-                        <tr>
+                        <?php
+                        $item_pic_src = null;
+                        if ($item['item_type'] != ITEM_TEMP && !empty($item['pic_filename'])) {
+                            $ext = pathinfo($item['pic_filename'], PATHINFO_EXTENSION);
+                            $images = $ext == ''
+                                ? glob("./uploads/item_pics/{$item['pic_filename']}.*")
+                                : glob("./uploads/item_pics/{$item['pic_filename']}");
+                            $item_pic_src = sizeof($images) > 0 ? base_url($images[0]) : null;
+                        }
+                        // The description line only exists when there is something to show or edit
+                        $has_second_row = $item['item_type'] == ITEM_TEMP || $item['allow_alt_description'] || $item['description'] != '';
+                        $line_classes = trim((isset($stock_warnings[$line]) ? 'cart-line-warn ' : '') . ($has_second_row ? '' : 'cart-line-solo'));
+                        ?>
+                        <tr<?= $line_classes !== '' ? ' class="' . $line_classes . '"' : '' ?>>
                             <td>
                                 <?php
-                                echo anchor("$controller_name/deleteItem/$line", '<span class="bi bi-trash" aria-hidden="true"></span>', ['aria-label' => lang('Sales.register_delete_label', [$item['name']]), 'title' => lang('Common.delete')]);
+                                echo anchor("$controller_name/deleteItem/$line", '<span class="bi bi-trash" aria-hidden="true"></span>', ['class' => 'cart-icon-btn cart-icon-btn-danger', 'aria-label' => lang('Sales.register_delete_label', [$item['name']]), 'title' => lang('Common.delete')]);
+                                if (!$has_second_row) {
+                                    // No description line: the same hidden fields still travel with the form
+                                    echo form_hidden('description', '') . form_hidden('serialnumber', '');
+                                }
                                 echo form_hidden('location', (string)$item['item_location']);
                                 echo form_input(['type' => 'hidden', 'name' => 'item_id', 'value' => $item['item_id']]);
                                 ?>
@@ -198,20 +237,26 @@ helper('url');
                             <?php } else { ?>
                                 <td><?= esc($item['item_number']) ?></td>
                                 <td style="align: center;">
-                                    <?php if (!empty($item['pic_filename'])):
-                                        $ext = pathinfo($item['pic_filename'], PATHINFO_EXTENSION);
-                                        $images = $ext == ''
-                                            ? glob("./uploads/item_pics/{$item['pic_filename']}.*")
-                                            : glob("./uploads/item_pics/{$item['pic_filename']}");
-                                        if (sizeof($images) > 0): ?>
-                                            <img alt="<?= esc($item['name']) ?>" class="float-start" style="max-width: 32px; max-height: 32px; margin-right: 6px;"
-                                                src="<?= site_url('items/PicThumb/' . pathinfo($images[0], PATHINFO_BASENAME)) ?>">
-                                        <?php endif;
-                                    endif; ?>
-                                    <?= esc($item['name']) . ' ' . implode(' ', [$item['attribute_values'], $item['attribute_dtvalues']]) ?>
-                                    <br>
-                                    <?php if ($item['stock_type'] == '0'): echo '[' . to_quantity_decimals($item['in_stock']) . ' in ' . $item['stock_name'] . ']';
-                                    endif; ?>
+                                    <div class="cart-item-cell">
+                                        <?php if ($item_pic_src): ?>
+                                            <button type="button" class="item-photo-btn item-photo-btn-lg" data-photo-src="<?= esc($item_pic_src, 'attr') ?>" data-photo-name="<?= esc($item['name'], 'attr') ?>" aria-label="<?= esc(lang('Items.view_photo', [$item['name']]), 'attr') ?>">
+                                                <img alt="" src="<?= esc($item_pic_src, 'attr') ?>" loading="lazy">
+                                            </button>
+                                        <?php endif; ?>
+                                        <div class="cart-item-text">
+                                            <?= esc($item['name']) . ' ' . implode(' ', [$item['attribute_values'], $item['attribute_dtvalues']]) ?>
+                                            <?php if ($item['stock_type'] == '0'): ?>
+                                                <?php if ((float) $item['in_stock'] <= 0): ?>
+                                                    <div class="cart-stock cart-stock-out"><span class="bi bi-exclamation-circle" aria-hidden="true"></span> <?= lang('Sales.no_stock') ?></div>
+                                                <?php else: ?>
+                                                    <div class="cart-stock"><?= lang('Sales.stock_label', [to_quantity_decimals($item['in_stock']), esc($item['stock_name'])]) ?></div>
+                                                <?php endif; ?>
+                                            <?php endif; ?>
+                                            <?php if (isset($stock_warnings[$line])): ?>
+                                                <div class="cart-stock-warning" role="status" aria-live="polite"><span class="bi bi-exclamation-triangle-fill" aria-hidden="true"></span> <?= esc($stock_warnings[$line]) ?></div>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
                                 </td>
                             <?php } ?>
 
@@ -287,12 +332,13 @@ helper('url');
                             </td>
 
                             <td>
-                                <a href="javascript:$('#<?= "cart_$line" ?>').submit();" title="<?= lang(ucfirst($controller_name) . '.update') ?>" aria-label="<?= esc(lang('Sales.register_update_label', [$item['name']])) ?>">
+                                <a href="javascript:$('#<?= "cart_$line" ?>').submit();" class="cart-icon-btn" title="<?= lang(ucfirst($controller_name) . '.update') ?>" aria-label="<?= esc(lang('Sales.register_update_label', [$item['name']])) ?>">
                                     <span class="bi bi-arrow-clockwise" aria-hidden="true"></span>
                                 </a>
                             </td>
                         </tr>
-                        <tr>
+                        <?php if ($has_second_row): ?>
+                        <tr<?= isset($stock_warnings[$line]) ? ' class="cart-line-warn"' : '' ?>>
                             <?php if ($item['item_type'] == ITEM_TEMP) { ?>
                                 <td><?= form_input(['type' => 'hidden', 'name' => 'item_id', 'value' => $item['item_id']]) ?></td>
                                 <td style="align: center;" colspan="6">
@@ -310,13 +356,8 @@ helper('url');
                                     if ($item['allow_alt_description']) {
                                         echo form_input(['name' => 'description', 'class' => 'form-control form-control-sm', 'aria-label' => lang('Sales.register_description_label', [$item['name']]), 'value' => $item['description'], 'onClick' => 'this.select();']);
                                     } else {
-                                        if ($item['description'] != '') {
-                                            echo $item['description'];
-                                            echo form_hidden('description', $item['description']);
-                                        } else {
-                                            echo lang(ucfirst($controller_name) . '.no_description');
-                                            echo form_hidden('description', '');
-                                        }
+                                        echo esc($item['description']);
+                                        echo form_hidden('description', $item['description']);
                                     }
                                     ?>
                                 </td>
@@ -327,6 +368,7 @@ helper('url');
                                 </td>
                             <?php } ?>
                         </tr>
+                        <?php endif; ?>
                     <?= form_close() ?>
             <?php
                 }

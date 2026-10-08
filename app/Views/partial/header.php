@@ -18,7 +18,7 @@ $request = Services::request();
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <base href="<?= base_url() ?>">
-    <title><?= esc($config['company']) . ' | Sistema de Gestión' ?></title>
+    <title><?= lang('Login.app_title') ?></title>
     <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
     <?php
     // paper and readable are not available in Bootswatch 5
@@ -41,7 +41,7 @@ $request = Services::request();
         <link rel="stylesheet" href="resources/css/bootstrap-292fc0ad3b.autocomplete.css">
         <link rel="stylesheet" href="resources/css/invoice-1eae5e39b9.css">
         <link rel="stylesheet" href="resources/css/ospos_print-2ba645b044.css">
-        <link rel="stylesheet" href="resources/css/ospos-45ec29b8ab.css">
+        <link rel="stylesheet" href="resources/css/ospos-78a7998ab2.css">
         <link rel="stylesheet" href="resources/css/popupbox-7b616030b0.css">
         <link rel="stylesheet" href="resources/css/receipt-a171207d8e.css">
         <link rel="stylesheet" href="resources/css/register-0bfae959a1.css">
@@ -78,12 +78,12 @@ $request = Services::request();
         <script src="resources/js/chartist-plugin-barlabels-4165273742.js"></script>
         <script src="resources/js/clipboard-908af414ab.js"></script>
         <script src="resources/js/imgpreview-62e42c15a0.full.jquery.js"></script>
-        <script src="resources/js/manage_tables-028d138e3a.js"></script>
+        <script src="resources/js/manage_tables-08b6834ed0.js"></script>
         <script src="resources/js/nominatim-599d9d6f9c.autocomplete.js"></script>
         <!-- endinject -->
     <?php else : ?>
         <!--inject:prod:css -->
-        <link rel="stylesheet" href="resources/opensourcepos-0f41f96cc2.min.css">
+        <link rel="stylesheet" href="resources/opensourcepos-c1b2de17dc.min.css">
         <!-- endinject -->
 
         <!-- Tweaks to the UI for a particular theme should drop here  -->
@@ -92,7 +92,7 @@ $request = Services::request();
         <?php } ?>
         <!-- inject:prod:js -->
         <script src="resources/jquery-2c872dbe60.min.js"></script>
-        <script src="resources/opensourcepos-c7c1edcb65.min.js"></script>
+        <script src="resources/opensourcepos-f12911514c.min.js"></script>
         <!-- endinject -->
     <?php endif; ?>
 

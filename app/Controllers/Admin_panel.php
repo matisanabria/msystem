@@ -31,30 +31,9 @@ class Admin_panel extends Secure_Controller
     {
         helper('tabular');
 
-        $branches   = $this->stock_location->get_all()->getResultArray();
-        $employees  = $this->employee_model->get_all()->getResultArray();
-
-        // Build access matrix: [person_id][location_id] = bool
-        $access = [];
-        foreach ($employees as $emp) {
-            $pid = $emp['person_id'];
-            $access[$pid] = [];
-            foreach ($branches as $branch) {
-                $lid = $branch['location_id'];
-                $count = $this->db->table('grants g')
-                    ->join('permissions p', 'g.permission_id = p.permission_id')
-                    ->where('g.person_id', $pid)
-                    ->where('p.location_id', $lid)
-                    ->countAllResults();
-                $access[$pid][$lid] = $count > 0;
-            }
-        }
-
         $data = [
-            'branches'              => $branches,
-            'employees'             => $employees,
-            'access'                => $access,
-            'employee_table_headers' => get_people_manage_table_headers(),
+            'branches'               => $this->stock_location->get_all()->getResultArray(),
+            'employee_table_headers' => get_employee_manage_table_headers(),
         ];
 
         echo view('admin_panel/manage', $data);
@@ -93,6 +72,73 @@ class Admin_panel extends Secure_Controller
         echo json_encode([
             'success' => $success,
             'message' => $success ? 'Sucursal eliminada.' : 'Error al eliminar sucursal.',
+        ]);
+    }
+
+    /**
+     * Renames a branch keeping every employee's access: permissions are named after the branch, so the
+     * permission rows are re-keyed and the existing grants moved over (Stock_location::save_value would
+     * wipe the grants and re-grant every employee).
+     */
+    public function postRenameBranch(): void
+    {
+        $location_id = (int) ($this->request->getPost('location_id') ?? 0);
+        $name        = trim((string) ($this->request->getPost('branch_name') ?? ''));
+
+        if ($name === '' || mb_strlen($name) > 255) {
+            echo json_encode(['success' => false, 'message' => lang('Admin_panel.name_required')]);
+            return;
+        }
+
+        $branches = $this->stock_location->get_all()->getResultArray();
+        $current  = null;
+        foreach ($branches as $branch) {
+            if ((int) $branch['location_id'] === $location_id) {
+                $current = $branch;
+            } elseif (mb_strtolower($branch['location_name']) === mb_strtolower($name)) {
+                echo json_encode(['success' => false, 'message' => lang('Admin_panel.name_duplicate')]);
+                return;
+            }
+        }
+
+        if ($current === null) {
+            echo json_encode(['success' => false, 'message' => lang('Admin_panel.branch_not_found')]);
+            return;
+        }
+
+        if ($current['location_name'] === $name) {
+            echo json_encode(['success' => true, 'message' => lang('Admin_panel.branch_renamed', [$name])]);
+            return;
+        }
+
+        $permissions = $this->db->table('permissions')->where('location_id', $location_id)->get()->getResultArray();
+        $renames     = [];
+        foreach ($permissions as $permission) {
+            $new_id = $permission['module_id'] . '_' . str_replace(' ', '_', $name);
+            if ($new_id !== $permission['permission_id'] && $this->db->table('permissions')->where('permission_id', $new_id)->countAllResults() > 0) {
+                echo json_encode(['success' => false, 'message' => lang('Admin_panel.name_duplicate')]);
+                return;
+            }
+            $renames[] = [$permission, $new_id];
+        }
+
+        $this->db->transStart();
+        $this->db->table('stock_locations')->where('location_id', $location_id)->update(['location_name' => $name]);
+        foreach ($renames as [$permission, $new_id]) {
+            if ($new_id === $permission['permission_id']) {
+                continue;
+            }
+            $this->db->table('permissions')->insert(['permission_id' => $new_id, 'module_id' => $permission['module_id'], 'location_id' => $location_id]);
+            $this->db->table('grants')->where('permission_id', $permission['permission_id'])->update(['permission_id' => $new_id]);
+            $this->db->table('permissions')->where('permission_id', $permission['permission_id'])->delete();
+        }
+        $this->db->transComplete();
+
+        $success = $this->db->transStatus();
+
+        echo json_encode([
+            'success' => $success,
+            'message' => $success ? lang('Admin_panel.branch_renamed', [$name]) : lang('Admin_panel.branch_rename_failed'),
         ]);
     }
 
@@ -137,6 +183,22 @@ class Admin_panel extends Secure_Controller
                 ]);
             }
         }
+    }
+
+    /**
+     * Downloads a backup. The Backup controller needs a `backup` module grant that no role has, so the panel
+     * serves the file itself under the same permission as the rest of the panel.
+     */
+    public function getBackupDownload(string $filename = '')
+    {
+        $filename = rawurldecode($filename);
+        $filepath = self::BACKUP_PATH . $filename;
+
+        if (!preg_match('/^[a-zA-Z0-9_\-\.]+\.sql$/', $filename) || !is_file($filepath)) {
+            return $this->response->setStatusCode(404)->setBody(lang('Backup.backup_failed'));
+        }
+
+        return $this->response->download($filepath, null)->setFileName($filename);
     }
 
     public function getBackupList(): void
@@ -193,7 +255,7 @@ class Admin_panel extends Secure_Controller
         $filename = 'backup_' . date('Y-m-d_H-i-s') . '.sql';
         file_put_contents(self::BACKUP_PATH . $filename, $output);
 
-        echo json_encode(['success' => true, 'message' => lang('Backup.backup_created'), 'backups' => $this->_get_backups()]);
+        echo json_encode(['success' => true, 'message' => lang('Backup.backup_created'), 'new_file' => $filename, 'backups' => $this->_get_backups()]);
     }
 
     public function postBackupDelete(): void
@@ -219,10 +281,13 @@ class Admin_panel extends Secure_Controller
         if (is_dir(self::BACKUP_PATH)) {
             foreach (glob(self::BACKUP_PATH . 'backup_*.sql') as $file) {
                 $size  = filesize($file);
+                $mtime = filemtime($file);
                 $backups[] = [
-                    'filename' => basename($file),
-                    'date'     => date('Y-m-d H:i:s', filemtime($file)),
-                    'size'     => $size >= 1048576 ? round($size / 1048576, 2) . ' MB' : round($size / 1024, 2) . ' KB',
+                    'filename'     => basename($file),
+                    'date'         => date('Y-m-d H:i:s', $mtime),
+                    'date_display' => date('d/m/Y H:i', $mtime),
+                    'age_days'     => (int) floor((time() - $mtime) / 86400),
+                    'size'         => $size >= 1048576 ? number_format($size / 1048576, 1, ',', '.') . ' MB' : number_format(max($size, 1) / 1024, 0, ',', '.') . ' KB',
                 ];
             }
             usort($backups, fn($a, $b) => strcmp($b['date'], $a['date']));

@@ -74,6 +74,11 @@
             btn_id = button_id;
             dialog_ref = dlog_ref;
 
+            if (button_id == 'cancel') {
+                dlog_ref.close();
+                return false;
+            }
+
             if (button_id == 'submit' && (!submitted && btn_id != "btnNew")) {
                 form.submit();
                 validator.valid() && $('#submit').prop('disabled', true).css('opacity', 0.5);
@@ -84,7 +89,8 @@
 
     var button_class = {
         'submit' : 'btn-primary',
-        'delete' : 'btn-danger'
+        'delete' : 'btn-danger',
+        'cancel' : 'btn-outline-secondary'
     };
 
     var init = function(selector) {
@@ -107,7 +113,9 @@
                     var btn_name = btn_class[1].toLowerCase();
                     var is_submit = btn_name == 'submit';
                     var is_new = btn_name === 'new';
-                    var is_enter = has_new_btn ? is_new: is_submit;
+                    var has_cancel_btn = "btnCancel" in $trigger.data();
+                    // With an explicit Cancel button the Enter hotkey would also fire from it, and text inputs already submit natively
+                    var is_enter = has_cancel_btn ? false : (has_new_btn ? is_new: is_submit);
                     buttons.push({
                         id: btn_name,
                         label: value,

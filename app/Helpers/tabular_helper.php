@@ -49,7 +49,8 @@ function transform_headers(array $headers, bool $readonly = false, bool $editabl
             'escape'     => !preg_match("/(edit|email|messages|item_pic|customer_name|note)/", key($element)) && !(isset($element['escape']) && !$element['escape']),
             'sortable'   => $element['sortable'] ?? current($element) != '',
             'checkbox'   => $element['checkbox'] ?? false,
-            'class'      => isset($element['checkbox']) || preg_match('(^$|&nbsp)', current($element)) ? 'print_hide' : '',
+            'class'      => trim((isset($element['checkbox']) || preg_match('(^$|&nbsp)', current($element)) ? 'print_hide ' : '') . ($element['class'] ?? '')),
+            'visible'    => $element['visible'] ?? true,
             'sorter'     => $element['sorter'] ?? ''
         ];
     }
@@ -251,6 +252,66 @@ function get_person_data_row(object $person): array
 }
 
 
+function employee_headers(): array
+{
+    return [
+        ['people.person_id' => lang('Common.id'), 'visible' => false],
+        ['name'             => lang('Employees.name_column')],
+        ['username'         => lang('Employees.username')],
+        ['branches'         => lang('Employees.branches_column'), 'sortable' => false, 'escape' => false],
+        ['phone_number'     => lang('Common.phone_number')],
+        ['email'            => lang('Common.email'), 'visible' => false]
+    ];
+}
+
+/**
+ * Header for the employees table in Administración (name, user, branches, phone, sticky actions).
+ */
+function get_employee_manage_table_headers(): string
+{
+    $headers = employee_headers();
+    $headers[] = ['actions' => lang('Items.actions'), 'escape' => false, 'sortable' => false, 'switchable' => false, 'class' => 'col-actions'];
+
+    return transform_headers($headers, false, false);
+}
+
+/**
+ * Data row for the employees table. $branch_names are the active branches the employee can work in.
+ */
+function get_employee_data_row(object $person, array $branch_names = []): array
+{
+    $full_name = trim($person->first_name . ' ' . $person->last_name);
+
+    if (empty($branch_names)) {
+        $branches = '<span class="branch-tag branch-tag-none"><span class="bi bi-exclamation-triangle" aria-hidden="true"></span> ' . esc(lang('Employees.no_branch')) . '</span>';
+    } else {
+        $branches = implode(' ', array_map(static fn ($name) => '<span class="branch-tag">' . esc($name) . '</span>', $branch_names));
+    }
+
+    $edit = anchor(
+        "employees/view/$person->person_id",
+        '<span class="bi bi-pencil-square" aria-hidden="true"></span> ' . lang('Employees.edit_button'),
+        [
+            'class'           => 'modal-dlg modal-dlg-employee btn-action-text',
+            'data-btn-submit' => lang('Employees.save'),
+            'data-btn-cancel' => lang('Employees.cancel'),
+            'title'           => lang('Employees.update'),
+            'aria-label'      => lang('Employees.edit_named', [$full_name])
+        ]
+    );
+
+    return [
+        'people.person_id' => $person->person_id,
+        'name'             => $full_name,
+        'username'         => $person->username ?? '',
+        'branches'         => $branches,
+        'phone_number'     => $person->phone_number,
+        'email'            => esc($person->email ?? ''),
+        'actions'          => '<div class="item-actions">' . $edit . '</div>'
+    ];
+}
+
+
 function customer_headers(): array
 {
     return [
@@ -377,16 +438,23 @@ function get_items_manage_table_headers(): string
 
     $headers = item_headers();
 
-    $headers[] = ['item_pic' => lang('Items.image'), 'sortable' => false];
+    // Id and cost price start hidden; they stay available in the column selector
+    foreach ($headers as &$header) {
+        if (isset($header['items.item_id']) || isset($header['cost_price'])) {
+            $header['visible'] = false;
+        }
+    }
+    unset($header);
+
+    $headers[] = ['item_pic' => lang('Items.photo'), 'sortable' => false];
 
     foreach ($definition_names as $definition_id => $definition_name) {
         $headers[] = [$definition_id => $definition_name, 'sortable' => false];
     }
 
-    $headers[] = ['inventory' => '', 'escape' => false];
-    $headers[] = ['stock' => '', 'escape' => false];
+    $headers[] = ['actions' => lang('Items.actions'), 'escape' => false, 'sortable' => false, 'switchable' => false, 'class' => 'col-actions'];
 
-    return transform_headers($headers);
+    return transform_headers($headers, false, false);
 }
 
 /**
@@ -399,7 +467,7 @@ function get_item_data_row(object $item): array
 
     $controller = get_controller();
 
-    $image = null;
+    $image = '<span class="bi bi-image item-photo-none" role="img" aria-label="' . esc(lang('Items.no_photo'), 'attr') . '"></span>';
     if (!empty($item->pic_filename)) {
         $ext = pathinfo($item->pic_filename, PATHINFO_EXTENSION);
 
@@ -408,7 +476,8 @@ function get_item_data_row(object $item): array
             : glob("./uploads/item_pics/$item->pic_filename");
 
         if (sizeof($images) > 0) {
-            $image .= '<a class="rollover" href="' . base_url($images[0]) . '"><img alt="Image thumbnail" src="' . site_url('items/PicThumb/' . pathinfo($images[0], PATHINFO_BASENAME)) . '"></a>';
+            $image = '<button type="button" class="item-photo-btn" data-photo-src="' . esc(base_url($images[0]), 'attr') . '" data-photo-name="' . esc($item->name, 'attr') . '" aria-label="' . esc(lang('Items.view_photo', [$item->name]), 'attr') . '">'
+                . '<img alt="" src="' . site_url('items/PicThumb/' . rawurlencode(pathinfo($images[0], PATHINFO_BASENAME))) . '"></button>';
         }
     }
 
@@ -433,33 +502,23 @@ function get_item_data_row(object $item): array
         'item_pic'      => $image
     ];
 
+    $name = $item->name;
+    $action = static fn (string $href, string $icon, string $title, string $aria, array $extra = []): string => anchor(
+        $href,
+        '<span class="bi bi-' . $icon . '" aria-hidden="true"></span>',
+        $extra + [
+            'class'      => 'modal-dlg btn-action',
+            'title'      => $title,
+            'aria-label' => $aria
+        ]
+    );
+
     $icons = [
-        'inventory' => anchor(
-            "$controller/inventory/$item->item_id",
-            '<span class="bi bi-pin-angle"></span>',
-            [
-                'class'           => 'modal-dlg',
-                'data-btn-submit' => lang('Common.submit'),
-                'title'           => lang(ucfirst($controller) . ".count")
-            ]
-        ),
-        'stock'     => anchor(
-            "$controller/countDetails/$item->item_id",
-            '<span class="bi bi-card-list"></span>',
-            [
-                'class' => 'modal-dlg',
-                'title' => lang(ucfirst($controller) . ".details_count")
-            ]
-        ),
-        'edit'      => anchor(
-            "$controller/view/$item->item_id",
-            '<span class="bi bi-pencil-square"></span>',
-            [
-                'class'           => 'modal-dlg',
-                'data-btn-submit' => lang('Common.submit'),
-                'title'           => lang(ucfirst($controller) . ".update")
-            ]
-        )
+        'actions' => '<div class="item-actions">'
+            . $action("$controller/inventory/$item->item_id", 'plus-slash-minus', lang(ucfirst($controller) . '.count'), lang('Items.action_count', [$name]), ['data-btn-submit' => lang('Common.submit')])
+            . $action("$controller/countDetails/$item->item_id", 'clock-history', lang(ucfirst($controller) . '.details_count'), lang('Items.action_history', [$name]))
+            . $action("$controller/view/$item->item_id", 'pencil-square', lang(ucfirst($controller) . '.update'), lang('Items.action_edit', [$name]), ['class' => 'modal-dlg btn-action btn-action-primary', 'data-btn-submit' => lang('Items.save')])
+            . '</div>'
     ];
 
     return $columns + expand_attribute_values($definition_names, (array) $item) + $icons;

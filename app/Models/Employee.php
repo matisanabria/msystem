@@ -61,6 +61,66 @@ class Employee extends Person
     }
 
     /**
+     * True when another active employee already uses this PIN (the PIN identifies the cashier on each sale).
+     */
+    public function pin_in_use(string $pin, int $employee_id): bool
+    {
+        $builder = $this->db->table('employees');
+        $builder->where('pin', $pin);
+        $builder->where('deleted', 0);
+        $builder->where('person_id <>', $employee_id);
+
+        return $builder->countAllResults() > 0;
+    }
+
+    /**
+     * Branch ids (active stock locations) where the employee has at least one location-scoped grant.
+     * Same rule the old Accesos matrix used.
+     *
+     * @return int[]
+     */
+    public function get_branch_access(int $person_id): array
+    {
+        $builder = $this->db->table('grants g');
+        $builder->select('p.location_id');
+        $builder->join('permissions p', 'g.permission_id = p.permission_id');
+        $builder->join('stock_locations l', 'l.location_id = p.location_id');
+        $builder->where('g.person_id', $person_id);
+        $builder->where('l.deleted', 0);
+        $builder->groupBy('p.location_id');
+
+        return array_map('intval', array_column($builder->get()->getResultArray(), 'location_id'));
+    }
+
+    /**
+     * Branch names per employee for the list: [person_id => [location_name, ...]].
+     *
+     * @param int[] $person_ids
+     */
+    public function get_branch_names(array $person_ids): array
+    {
+        if (empty($person_ids)) {
+            return [];
+        }
+
+        $builder = $this->db->table('grants g');
+        $builder->select('g.person_id, l.location_name');
+        $builder->join('permissions p', 'g.permission_id = p.permission_id');
+        $builder->join('stock_locations l', 'l.location_id = p.location_id');
+        $builder->whereIn('g.person_id', $person_ids);
+        $builder->where('l.deleted', 0);
+        $builder->groupBy('g.person_id, l.location_id, l.location_name');
+        $builder->orderBy('l.location_id', 'asc');
+
+        $names = [];
+        foreach ($builder->get()->getResultArray() as $row) {
+            $names[(int) $row['person_id']][] = $row['location_name'];
+        }
+
+        return $names;
+    }
+
+    /**
      * Gets total of rows
      */
     public function get_total_rows(): int

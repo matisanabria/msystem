@@ -40,6 +40,39 @@ class Module extends Model
     ];
 
     /**
+     * Employee form (Permissions tab): module groups, same titles as the home grid plus a leading "general"
+     * zone for Inicio. Modules not listed here and not hidden go to the last group.
+     */
+    public const EMPLOYEE_FORM_GROUPS = [
+        'group_general' => ['home'],
+        'group_sell'    => ['sales', 'customers'],
+        'group_service' => ['service_tickets', 'assistances'],
+        'group_stock'   => ['items', 'receivings', 'suppliers'],
+        'group_admin'   => ['expenses', 'expenses_categories', 'reports', 'office', 'admin_panel', 'discount_approvals', 'inventory_output', 'logs', 'config', 'employees'],
+    ];
+
+    /** Modules never offered in the employee form (disabled features). */
+    public const EMPLOYEE_FORM_HIDDEN = ['attributes', 'item_kits', 'taxes', 'messages', 'giftcards', 'cashups', 'timeclocks', 'timeclocks_categories', 'migrate'];
+
+    /** Sub-permissions never offered in the employee form. */
+    public const EMPLOYEE_FORM_HIDDEN_SUBPERMISSIONS = ['reports_discounts', 'reports_taxes'];
+
+    /**
+     * Permission profiles for the employee form. Edit the lists here to change what each profile ticks.
+     * 'cashier' ticks the module-level grants listed; 'admin' ticks everything offered in the form.
+     */
+    public const PERMISSION_PROFILES = [
+        'cashier' => ['home', 'sales', 'customers', 'items', 'service_tickets'],
+        'admin'   => '*',
+    ];
+
+    /** Modules that live under "Oficina" (their grant uses menu_group 'office' when newly granted). */
+    public const OFFICE_MODULES = ['admin_panel', 'discount_approvals', 'logs', 'inventory_output'];
+
+    /** Permissions an employee cannot remove from their own account (they open this panel). */
+    public const SELF_PROTECTED_PERMISSIONS = ['config', 'admin_panel', 'office'];
+
+    /**
      * @param array $modules Rows from get_allowed_*_modules(), already in DB `sort` order.
      * @return array Same rows in display order.
      */
