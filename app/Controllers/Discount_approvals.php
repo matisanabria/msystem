@@ -20,14 +20,8 @@ class Discount_approvals extends Secure_Controller
 
     public function getIndex(): void
     {
-        $location_ids = array_keys($this->stock_location->get_allowed_locations('sales'));
-        $pending      = $this->approval_model->get_pending_for_locations($location_ids);
-
-        $data = $this->global_view_data + [
-            'pending' => $pending,
-        ];
-
-        echo view('discount_approvals/index', $data);
+        // the rows come from pendingRows (JSON), so the page shows the same list as its refreshes
+        echo view('discount_approvals/index', $this->global_view_data);
     }
 
     /**
@@ -70,48 +64,117 @@ class Discount_approvals extends Secure_Controller
     }
 
     /**
+     * Seconds a code stays usable after approval; pending requests older than this are shown as expired (UI only).
+     */
+    private const CODE_LIFETIME = 600;
+
+    /**
+     * What a request changes, for display: label, before -> after prices and the difference.
+     */
+    private function describe(array $row): array
+    {
+        $price = (float)$row['item_price'];
+        $qty   = (float)$row['item_quantity'];
+
+        if (($row['request_type'] ?? 'discount') === 'price_type') {
+            $labels = [1 => 'Mayorista', 2 => 'Revendedor'];
+            $prices = $this->approval_model->get_item_prices($row['item_name'], (int)$row['location_id']);
+            $old    = $prices ? (float)$prices['unit_price'] : null;   // the stored request only has the new price
+            $new    = $price;
+
+            $change_label  = 'Venta → ' . ($labels[(int)$row['price_type']] ?? '?');
+            $change_prices = ($old !== null ? to_currency($old) . ' → ' : '→ ') . to_currency($new);
+            $diff          = $old !== null ? ($new - $old) * $qty : null;
+            $pct           = $old ? ($new - $old) / $old * 100 : null;
+        } else {
+            $discount = (float)$row['discount'];
+            $subtotal = $price * $qty;
+            $amount   = (int)$row['discount_type'] === 1 ? $discount * $qty : $subtotal * $discount / 100;
+
+            $change_label  = 'Descuento ' . ((int)$row['discount_type'] === 1 ? to_currency($discount) . ' c/u' : number_format($discount, 1, ',', '.') . '%');
+            $change_prices = to_currency($subtotal) . ' → ' . to_currency($subtotal - $amount);
+            $diff          = -$amount;
+            $pct           = $subtotal ? -$amount / $subtotal * 100 : null;
+        }
+
+        if ($diff === null) {
+            $diff_text  = '—';
+            $diff_class = 'none';
+        } elseif (abs($diff) < 0.5) {
+            $diff_text  = 'Sin diferencia de precio';
+            $diff_class = 'none';
+        } else {
+            $sign       = $diff < 0 ? '−' : '+';
+            $diff_text  = $sign . to_currency(abs($diff)) . ($pct !== null ? ' (' . $sign . number_format(abs($pct), 1, ',', '.') . '%)' : '');
+            $diff_class = $diff < 0 ? 'down' : 'up';
+        }
+
+        return [
+            'change_label'  => $change_label,
+            'change_prices' => $change_prices,
+            'diff_text'     => $diff_text,
+            'diff_class'    => $diff_class,
+        ];
+    }
+
+    /**
      * AJAX: returns full pending rows as JSON for dynamic table rendering (no page reload).
      */
     public function getPendingRows(): void
     {
         $location_ids = array_keys($this->stock_location->get_allowed_locations('sales'));
         $rows         = $this->approval_model->get_pending_for_locations($location_ids);
+        $now          = time();
 
-        $result = array_map(function ($row) {
-            $price    = (float)$row['item_price'];
-            $qty      = (float)$row['item_quantity'];
-            $discount = (float)$row['discount'];
-            $dtype    = (int)$row['discount_type'];
-            $subtotal = $price * $qty;
-
-            if (($row['request_type'] ?? 'discount') === 'price_type') {
-                $price_type_labels = [1 => 'Mayorista', 2 => 'Revendedor'];
-                $disc_amount = 0;
-                $disc_label  = '→ ' . ($price_type_labels[(int)$row['price_type']] ?? '?');
-            } elseif ($dtype === 1) {
-                $disc_amount = $discount * $qty;
-                $disc_label  = to_currency($discount) . ' c/u';
-            } else {
-                $disc_amount = $subtotal * $discount / 100;
-                $disc_label  = number_format($discount, 1) . '%';
-            }
-
-            $final = $subtotal - $disc_amount;
+        $result = array_map(function ($row) use ($now) {
+            $created = strtotime($row['created_at']);
 
             return [
                 'approval_id'   => (int)$row['approval_id'],
-                'created_ts'    => strtotime($row['created_at']),
-                'time_label'    => date('H:i:s', strtotime($row['created_at'])),
+                'created_ts'    => $created,
+                'time_label'    => date('H:i', $created),
                 'cashier_name'  => $row['cashier_name'],
                 'location_name' => $row['location_name'],
                 'item_name'     => $row['item_name'] ?: '—',
-                'price_fmt'     => to_currency($price),
-                'qty_fmt'       => number_format($qty, 0),
-                'subtotal_fmt'  => to_currency($subtotal),
-                'disc_label'    => $disc_label,
-                'final_fmt'     => to_currency($final),
-                'savings_fmt'   => to_currency($disc_amount),
-            ];
+                'qty_fmt'       => number_format((float)$row['item_quantity'], 0),
+                'expired'       => ($now - $created) > self::CODE_LIFETIME,
+            ] + $this->describe($row);
+        }, $rows);
+
+        echo json_encode(['rows' => $result, 'now' => $now]);
+    }
+
+    /**
+     * AJAX: last resolved requests for the history tab (read-only).
+     */
+    public function getHistory(): void
+    {
+        $location_ids = array_keys($this->stock_location->get_allowed_locations('sales'));
+        $rows         = $this->approval_model->get_recent_resolved($location_ids, 50);
+        $now          = time();
+
+        $result = array_map(function ($row) use ($now) {
+            $created = strtotime($row['created_at']);
+
+            // pending requests never expire on their own, so "expired" without an approver means it was rejected
+            if ($row['status'] === 'used') {
+                $result_key = 'approved';
+            } elseif ($row['status'] === 'approved') {
+                $result_key = strtotime($row['expires_at']) < $now ? 'expired' : 'approved';
+            } else {
+                $result_key = $row['approved_by'] ? 'expired' : 'rejected';
+            }
+
+            return [
+                'approval_id'   => (int)$row['approval_id'],
+                'date_label'    => date('d/m H:i', $created),
+                'cashier_name'  => $row['cashier_name'],
+                'location_name' => $row['location_name'],
+                'item_name'     => $row['item_name'] ?: '—',
+                'qty_fmt'       => number_format((float)$row['item_quantity'], 0),
+                'resolver'      => $row['approver_name'] ?: '—',
+                'result'        => $result_key,
+            ] + $this->describe($row);
         }, $rows);
 
         echo json_encode(['rows' => $result]);

@@ -212,6 +212,17 @@
             </div>
         <?php } ?>
 
+        <?php if (model(\App\Models\Employee::class)->has_grant('receivings', session()->get('person_id'))): ?>
+            <div class="form-group form-group-sm">
+                <div class="col-9 offset-3">
+                    <p class="form-text mb-1"><?= lang('Items.receive_stock_hint') ?></p>
+                    <a href="<?= base_url('receivings') ?>" class="btn btn-outline-secondary btn-sm">
+                        <span class="bi bi-box-arrow-in-down" aria-hidden="true"></span> <?= lang('Items.receive_stock') ?>
+                    </a>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <div class="form-group form-group-sm">
             <?= form_label(lang('Items.receiving_quantity'), 'receiving_quantity', ['class' => 'required control-label col-3']) ?>
             <div class="col-4">

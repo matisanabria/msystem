@@ -94,6 +94,56 @@ class Discount_approval extends Model
         ];
     }
 
+    /**
+     * Read-only: resolved requests (approved, used, expired / rejected) for the history tab.
+     */
+    public function get_recent_resolved(array $location_ids, int $limit = 50): array
+    {
+        if (empty($location_ids)) {
+            return [];
+        }
+
+        return $this->db->table($this->table . ' a')
+            ->join('ospos_people p', 'p.person_id = a.requested_by')
+            ->join('ospos_people ap', 'ap.person_id = a.approved_by', 'left')
+            ->join('ospos_stock_locations l', 'l.location_id = a.location_id')
+            ->select('a.*, CONCAT(p.first_name, " ", p.last_name) AS cashier_name, CONCAT(ap.first_name, " ", ap.last_name) AS approver_name, l.location_name')
+            ->whereIn('a.location_id', $location_ids)
+            ->where('a.status !=', 'pending')
+            ->orderBy('a.created_at', 'DESC')
+            ->limit($limit)
+            ->get()->getResultArray();
+    }
+
+    /**
+     * Read-only: current prices of the item a request is about (requests only store the item name,
+     * so it is looked up by name in the request's location). Null when it cannot be found.
+     */
+    public function get_item_prices(?string $item_name, int $location_id): ?array
+    {
+        $item_name = trim((string)$item_name);
+        if ($item_name === '') {
+            return null;
+        }
+
+        $builder = $this->db->table('ospos_items')
+            ->select('unit_price, price_wholesale, price_reseller')
+            ->where('deleted', 0)
+            ->where('location_id', $location_id);
+
+        $exact = (clone $builder)->where('name', $item_name)->get()->getRowArray();
+        if ($exact) {
+            return $exact;
+        }
+
+        // the cart name can carry the attribute values after the item name
+        $prefix = $builder->where('LOCATE(name, ' . $this->db->escape($item_name) . ') = 1', null, false)
+            ->orderBy('LENGTH(name)', 'DESC')
+            ->get(1)->getRowArray();
+
+        return $prefix ?: null;
+    }
+
     public function approve(int $approval_id, int $approver_id): ?string
     {
         $row = $this->find($approval_id);

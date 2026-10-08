@@ -49,31 +49,31 @@ use App\Models\Employee;
 
 <?php
 if (isset($error)) {
-    echo '<div class="alert alert-dismissible alert-danger">' . esc($error) . '</div>';
+    echo '<div class="alert alert-dismissible alert-danger" role="alert">' . esc($error) . '</div>';
 }
 
 if (!empty($warning)) {
-    echo '<div class="alert alert-dismissible alert-warning">' . esc($warning) . '</div>';
+    echo '<div class="alert alert-dismissible alert-warning" role="alert">' . esc($warning) . '</div>';
 }
 
 if (isset($success)) {
-    echo '<div class="alert alert-dismissible alert-success">' . esc($success) . '</div>';
+    echo '<div class="alert alert-dismissible alert-success" role="status">' . esc($success) . '</div>';
 }
 
 helper('url');
 ?>
 
-<div id="register_wrapper">
+<div id="register_wrapper" class="sales-screen">
 
     <!-- Top register controls -->
     <?= form_open("$controller_name/changeMode", ['id' => 'mode_form', 'class' => 'form-horizontal register-section']) ?>
         <div class="card-body form-group">
             <ul>
                 <li class="float-start first_li">
-                    <label class="control-label"><?= lang(ucfirst($controller_name) . '.mode') ?></label>
+                    <label class="control-label" for="mode"><?= lang(ucfirst($controller_name) . '.mode') ?></label>
                 </li>
                 <li class="float-start">
-                    <?= form_dropdown('mode', $modes, $mode, ['onchange' => "$('#mode_form').submit();", 'class' => 'selectpicker show-menu-arrow', 'data-style' => 'btn-outline-secondary btn-sm', 'data-width' => 'fit']) ?>
+                    <?= form_dropdown('mode', $modes, $mode, ['id' => 'mode', 'onchange' => "$('#mode_form').submit();", 'class' => 'selectpicker show-menu-arrow', 'data-style' => 'btn-outline-secondary btn-sm', 'data-width' => 'fit']) ?>
                 </li>
                 <?php if ($config['dinner_table_enable']) { ?>
                     <li class="float-start first_li">
@@ -85,24 +85,24 @@ helper('url');
                 <?php } ?>
                 <?php if (count($stock_locations) > 1) { ?>
                     <li class="float-start">
-                        <label class="control-label"><?= lang(ucfirst($controller_name) . '.stock_location') ?></label>
+                        <label class="control-label" for="stock_location"><?= lang(ucfirst($controller_name) . '.stock_location') ?></label>
                     </li>
                     <li class="float-start">
-                        <?= form_dropdown('stock_location', $stock_locations, $stock_location, ['onchange' => "$('#mode_form').submit();", 'class' => 'selectpicker show-menu-arrow', 'data-style' => 'btn-outline-secondary btn-sm', 'data-width' => 'fit']) ?>
+                        <?= form_dropdown('stock_location', $stock_locations, $stock_location, ['id' => 'stock_location', 'onchange' => "$('#mode_form').submit();", 'class' => 'selectpicker show-menu-arrow', 'data-style' => 'btn-outline-secondary btn-sm', 'data-width' => 'fit']) ?>
                     </li>
                 <?php } ?>
 
                 <li class="float-end">
-                    <button class="btn btn-outline-secondary btn-sm modal-dlg" id="show_suspended_sales_button" data-href="<?= esc("$controller_name/suspended") ?>"
+                    <button type="button" class="btn btn-neutral btn-sm modal-dlg" id="show_suspended_sales_button" data-href="<?= esc("$controller_name/suspended") ?>"
                         title="<?= lang(ucfirst($controller_name) . '.suspended_sales') ?>">
-                        <span class="bi bi-justify">&nbsp;</span><?= lang(ucfirst($controller_name) . '.suspended_sales') ?>
+                        <span class="bi bi-justify" aria-hidden="true"></span> <?= lang(ucfirst($controller_name) . '.suspended_sales') ?>
                     </button>
                 </li>
 
                 <li class="float-end">
-                    <a href="<?= esc(site_url("$controller_name/stockConsult")) ?>" class="btn btn-outline-secondary btn-sm" id="stock_consult_button"
+                    <a href="<?= esc(site_url("$controller_name/stockConsult")) ?>" class="btn btn-neutral btn-sm" id="stock_consult_button"
                         title="<?= lang('Sales.stock_consult') ?>">
-                        <span class="bi bi-list-ul">&nbsp;</span><?= lang('Sales.stock_consult') ?>
+                        <span class="bi bi-list-ul" aria-hidden="true"></span> <?= lang('Sales.stock_consult') ?>
                     </a>
                 </li>
 
@@ -113,20 +113,20 @@ helper('url');
                     <li class="float-end">
                         <?= anchor(
                             "$controller_name/manage",
-                            '<span class="bi bi-card-list">&nbsp;</span>' . lang(ucfirst($controller_name) . '.takings'),
-                            array('class' => 'btn btn-primary btn-sm', 'id' => 'sales_takings_button', 'title' => lang(ucfirst($controller_name) . '.takings'))
+                            '<span class="bi bi-card-list" aria-hidden="true"></span> ' . lang(ucfirst($controller_name) . '.takings'),
+                            array('class' => 'btn btn-neutral btn-sm', 'id' => 'sales_takings_button', 'title' => lang(ucfirst($controller_name) . '.takings'))
                         ) ?>
                     </li>
                 <?php } ?>
 
-                <li class="float-end" style="margin-right:8px; line-height:30px;">
+                <li class="float-end cashier-item">
                     <?php if ($current_cashier_id > 0): ?>
-                        <span id="current_cashier_badge" class="badge text-bg-success" style="font-size:13px; padding:5px 10px;">
-                            <span class="bi bi-person"></span>&nbsp;<?= lang('Sales.cashier') ?>: <?= esc($current_cashier_name) ?>
+                        <span id="current_cashier_badge" class="cashier-label">
+                            <span class="bi bi-person" aria-hidden="true"></span> <?= lang('Sales.cashier') ?>: <?= esc($current_cashier_name) ?>
                         </span>
                     <?php else: ?>
-                        <span id="current_cashier_badge" class="badge text-bg-secondary" style="font-size:13px; padding:5px 10px;">
-                            <span class="bi bi-person"></span>&nbsp;<?= lang('Sales.no_cashier') ?>
+                        <span id="current_cashier_badge" class="cashier-label">
+                            <span class="bi bi-person" aria-hidden="true"></span> <?= lang('Sales.no_cashier') ?>
                         </span>
                     <?php endif; ?>
                 </li>
@@ -134,21 +134,19 @@ helper('url');
         </div>
     <?= form_close() ?>
 
-    <?php $tabindex = 0; ?>
-
-    <?= form_open("$controller_name/add", ['id' => 'add_item_form', 'class' => 'form-horizontal register-section']) ?>
+        <?= form_open("$controller_name/add", ['id' => 'add_item_form', 'class' => 'form-horizontal register-section']) ?>
         <div class="card-body form-group">
             <ul>
                 <li class="float-start first_li">
                     <label for="item" class="control-label"><?= lang(ucfirst($controller_name) . '.find_or_scan_item_or_receipt') ?></label>
                 </li>
                 <li class="float-start">
-                    <?= form_input(['name' => 'item', 'id' => 'item', 'class' => 'form-control form-control-sm', 'size' => '50', 'tabindex' => ++$tabindex]) ?>
+                    <?= form_input(['name' => 'item', 'id' => 'item', 'class' => 'form-control form-control-sm', 'size' => '50', 'autocomplete' => 'off', 'placeholder' => lang(ucfirst($controller_name) . '.start_typing_item_name')]) ?>
                     <span class="ui-helper-hidden-accessible" role="status"></span>
                 </li>
                 <li class="float-end">
-                    <button id="new_item_button" class="btn btn-info btn-sm float-end modal-dlg" data-btn-new="<?= lang('Common.new') ?>" data-btn-submit="<?= lang('Common.submit') ?>" data-href="<?= "items/view" ?>" title="<?= lang(ucfirst($controller_name) . ".new_item") ?>">
-                        <span class="bi bi-tag">&nbsp;</span><?= lang(ucfirst($controller_name) . ".new_item") ?>
+                    <button type="button" id="new_item_button" class="btn btn-info btn-sm float-end modal-dlg" data-btn-new="<?= lang('Common.new') ?>" data-btn-submit="<?= lang('Common.submit') ?>" data-href="<?= "items/view" ?>" title="<?= lang(ucfirst($controller_name) . ".new_item") ?>">
+                        <span class="bi bi-tag" aria-hidden="true"></span> <?= lang(ucfirst($controller_name) . ".new_item") ?>
                     </button>
                 </li>
             </ul>
@@ -176,7 +174,7 @@ helper('url');
             <?php if (count($cart) == 0) { ?>
                 <tr>
                     <td colspan="8">
-                        <div class="alert alert-dismissible alert-info"><?= lang(ucfirst($controller_name) . '.no_items_in_cart') ?></div>
+                        <div class="cart-empty"><span class="bi bi-cart" aria-hidden="true"></span> <?= lang(ucfirst($controller_name) . '.no_items_in_cart') ?></div>
                     </td>
                 </tr>
             <?php
@@ -187,15 +185,15 @@ helper('url');
                         <tr>
                             <td>
                                 <?php
-                                echo anchor("$controller_name/deleteItem/$line", '<span class="bi bi-trash"></span>');
+                                echo anchor("$controller_name/deleteItem/$line", '<span class="bi bi-trash" aria-hidden="true"></span>', ['aria-label' => lang('Sales.register_delete_label', [$item['name']]), 'title' => lang('Common.delete')]);
                                 echo form_hidden('location', (string)$item['item_location']);
                                 echo form_input(['type' => 'hidden', 'name' => 'item_id', 'value' => $item['item_id']]);
                                 ?>
                             </td>
                             <?php if ($item['item_type'] == ITEM_TEMP) { ?>
-                                <td><?= form_input(['name' => 'item_number', 'id' => 'item_number', 'class' => 'form-control form-control-sm', 'value' => $item['item_number'], 'tabindex' => ++$tabindex]) ?></td>
+                                <td><?= form_input(['name' => 'item_number', 'id' => 'item_number', 'class' => 'form-control form-control-sm', 'aria-label' => lang('Sales.item_number'), 'value' => $item['item_number']]) ?></td>
                                 <td style="align: center;">
-                                    <?= form_input(['name' => 'name', 'id' => 'name', 'class' => 'form-control form-control-sm', 'value' => $item['name'], 'tabindex' => ++$tabindex]) ?>
+                                    <?= form_input(['name' => 'name', 'id' => 'name', 'class' => 'form-control form-control-sm', 'aria-label' => lang('Sales.item_name'), 'value' => $item['name']]) ?>
                                 </td>
                             <?php } else { ?>
                                 <td><?= esc($item['item_number']) ?></td>
@@ -220,7 +218,7 @@ helper('url');
                             <td>
                                 <?php
                                 if ($items_module_allowed && $change_price) {
-                                    echo form_input(['name' => 'price', 'class' => 'form-control form-control-sm', 'value' => to_currency_no_money($item['price']), 'tabindex' => ++$tabindex, 'onClick' => 'this.select();']);
+                                    echo form_input(['name' => 'price', 'class' => 'form-control form-control-sm', 'aria-label' => lang('Sales.register_price_label', [$item['name']]), 'value' => to_currency_no_money($item['price']), 'onClick' => 'this.select();']);
                                 } else {
                                     echo to_currency($item['price']);
                                     echo form_hidden('price', to_currency_no_money($item['price']));
@@ -262,14 +260,14 @@ helper('url');
                                     echo to_quantity_decimals($item['quantity']);
                                     echo form_hidden('quantity', $item['quantity']);
                                 } else {
-                                    echo form_input(['name' => 'quantity', 'class' => 'form-control form-control-sm', 'value' => to_quantity_decimals($item['quantity']), 'tabindex' => ++$tabindex, 'onClick' => 'this.select();']);
+                                    echo form_input(['name' => 'quantity', 'class' => 'form-control form-control-sm', 'aria-label' => lang('Sales.register_quantity_label', [$item['name']]), 'value' => to_quantity_decimals($item['quantity']), 'onClick' => 'this.select();']);
                                 }
                                 ?>
                             </td>
 
                             <td>
                                 <div class="input-group input-group-sm">
-                                    <?= form_input(['name' => 'discount', 'class' => 'form-control form-control-sm', 'value' => $item['discount_type'] ? to_currency_no_money($item['discount']) : to_decimals($item['discount']), 'tabindex' => ++$tabindex, 'onClick' => 'this.select();', 'data-original' => $item['discount_type'] ? to_currency_no_money($item['discount']) : to_decimals($item['discount']), 'data-original-type' => (string)(int)$item['discount_type']]) ?>
+                                    <?= form_input(['name' => 'discount', 'class' => 'form-control form-control-sm', 'aria-label' => lang('Sales.register_discount_label', [$item['name']]), 'value' => $item['discount_type'] ? to_currency_no_money($item['discount']) : to_decimals($item['discount']), 'onClick' => 'this.select();', 'data-original' => $item['discount_type'] ? to_currency_no_money($item['discount']) : to_decimals($item['discount']), 'data-original-type' => (string)(int)$item['discount_type']]) ?>
                                     <?= form_checkbox(['id' => "discount_toggle_$line", 'name' => 'discount_toggle', 'value' => 1, 'class' => 'd-none', 'data-line' => $line, 'checked' => $item['discount_type'] == 1]) ?>
                                     <div class="segmented discount-type" role="group" aria-label="<?= esc(lang(ucfirst($controller_name) . '.discount')) ?>">
                                         <button type="button" class="segmented-option<?= $item['discount_type'] == 1 ? '' : ' active' ?>" data-value="0" aria-pressed="<?= $item['discount_type'] == 1 ? 'false' : 'true' ?>">%</button>
@@ -281,7 +279,7 @@ helper('url');
                             <td>
                                 <?php
                                 if ($item['item_type'] == ITEM_AMOUNT_ENTRY) {    // TODO: === ?
-                                    echo form_input(['name' => 'discounted_total', 'class' => 'form-control form-control-sm', 'value' => to_currency_no_money($item['discounted_total']), 'tabindex' => ++$tabindex, 'onClick' => 'this.select();']);
+                                    echo form_input(['name' => 'discounted_total', 'class' => 'form-control form-control-sm', 'aria-label' => lang('Sales.register_total_label', [$item['name']]), 'value' => to_currency_no_money($item['discounted_total']), 'onClick' => 'this.select();']);
                                 } else {
                                     echo to_currency($item['discounted_total']);
                                 }
@@ -289,8 +287,8 @@ helper('url');
                             </td>
 
                             <td>
-                                <a href="javascript:$('#<?= "cart_$line" ?>').submit();" title="<?= lang(ucfirst($controller_name) . '.update') ?>">
-                                    <span class="bi bi-arrow-clockwise"></span>
+                                <a href="javascript:$('#<?= "cart_$line" ?>').submit();" title="<?= lang(ucfirst($controller_name) . '.update') ?>" aria-label="<?= esc(lang('Sales.register_update_label', [$item['name']])) ?>">
+                                    <span class="bi bi-arrow-clockwise" aria-hidden="true"></span>
                                 </a>
                             </td>
                         </tr>
@@ -298,7 +296,7 @@ helper('url');
                             <?php if ($item['item_type'] == ITEM_TEMP) { ?>
                                 <td><?= form_input(['type' => 'hidden', 'name' => 'item_id', 'value' => $item['item_id']]) ?></td>
                                 <td style="align: center;" colspan="6">
-                                    <?= form_input(['name' => 'item_description', 'id' => 'item_description', 'class' => 'form-control form-control-sm', 'value' => $item['description'], 'tabindex' => ++$tabindex]) ?>
+                                    <?= form_input(['name' => 'item_description', 'id' => 'item_description', 'class' => 'form-control form-control-sm', 'aria-label' => lang('Sales.register_description_label', [$item['name']]), 'value' => $item['description']]) ?>
                                 </td>
                                 <td> </td>
                             <?php } else { ?>
@@ -310,7 +308,7 @@ helper('url');
                                 <td colspan="2" style="text-align: left;">
                                     <?php
                                     if ($item['allow_alt_description']) {
-                                        echo form_input(['name' => 'description', 'class' => 'form-control form-control-sm', 'value' => $item['description'], 'onClick' => 'this.select();']);
+                                        echo form_input(['name' => 'description', 'class' => 'form-control form-control-sm', 'aria-label' => lang('Sales.register_description_label', [$item['name']]), 'value' => $item['description'], 'onClick' => 'this.select();']);
                                     } else {
                                         if ($item['description'] != '') {
                                             echo $item['description'];
@@ -340,7 +338,7 @@ helper('url');
 
 <!-- Overall Sale -->
 
-<div id="overall_sale" class="card">
+<div id="overall_sale" class="card sales-screen">
     <div class="card-body">
         <?= form_open("$controller_name/selectCustomer", ['id' => 'select_customer_form', 'class' => 'form-horizontal']) ?>
             <?php if (isset($customer)) { ?>
@@ -397,7 +395,7 @@ helper('url');
 
                 <?= anchor(
                     "$controller_name/removeCustomer",
-                    '<span class="bi bi-x-lg">&nbsp;</span>' . lang('Common.remove') . ' ' . lang('Customers.customer'),
+                    '<span class="bi bi-x-lg" aria-hidden="true"></span> ' . lang('Common.remove') . ' ' . lang('Customers.customer'),
                     ['class' => 'btn btn-danger btn-sm', 'id' => 'remove_customer_button', 'title' => lang('Common.remove') . ' ' . lang('Customers.customer')]
                 )
                 ?>
@@ -406,17 +404,40 @@ helper('url');
                     <label id="customer_label" for="customer" class="control-label" style="margin-bottom: 1em; margin-top: -1em;">
                         <?= lang(ucfirst($controller_name) . '.select_customer') . esc(" $customer_required") ?>
                     </label>
-                    <?= form_input(['name' => 'customer', 'id' => 'customer', 'class' => 'form-control form-control-sm', 'value' => lang(ucfirst($controller_name) . '.start_typing_customer_name')]) ?>
+                    <?= form_input(['name' => 'customer', 'id' => 'customer', 'class' => 'form-control form-control-sm', 'autocomplete' => 'off', 'placeholder' => lang(ucfirst($controller_name) . '.start_typing_customer_name')]) ?>
 
-                    <button class="btn btn-info btn-sm modal-dlg" data-btn-submit="<?= lang('Common.submit') ?>" data-href="<?= "customers/view" ?>" title="<?= lang(ucfirst($controller_name) . ".new_customer") ?>">
-                        <span class="bi bi-person">&nbsp;</span><?= lang(ucfirst($controller_name) . ".new_customer") ?>
+                    <button type="button" class="btn btn-info btn-sm modal-dlg" data-btn-submit="<?= lang('Common.submit') ?>" data-href="<?= "customers/view" ?>" title="<?= lang(ucfirst($controller_name) . ".new_customer") ?>">
+                        <span class="bi bi-person" aria-hidden="true"></span> <?= lang(ucfirst($controller_name) . ".new_customer") ?>
                     </button>
-                    <button class="btn btn-outline-secondary btn-sm modal-dlg" id="show_keyboard_help" data-href="<?= esc("$controller_name/salesKeyboardHelp") ?>" title="<?= lang(ucfirst($controller_name) . '.key_title') ?>">
-                        <span class="bi bi-share">&nbsp;</span><?= lang(ucfirst($controller_name) . '.key_help') ?>
+                    <button type="button" class="btn btn-neutral btn-sm modal-dlg" id="show_keyboard_help" data-href="<?= esc("$controller_name/salesKeyboardHelp") ?>" title="<?= lang(ucfirst($controller_name) . '.key_title') ?>">
+                        <span class="bi bi-keyboard" aria-hidden="true"></span> <?= lang(ucfirst($controller_name) . '.key_help') ?>
                     </button>
                 </div>
             <?php } ?>
         <?= form_close() ?>
+
+        <?php
+        $has_cart = count($cart) > 0;
+        $channels = [
+            'store'    => lang('Sales.sale_channel_store'),
+            'delivery' => lang('Sales.sale_channel_delivery'),
+            'shipping' => lang('Sales.sale_channel_shipping'),
+        ];
+        ?>
+
+        <?php if ($has_cart) { // The channel applies to the whole sale, so it is asked as soon as there is something to sell ?>
+            <fieldset class="channel-field" id="sale_channel_field">
+                <legend class="channel-legend"><?= lang('Sales.sale_channel') ?></legend>
+                <div class="segmented segmented-block segmented-radio">
+                    <?php foreach ($channels as $channel_value => $channel_label) { ?>
+                        <label class="segmented-option">
+                            <input type="radio" name="sale_channel" value="<?= $channel_value ?>" form="buttons_form"<?= $channel_value === 'store' ? ' checked' : '' ?>>
+                            <span><?= $channel_label ?></span>
+                        </label>
+                    <?php } ?>
+                </div>
+            </fieldset>
+        <?php } ?>
 
         <table class="sales_table_100" id="sale_totals">
             <tr>
@@ -431,11 +452,25 @@ helper('url');
             <?php } ?>
             <tr>
                 <th style="width: 55%; font-size: 150%"><?= lang(ucfirst($controller_name) . '.total') ?></th>
-                <th style="width: 45%; font-size: 150%; text-align: right;"><span id="sale_total"><?= to_currency($total) ?></span></th>
+                <th style="width: 45%; font-size: 150%; text-align: right;"><span id="sale_total" class="sale-total"><?= to_currency($total) ?></span></th>
             </tr>
         </table>
 
-        <?php if (count($cart) > 0) { // Only show this part if there are Items already in the register ?>
+        <?php if ($has_cart) { // Only show this part if there are Items already in the register ?>
+            <?php
+            // The Complete button needs the payments to cover the total (in sale/return mode), and a customer when part is on credit
+            $show_finish = false;
+            if ($payments_cover_total && $pos_mode) {
+                $due_payment = false;
+                foreach ($payments as $payment) {
+                    if ($payment['payment_type'] == lang(ucfirst($controller_name) . '.due')) {
+                        $due_payment = true;
+                    }
+                }
+                $show_finish = !$due_payment || isset($customer);
+            }
+            ?>
+
             <table class="sales_table_100" id="payment_totals">
                 <tr>
                     <th style="width: 55%;"><?= lang(ucfirst($controller_name) . '.payments_total') ?></th>
@@ -448,86 +483,71 @@ helper('url');
             </table>
 
             <div id="payment_details">
-                <?php if ($payments_cover_total) { // Show Complete sale button instead of Add Payment if there is no amount due left ?>
-                    <?= form_open("$controller_name/addPayment", ['id' => 'add_payment_form', 'class' => 'form-horizontal']) ?>
-                        <table class="sales_table_100">
+                <?php if ($payments_cover_total) { // Nothing left to pay: the payment fields stay for reference, disabled ?>
+                    <?= form_open("$controller_name/addPayment", ['id' => 'add_payment_form', 'class' => 'form-horizontal d-none']) ?>
+                        <table class="sales_table_100 payment-form">
                             <tr>
-                                <td><?= lang(ucfirst($controller_name) . '.payment') ?></td>
+                                <td><label for="payment_types"><?= lang(ucfirst($controller_name) . '.payment') ?></label></td>
                                 <td>
-                                    <?= form_dropdown('payment_type', $payment_options, $selected_payment_type, ['id' => 'payment_types', 'class' => 'selectpicker show-menu-arrow', 'data-style' => 'btn-outline-secondary btn-sm', 'data-width' => 'fit', 'disabled' => 'disabled']) ?>
+                                    <?= form_dropdown('payment_type', $payment_options, $selected_payment_type, ['id' => 'payment_types', 'aria-label' => lang(ucfirst($controller_name) . '.payment'), 'class' => 'selectpicker show-menu-arrow', 'data-style' => 'btn-outline-secondary btn-sm', 'data-width' => 'fit', 'disabled' => 'disabled']) ?>
                                 </td>
                             </tr>
                             <tr>
-                                <td><span id="amount_tendered_label"><?= lang(ucfirst($controller_name) . '.amount_tendered') ?></span></td>
+                                <td><label id="amount_tendered_label" for="amount_tendered"><?= lang(ucfirst($controller_name) . '.amount_tendered') ?></label></td>
                                 <td>
-                                    <?= form_input(['name' => 'amount_tendered', 'id' => 'amount_tendered', 'class' => 'form-control form-control-sm disabled', 'disabled' => 'disabled', 'value' => '0', 'size' => '5', 'tabindex' => ++$tabindex, 'onClick' => 'this.select();']) ?>
+                                    <?= form_input(['name' => 'amount_tendered', 'id' => 'amount_tendered', 'class' => 'form-control form-control-sm disabled', 'disabled' => 'disabled', 'value' => '0', 'size' => '5', 'onClick' => 'this.select();']) ?>
                                 </td>
                             </tr>
                         </table>
                     <?= form_close() ?>
-
-                    <?php
-                    // Only show this part if in sale or return mode
-                    if ($pos_mode) {
-                        $due_payment = false;
-
-                        if (count($payments) > 0) {
-                            foreach ($payments as $payment_id => $payment) {
-                                if ($payment['payment_type'] == lang(ucfirst($controller_name) . '.due')) {
-                                    $due_payment = true;
-                                }
-                            }
-                        }
-
-                        if (!$due_payment || ($due_payment && isset($customer))) {    // TODO: $due_payment is not needed because the first clause insures that it will always be true if it gets to this point.  Can be shortened to if (!$due_payment || isset($customer))
-                    ?>
-                            <div class="btn btn-sm btn-success float-end" id="finish_sale_button" tabindex="<?= ++$tabindex ?>">
-                                <span class="bi bi-check-lg">&nbsp;</span><?= lang(ucfirst($controller_name) . '.complete_sale') ?>
-                            </div>
-                    <?php
-                        }
-                    }
-                    ?>
                 <?php } else { ?>
                     <?= form_open("$controller_name/addPayment", ['id' => 'add_payment_form', 'class' => 'form-horizontal']) ?>
-                        <table class="sales_table_100">
+                        <table class="sales_table_100 payment-form">
                             <tr>
-                                <td><?= lang(ucfirst($controller_name) . '.payment') ?></td>
+                                <td><label for="payment_types"><?= lang(ucfirst($controller_name) . '.payment') ?></label></td>
                                 <td>
-                                    <?= form_dropdown('payment_type', $payment_options,  $selected_payment_type, ['id' => 'payment_types', 'class' => 'selectpicker show-menu-arrow', 'data-style' => 'btn-outline-secondary btn-sm', 'data-width' => 'fit']) ?>
+                                    <?= form_dropdown('payment_type', $payment_options,  $selected_payment_type, ['id' => 'payment_types', 'aria-label' => lang(ucfirst($controller_name) . '.payment'), 'class' => 'selectpicker show-menu-arrow', 'data-style' => 'btn-outline-secondary btn-sm', 'data-width' => 'fit']) ?>
                                 </td>
                             </tr>
                             <tr>
-                                <td><span id="amount_tendered_label"><?= lang(ucfirst($controller_name) . '.amount_tendered') ?></span></td>
+                                <td><label id="amount_tendered_label" for="amount_tendered"><?= lang(ucfirst($controller_name) . '.amount_tendered') ?></label></td>
                                 <td>
-                                    <?= form_input(['name' => 'amount_tendered', 'id' => 'amount_tendered', 'class' => 'form-control form-control-sm non-giftcard-input', 'value' => to_currency_no_money($amount_due), 'size' => '5', 'tabindex' => ++$tabindex, 'onClick' => 'this.select();']) ?>
-                                    <?= form_input(['name' => 'amount_tendered', 'id' => 'amount_tendered', 'class' => 'form-control form-control-sm giftcard-input', 'disabled' => true, 'value' => to_currency_no_money($amount_due), 'size' => '5', 'tabindex' => ++$tabindex]) ?>
+                                    <?= form_input(['name' => 'amount_tendered', 'id' => 'amount_tendered', 'class' => 'form-control form-control-sm non-giftcard-input', 'value' => to_currency_no_money($amount_due), 'size' => '5', 'onClick' => 'this.select();']) ?>
+                                    <?= form_input(['name' => 'amount_tendered', 'id' => 'giftcard_number', 'class' => 'form-control form-control-sm giftcard-input', 'disabled' => true, 'value' => to_currency_no_money($amount_due), 'size' => '5']) ?>
                                 </td>
                             </tr>
                         </table>
                     <?= form_close() ?>
 
-                    <div class="btn btn-sm btn-success float-end" id="add_payment_button" tabindex="<?= ++$tabindex ?>">
-                        <span class="bi bi-credit-card">&nbsp;</span><?= lang(ucfirst($controller_name) . '.add_payment') ?>
+                    <div class="payment-actions">
+                        <button type="button" class="btn btn-sm btn-success" id="add_payment_button">
+                            <span class="bi bi-credit-card" aria-hidden="true"></span> <?= lang(ucfirst($controller_name) . '.add_payment') ?>
+                        </button>
                     </div>
                 <?php } ?>
 
                 <?php if (count($payments) > 0) { // Only show this part if there is at least one payment entered. ?>
-                    <table class="sales_table_100" id="register">
+                    <table class="sales_table_100 payments-table" id="payments_table">
                         <thead>
                             <tr>
-                                <th style="width: 10%;"><?= lang('Common.delete') ?></th>
-                                <th style="width: 60%;"><?= lang(ucfirst($controller_name) . '.payment_type') ?></th>
-                                <th style="width: 20%;"><?= lang(ucfirst($controller_name) . '.payment_amount') ?></th>
+                                <th><?= lang(ucfirst($controller_name) . '.payment_type') ?></th>
+                                <th class="payment-amount"><?= lang(ucfirst($controller_name) . '.payment_amount') ?></th>
+                                <th class="payment-remove-cell"><span class="visually-hidden"><?= lang('Sales.remove_payment') ?></span></th>
                             </tr>
                         </thead>
 
                         <tbody id="payment_contents">
                             <?php foreach ($payments as $payment_id => $payment) { ?>
                                 <tr>
-                                    <td><?= anchor("$controller_name/deletePayment/". base64url_encode($payment_id), '<span class="bi bi-trash"></span>') ?></td>
                                     <td><?= $payment['payment_type'] ?></td>
-                                    <td style="text-align: right;"><?= to_currency($payment['payment_amount']) ?></td>
+                                    <td class="payment-amount"><?= to_currency($payment['payment_amount']) ?></td>
+                                    <td class="payment-remove-cell">
+                                        <?= anchor(
+                                            "$controller_name/deletePayment/" . base64url_encode($payment_id),
+                                            '<span class="bi bi-trash3-fill" aria-hidden="true"></span><span>' . lang('Sales.remove_payment') . '</span>',
+                                            ['class' => 'payment-remove', 'aria-label' => lang('Sales.remove_payment') . ': ' . strip_tags($payment['payment_type']), 'title' => lang('Sales.remove_payment')]
+                                        ) ?>
+                                    </td>
                                 </tr>
                             <?php } ?>
                         </tbody>
@@ -535,79 +555,55 @@ helper('url');
                 <?php } ?>
             </div>
 
+            <div class="comment-field" id="comment_field">
+                <button type="button" class="btn btn-link comment-toggle" id="comment_toggle" aria-expanded="<?= $comment !== '' && $comment !== null ? 'true' : 'false' ?>" aria-controls="comment_box"<?= $comment !== '' && $comment !== null ? ' hidden' : '' ?>>
+                    <?= lang('Sales.add_comment') ?>
+                </button>
+                <div id="comment_box"<?= $comment === '' || $comment === null ? ' hidden' : '' ?>>
+                    <?= form_label(lang('Common.comments'), 'comment', ['class' => 'control-label', 'id' => 'comment_label']) ?>
+                    <?= form_textarea(['name' => 'comment', 'id' => 'comment', 'class' => 'form-control form-control-sm', 'value' => $comment, 'rows' => '2']) ?>
+                </div>
+            </div>
+
+            <div class="print-field">
+                <input type="checkbox" name="sales_print_after_sale" id="sales_print_after_sale" value="1"<?= $print_after_sale ? ' checked' : '' ?>>
+                <label for="sales_print_after_sale"><?= lang(ucfirst($controller_name) . '.print_after_sale') ?></label>
+            </div>
+
+            <?php if ($mode == 'sale_work_order') { ?>
+                <div class="print-field">
+                    <input type="checkbox" name="price_work_orders" id="price_work_orders" value="1"<?= $price_work_orders ? ' checked' : '' ?>>
+                    <label for="price_work_orders"><?= lang(ucfirst($controller_name) . '.include_prices') ?></label>
+                </div>
+            <?php } ?>
+
+            <?php if (($mode == 'sale_invoice') && $config['invoice_enable']) { ?>
+                <div class="invoice-field">
+                    <label for="sales_invoice_number"><?= lang(ucfirst($controller_name) . '.invoice_enable') ?></label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text form-control-sm">#</span>
+                        <?= form_input(['name' => 'sales_invoice_number', 'id' => 'sales_invoice_number', 'class' => 'form-control form-control-sm', 'value' => $invoice_number]) ?>
+                    </div>
+                </div>
+            <?php } ?>
+
+            <?php if ($show_finish) { ?>
+                <button type="button" class="btn btn-success panel-primary" id="finish_sale_button">
+                    <span class="bi bi-check-lg" aria-hidden="true"></span> <?= lang(ucfirst($controller_name) . '.complete_sale') ?>
+                </button>
+            <?php } ?>
+
             <?= form_open("$controller_name/cancel", ['id' => 'buttons_form']) ?>
-            <div class="form-group" id="buttons_sale">
-                <div class="btn btn-sm btn-outline-secondary float-start" id="suspend_sale_button"><span class="bi bi-justify">&nbsp;</span><?= lang(ucfirst($controller_name) . '.suspend_sale') ?></div>
-                <?php if (!$pos_mode && isset($customer)) { // Only show this part if the payment covers the total ?>
-                    <div class="btn btn-sm btn-success" id="finish_invoice_quote_button"><span class="bi bi-check-lg">&nbsp;</span><?= esc($mode_label) ?></div>
+                <?php if (!$pos_mode && isset($customer)) { // Invoice / quote without payment ?>
+                    <button type="button" class="btn btn-success panel-primary" id="finish_invoice_quote_button"><span class="bi bi-check-lg" aria-hidden="true"></span> <?= esc($mode_label) ?></button>
                 <?php } ?>
 
-                <div class="btn btn-sm btn-danger float-end" id="cancel_sale_button"><span class="bi bi-x-lg">&nbsp;</span><?= lang(ucfirst($controller_name) . '.cancel_sale') ?></div>
-            </div>
-            <?php if ($payments_cover_total || !$pos_mode) { ?>
-            <div class="form-group form-group-sm" style="margin-top: 8px; margin-bottom: 4px;">
-                <label class="control-label" style="display:block; margin-bottom: 2px;"><?= lang('Sales.sale_channel') ?></label>
-                <select name="sale_channel" class="form-select form-select-sm">
-                    <option value="store"><?= lang('Sales.sale_channel_store') ?></option>
-                    <option value="delivery"><?= lang('Sales.sale_channel_delivery') ?></option>
-                    <option value="shipping"><?= lang('Sales.sale_channel_shipping') ?></option>
-                </select>
-            </div>
-            <?php } ?>
-            <?= form_close() ?>
-
-            <?php if ($payments_cover_total || !$pos_mode) { // Only show this part if the payment cover the total ?>
-                <div class="container-fluid">
-                    <div class="no-gutter row">
-                        <div class="form-group form-group-sm">
-                            <div class="col-12">
-                                <?= form_label(lang('Common.comments'), 'comments', ['class' => 'control-label', 'id' => 'comment_label', 'for' => 'comment']) ?>
-                                <?= form_textarea(['name' => 'comment', 'id' => 'comment', 'class' => 'form-control form-control-sm', 'value' => $comment, 'rows' => '2']) ?>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group form-group-sm">
-                            <div class="col-6">
-                                <label for="sales_print_after_sale" class="control-label checkbox">
-                                    <?= form_checkbox(['name' => 'sales_print_after_sale', 'id' => 'sales_print_after_sale', 'value' => 1, 'checked' => $print_after_sale]) ?>
-                                    <?= lang(ucfirst($controller_name) . '.print_after_sale') ?>
-                                </label>
-                            </div>
-
-                            <?php if ($mode == 'sale_work_order') { ?>
-                                <div class="col-6">
-                                    <label for="price_work_orders" class="control-label checkbox">
-                                        <?= form_checkbox(['name' => 'price_work_orders', 'id' => 'price_work_orders', 'value' => 1, 'checked' => $price_work_orders]) ?>
-                                        <?= lang(ucfirst($controller_name) . '.include_prices') ?>
-                                    </label>
-                                </div>
-                            <?php } ?>
-                        </div>
-                    </div>
-                    <?php if (($mode == 'sale_invoice') && $config['invoice_enable']) { ?>
-                        <div class="row">
-                            <div class="form-group form-group-sm">
-                                <div class="col-6">
-                                    <label for="sales_invoice_number" class="control-label checkbox">
-                                        <?= lang(ucfirst($controller_name) . '.invoice_enable') ?>
-                                    </label>
-                                </div>
-
-                                <div class="col-6">
-                                    <div class="input-group input-group-sm">
-                                        <span class="input-group-text form-control-sm">#</span>
-                                        <?= form_input(['name' => 'sales_invoice_number', 'id' => 'sales_invoice_number', 'class' => 'form-control form-control-sm', 'value' => $invoice_number]) ?>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    <?php } ?>
+                <div class="panel-actions">
+                    <button type="button" class="btn btn-sm btn-neutral" id="suspend_sale_button"><span class="bi bi-justify" aria-hidden="true"></span> <?= lang(ucfirst($controller_name) . '.suspend_sale') ?></button>
+                    <button type="button" class="btn btn-sm btn-outline-danger" id="cancel_sale_button"><span class="bi bi-x-lg" aria-hidden="true"></span> <?= lang(ucfirst($controller_name) . '.cancel_sale') ?></button>
                 </div>
-        <?php
-            }
-        }
-        ?>
+            <?= form_close() ?>
+        <?php } ?>
     </div>
 </div>
 
@@ -620,7 +616,7 @@ helper('url');
             <div id="da_state_request">
                 <div class="modal-header" style="background:#d9534f; color:#fff; border-radius:3px 3px 0 0;">
                     <h4 class="modal-title">
-                        <span class="bi bi-lock"></span>&nbsp;Autorización de Descuento Requerida
+                        <span class="bi bi-lock"></span>&nbsp;Autorización de descuento requerida
                     </h4>
                 </div>
                 <div class="modal-body">
@@ -628,7 +624,7 @@ helper('url');
                         <tbody>
                             <tr style="background:#f9f9f9;">
                                 <td style="width:45%; color:#888;">Cajero</td>
-                                <td><strong><?= esc($current_cashier_name) ?></strong></td>
+                                <td><strong id="da_cashier"><?= esc($current_cashier_name) ?></strong></td>
                             </tr>
                             <tr>
                                 <td colspan="2"><hr style="margin:4px 0;"></td>
@@ -663,11 +659,11 @@ helper('url');
                             </tr>
                         </tbody>
                     </table>
-                    <div id="da_error" class="text-danger" style="min-height:18px; font-size:12px;"></div>
+                    <div id="da_error" class="text-danger" role="alert" style="min-height:18px; font-size:12px;"></div>
                 </div>
                 <div class="modal-footer">
                     <button id="da_request_btn" type="button" class="btn btn-warning btn-block">
-                        <span class="bi bi-send"></span>&nbsp;Solicitar Autorización
+                        <span class="bi bi-send"></span>&nbsp;Solicitar autorización
                     </button>
                     <button id="da_cancel_btn" type="button" class="btn btn-outline-secondary btn-block" style="margin-top:6px;">
                         Cancelar
@@ -710,21 +706,21 @@ helper('url');
                     <div style="text-align:center;">
                         <p style="color:#555; font-size:13px; margin-bottom:6px;">Código de autorización (4 dígitos):</p>
                         <div style="display:flex; justify-content:center; gap:8px; margin-bottom:8px;">
-                            <input type="text" class="da_digit form-control" inputmode="numeric" maxlength="1"
+                            <input type="text" class="da_digit form-control" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="<?= esc(lang('Sales.pin_label')) ?>"
                                    style="width:48px; height:48px; text-align:center; font-size:1.6em; font-weight:bold;" disabled>
-                            <input type="text" class="da_digit form-control" inputmode="numeric" maxlength="1"
+                            <input type="text" class="da_digit form-control" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="<?= esc(lang('Sales.pin_label')) ?>"
                                    style="width:48px; height:48px; text-align:center; font-size:1.6em; font-weight:bold;" disabled>
-                            <input type="text" class="da_digit form-control" inputmode="numeric" maxlength="1"
+                            <input type="text" class="da_digit form-control" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="<?= esc(lang('Sales.pin_label')) ?>"
                                    style="width:48px; height:48px; text-align:center; font-size:1.6em; font-weight:bold;" disabled>
-                            <input type="text" class="da_digit form-control" inputmode="numeric" maxlength="1"
+                            <input type="text" class="da_digit form-control" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="<?= esc(lang('Sales.pin_label')) ?>"
                                    style="width:48px; height:48px; text-align:center; font-size:1.6em; font-weight:bold;" disabled>
                         </div>
-                        <div id="da_code_error" class="text-danger" style="min-height:18px; font-size:12px;"></div>
+                        <div id="da_code_error" class="text-danger" role="alert" style="min-height:18px; font-size:12px;"></div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button id="da_apply_btn" type="button" class="btn btn-success btn-block" disabled>
-                        <span class="bi bi-check-lg"></span>&nbsp;Aplicar Código
+                        <span class="bi bi-check-lg"></span>&nbsp;Aplicar código
                     </button>
                     <button id="da_cancel_wait_btn" type="button" class="btn btn-outline-secondary btn-block" style="margin-top:6px;">
                         Cancelar solicitud
@@ -737,102 +733,95 @@ helper('url');
 </div>
 
 <!-- Price Type Authorization Modal -->
-<div class="modal fade" id="pa_modal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false">
+<div class="modal fade" id="pa_modal" tabindex="-1" role="dialog" aria-labelledby="pa_title_request" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
 
-            <!-- State 1: Request authorization -->
+            <!-- Step 1: request authorization -->
             <div id="pa_state_request">
-                <div class="modal-header" style="background:#d9534f; color:#fff; border-radius:3px 3px 0 0;">
-                    <h4 class="modal-title">
-                        <span class="bi bi-lock"></span>&nbsp;Autorización de Cambio de Precio Requerida
+                <div class="modal-header auth-header">
+                    <h4 class="modal-title" id="pa_title_request">
+                        <span class="bi bi-lock" aria-hidden="true"></span> <?= lang('Sales.price_auth_title') ?>
                     </h4>
                 </div>
                 <div class="modal-body">
-                    <table class="table table-sm" style="margin-bottom:6px;">
+                    <table class="table table-sm auth-summary">
                         <tbody>
-                            <tr style="background:#f9f9f9;">
-                                <td style="width:45%; color:#888;">Cajero</td>
-                                <td><strong><?= esc($current_cashier_name) ?></strong></td>
+                            <tr id="pa_cashier_row">
+                                <th scope="row"><?= lang('Sales.price_auth_cashier') ?></th>
+                                <td id="pa_cashier"></td>
                             </tr>
                             <tr>
-                                <td colspan="2"><hr style="margin:4px 0;"></td>
-                            </tr>
-                            <tr>
-                                <td style="color:#888;">Artículo</td>
+                                <th scope="row"><?= lang('Sales.price_auth_item') ?></th>
                                 <td><strong id="pa_item_name">—</strong></td>
-                            </tr>
-                            <tr>
-                                <td style="color:#888;">Tipo de precio</td>
-                                <td><strong id="pa_price_type_label">—</strong></td>
-                            </tr>
-                            <tr style="border-top:2px solid #ddd;">
-                                <td style="color:#888; font-weight:bold;">Nuevo precio unit.</td>
-                                <td style="color:#27ae60; font-weight:bold; font-size:1.1em;" id="pa_new_price">—</td>
                             </tr>
                         </tbody>
                     </table>
-                    <div id="pa_error" class="text-danger" style="min-height:18px; font-size:12px;"></div>
+
+                    <div class="auth-change">
+                        <div class="auth-change-line">
+                            <span><span id="pa_old_label"></span>: <strong id="pa_old_price"></strong></span>
+                            <span class="bi bi-arrow-right" aria-hidden="true"></span>
+                            <span><span id="pa_new_label"></span>: <strong id="pa_new_price_small"></strong></span>
+                        </div>
+                        <div class="auth-change-new" id="pa_new_price">—</div>
+                        <div class="auth-change-diff" id="pa_diff"></div>
+                    </div>
+
+                    <p class="auth-help"><?= lang('Sales.price_auth_help') ?></p>
+                    <div id="pa_error" class="text-danger" role="alert"></div>
                 </div>
-                <div class="modal-footer">
-                    <button id="pa_request_btn" type="button" class="btn btn-warning btn-block">
-                        <span class="bi bi-send"></span>&nbsp;Solicitar Autorización
+                <div class="modal-footer auth-footer">
+                    <button id="pa_request_btn" type="button" class="btn btn-primary btn-lg">
+                        <span class="bi bi-send" aria-hidden="true"></span> <?= lang('Sales.price_auth_request') ?>
                     </button>
-                    <button id="pa_cancel_btn" type="button" class="btn btn-outline-secondary btn-block" style="margin-top:6px;">
-                        Cancelar
+                    <button id="pa_cancel_btn" type="button" class="btn btn-neutral">
+                        <?= lang('Sales.price_auth_cancel') ?>
                     </button>
                 </div>
             </div>
 
-            <!-- State 2: Waiting for admin / enter code -->
+            <!-- Step 2: waiting for the administrator, then the code -->
             <div id="pa_state_waiting" style="display:none;">
-                <div class="modal-header" style="background:#f0ad4e; color:#fff; border-radius:3px 3px 0 0;">
-                    <h4 class="modal-title">
-                        <span class="bi bi-hourglass-split"></span>&nbsp;Esperando aprobación del administrador...
+                <div class="modal-header auth-header">
+                    <h4 class="modal-title" id="pa_title_waiting">
+                        <span class="bi bi-hourglass-split" aria-hidden="true"></span> <?= lang('Sales.price_auth_waiting_title') ?>
                     </h4>
                 </div>
                 <div class="modal-body">
-                    <div style="background:#f9f9f9; border-radius:4px; padding:10px; margin-bottom:12px;">
-                        <table class="table table-sm" style="margin:0;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:45%; color:#888;">Artículo</td>
-                                    <td><strong id="pa_item_name2"></strong></td>
-                                </tr>
-                                <tr>
-                                    <td style="color:#888;">Tipo de precio</td>
-                                    <td style="color:#c0392b; font-weight:bold;" id="pa_price_type_label2">—</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <table class="table table-sm auth-summary">
+                        <tbody>
+                            <tr>
+                                <th scope="row"><?= lang('Sales.price_auth_item') ?></th>
+                                <td><strong id="pa_item_name2"></strong></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><?= lang('Sales.price_auth_price_type') ?></th>
+                                <td id="pa_price_type_label2"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p class="auth-elapsed"><?= lang('Sales.price_auth_requested_ago') ?>: <span id="pa_elapsed">0s</span></p>
+                    <div id="pa_status" class="auth-status" role="status" aria-live="polite" aria-atomic="true"></div>
+
+                    <p class="auth-code-prompt" id="pa_code_prompt"><?= lang('Sales.price_auth_code_prompt') ?></p>
+                    <p class="auth-code-hint" id="pa_code_hint"><?= lang('Sales.price_auth_code_locked') ?></p>
+                    <div class="auth-code" role="group" aria-labelledby="pa_code_prompt">
+                        <?php for ($digit = 1; $digit <= 4; $digit++) { ?>
+                            <input type="text" class="pa_digit auth-digit form-control" inputmode="numeric" pattern="[0-9]*" maxlength="1"
+                                   autocomplete="one-time-code" readonly
+                                   aria-label="<?= esc(lang('Sales.price_auth_digit', [$digit])) ?>">
+                        <?php } ?>
                     </div>
-                    <div style="text-align:center; margin-bottom:12px;">
-                        <div id="pa_status_text" style="font-size:14px; color:#888; margin-bottom:8px;">
-                            <span class="bi bi-hourglass-split"></span> Esperando respuesta del administrador...
-                        </div>
-                        <small style="color:#aaa;">Solicitado hace: <span id="pa_elapsed">0s</span></small>
-                    </div>
-                    <div style="text-align:center;">
-                        <p style="color:#555; font-size:13px; margin-bottom:6px;">Código de autorización (4 dígitos):</p>
-                        <div style="display:flex; justify-content:center; gap:8px; margin-bottom:8px;">
-                            <input type="text" class="pa_digit form-control" inputmode="numeric" maxlength="1"
-                                   style="width:48px; height:48px; text-align:center; font-size:1.6em; font-weight:bold;" disabled>
-                            <input type="text" class="pa_digit form-control" inputmode="numeric" maxlength="1"
-                                   style="width:48px; height:48px; text-align:center; font-size:1.6em; font-weight:bold;" disabled>
-                            <input type="text" class="pa_digit form-control" inputmode="numeric" maxlength="1"
-                                   style="width:48px; height:48px; text-align:center; font-size:1.6em; font-weight:bold;" disabled>
-                            <input type="text" class="pa_digit form-control" inputmode="numeric" maxlength="1"
-                                   style="width:48px; height:48px; text-align:center; font-size:1.6em; font-weight:bold;" disabled>
-                        </div>
-                        <div id="pa_code_error" class="text-danger" style="min-height:18px; font-size:12px;"></div>
-                    </div>
+                    <div id="pa_code_error" class="text-danger" role="alert"></div>
                 </div>
-                <div class="modal-footer">
-                    <button id="pa_apply_btn" type="button" class="btn btn-success btn-block" disabled>
-                        <span class="bi bi-check-lg"></span>&nbsp;Aplicar Código
+                <div class="modal-footer auth-footer">
+                    <button id="pa_apply_btn" type="button" class="btn btn-primary btn-lg" disabled>
+                        <span class="bi bi-check-lg" aria-hidden="true"></span> <?= lang('Sales.price_auth_apply') ?>
                     </button>
-                    <button id="pa_cancel_wait_btn" type="button" class="btn btn-outline-secondary btn-block" style="margin-top:6px;">
-                        Cancelar solicitud
+                    <button id="pa_cancel_wait_btn" type="button" class="btn btn-neutral">
+                        <?= lang('Sales.price_auth_cancel_request') ?>
                     </button>
                 </div>
             </div>
@@ -848,30 +837,29 @@ helper('url');
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="pin_modal_label">
-                    <span class="bi bi-person"></span>&nbsp;<?= lang('Sales.pin_identify') ?>
+                    <span class="bi bi-person" aria-hidden="true"></span> <?= lang('Sales.pin_identify') ?>
                 </h5>
                 <a href="<?= site_url('home') ?>" class="btn-close" title="<?= lang('Common.home') ?>" aria-label="<?= lang('Common.home') ?>"></a>
             </div>
-            <div class="modal-body" style="text-align:center;">
-                <p class="text-muted"><?= lang('Sales.pin_enter_prompt') ?></p>
-                <div style="margin: 0 auto; max-width: 180px;">
-                    <input type="password" id="pin_input" inputmode="numeric" maxlength="4"
-                           class="form-control form-control-lg" style="text-align:center; letter-spacing:0.4em; font-size:2em;"
-                           placeholder="????">
-                </div>
-                <div id="pin_error" class="text-danger" style="margin-top:10px; min-height:20px;"></div>
+            <div class="modal-body pin-body">
+                <p class="text-muted" id="pin_prompt"><?= lang('Sales.pin_enter_prompt') ?></p>
+                <label for="pin_input" class="visually-hidden"><?= lang('Sales.pin_label') ?></label>
+                <input type="password" id="pin_input" name="pin" inputmode="numeric" pattern="[0-9]*" maxlength="4"
+                       autocomplete="off" aria-describedby="pin_prompt pin_error"
+                       class="form-control form-control-lg pin-input" placeholder="&bull;&bull;&bull;&bull;">
+                <div id="pin_error" class="text-danger pin-error" role="alert"></div>
             </div>
-            <div class="modal-footer" style="text-align:center;">
-                <button type="button" id="pin_submit_btn" class="btn btn-primary btn-lg">
-                    <span class="bi bi-check-lg"></span>&nbsp;<?= lang('Sales.pin_enter') ?>
+            <div class="modal-footer pin-footer">
+                <button type="button" id="pin_submit_btn" class="btn btn-primary btn-lg w-100">
+                    <span class="bi bi-check-lg" aria-hidden="true"></span> <?= lang('Sales.pin_enter') ?>
                 </button>
                 <?php
                 $_emp_check = model(\App\Models\Employee::class);
                 $_pid_check = session()->get('person_id');
                 if ($_emp_check->has_grant('sales_consult_stock', $_pid_check)):
                 ?>
-                <button type="button" id="pin_stock_consult_btn" class="btn btn-outline-secondary btn-sm" style="display:block; margin:10px auto 0;">
-                    <span class="bi bi-list-ul"></span>&nbsp;<?= lang('Sales.stock_consult') ?>
+                <button type="button" id="pin_stock_consult_btn" class="btn btn-link">
+                    <?= lang('Sales.stock_consult') ?>
                 </button>
                 <?php endif; ?>
             </div>
@@ -879,6 +867,8 @@ helper('url');
     </div>
 </div>
 
+
+<div id="register_live" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div>
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -942,11 +932,9 @@ helper('url');
             });
         });
 
-        $('#item').focus();
-
-        $('#item').blur(function() {
-            $(this).val("<?= lang(ucfirst($controller_name) . '.start_typing_item_name') ?>");
-        });
+        <?php if ($current_cashier_id > 0): ?>
+        $('#item').trigger('focus');
+        <?php endif; ?>
 
         $('#item').autocomplete({
             source: "<?= esc("$controller_name/itemSearch") ?>",
@@ -967,18 +955,8 @@ helper('url');
             }
         });
 
-        var clear_fields = function() {
-            if ($(this).val().match("<?= lang(ucfirst($controller_name) . '.start_typing_item_name') . '|' . lang(ucfirst($controller_name) . '.start_typing_customer_name') ?>")) {
-                $(this).val('');
-            }
-        };
-
-        $('#item, #customer').click(clear_fields).dblclick(function(event) {
+        $('#item, #customer').dblclick(function() {
             $(this).autocomplete('search');
-        });
-
-        $('#customer').blur(function() {
-            $(this).val("<?= lang(ucfirst($controller_name) . '.start_typing_customer_name') ?>");
         });
 
         $('#customer').autocomplete({
@@ -1044,21 +1022,25 @@ helper('url');
         });
 
         $('#finish_sale_button').click(function() {
+            registerResetCount();
             $('#buttons_form').attr('action', "<?= "$controller_name/complete" ?>");
             $('#buttons_form').submit();
         });
 
         $('#finish_invoice_quote_button').click(function() {
+            registerResetCount();
             $('#buttons_form').attr('action', "<?= "$controller_name/complete" ?>");
             $('#buttons_form').submit();
         });
 
         $('#suspend_sale_button').click(function() {
+            registerResetCount();
             $('#buttons_form').attr('action', "<?= site_url("$controller_name/suspend") ?>");
             $('#buttons_form').submit();
         });
 
         $('#cancel_sale_button').click(function() {
+            registerResetCount();
             if (confirm("<?= lang(ucfirst($controller_name) . '.confirm_cancel_sale') ?>")) {
                 $('#buttons_form').attr('action', "<?= site_url("$controller_name/cancel") ?>");
                 $('#buttons_form').submit();
@@ -1077,15 +1059,9 @@ helper('url');
             }
         });
 
-        $('#amount_tendered').keypress(function(event) {
+        $('#amount_tendered, #giftcard_number').keypress(function(event) {
             if (event.which == 13) {
                 $('#add_payment_form').submit();
-            }
-        });
-
-        $('#finish_sale_button').keypress(function(event) {
-            if (event.which == 13) {
-                $('#finish_sale_form').submit();
             }
         });
 
@@ -1108,6 +1084,7 @@ helper('url');
                     $('#item').val(response.id);
                     if (stay_open) {
                         $('#add_item_form').ajaxSubmit();
+                        $('#item').trigger('focus');
                     } else {
                         $('#add_item_form').submit();
                     }
@@ -1228,7 +1205,7 @@ helper('url');
         if ($("#payment_types").val() == "<?= lang(ucfirst($controller_name) . '.giftcard') ?>") {
             $("#sale_total").html("<?= to_currency($total) ?>");
             $("#sale_amount_due").html("<?= to_currency($amount_due) ?>");
-            $("#amount_tendered_label").html("<?= lang(ucfirst($controller_name) . '.giftcard_number') ?>");
+            $("#amount_tendered_label").html("<?= lang(ucfirst($controller_name) . '.giftcard_number') ?>").attr('for', 'giftcard_number');
             $("#amount_tendered:enabled").val('').focus();
             $(".giftcard-input").attr('disabled', false);
             $(".non-giftcard-input").attr('disabled', true);
@@ -1236,61 +1213,88 @@ helper('url');
         } else if (($("#payment_types").val() == "<?= lang(ucfirst($controller_name) . '.cash') ?>" && cash_mode == '1')) {
             $("#sale_total").html("<?= to_currency($non_cash_total) ?>");
             $("#sale_amount_due").html("<?= to_currency($cash_amount_due) ?>");
-            $("#amount_tendered_label").html("<?= lang(ucfirst($controller_name) . '.amount_tendered') ?>");
+            $("#amount_tendered_label").html("<?= lang(ucfirst($controller_name) . '.amount_tendered') ?>").attr('for', 'amount_tendered');
             $("#amount_tendered:enabled").val("<?= to_currency_no_money($cash_amount_due) ?>");
             $(".giftcard-input").attr('disabled', true);
             $(".non-giftcard-input").attr('disabled', false);
         } else {
             $("#sale_total").html("<?= to_currency($non_cash_total) ?>");
             $("#sale_amount_due").html("<?= to_currency($amount_due) ?>");
-            $("#amount_tendered_label").html("<?= lang(ucfirst($controller_name) . '.amount_tendered') ?>");
+            $("#amount_tendered_label").html("<?= lang(ucfirst($controller_name) . '.amount_tendered') ?>").attr('for', 'amount_tendered');
             $("#amount_tendered:enabled").val("<?= to_currency_no_money($amount_due) ?>");
             $(".giftcard-input").attr('disabled', true);
             $(".non-giftcard-input").attr('disabled', false);
         }
     }
 
-    // Add Keyboard Shortcuts/Hotkeys to Sale Register
+    // Add Keyboard Shortcuts/Hotkeys to Sale Register (listed in the "Atajos" dialog).
+    // Esc cancels the sale only when it was not used to close a dialog, a suggestion list or a dropdown,
+    // or to back out of the amount tendered field.
+    var escUsed = false;
+    document.addEventListener('keydown', function(e) {
+        if (e.altKey && e.keyCode >= 49 && e.keyCode <= 57) { // Alt+1..9 are shortcuts, never text
+            e.preventDefault();
+        }
+        if (e.key !== 'Escape') {
+            return;
+        }
+        escUsed = $('.modal.show').length > 0 || $('.ui-autocomplete:visible').length > 0 || $('.bootstrap-select.show').length > 0;
+        if (e.target && e.target.id === 'amount_tendered') {
+            escUsed = true;
+            check_payment_type();
+            $('#item').trigger('focus');
+        }
+    }, true);
+
     document.body.onkeyup = function(e) {
-        switch (event.altKey && event.keyCode) {
-            case 49: // Alt + 1 Items Seach
-                $("#item").focus();
-                $("#item").select();
-                break;
-            case 50: // Alt + 2 Customers Search
-                $("#customer").focus();
-                $("#customer").select();
-                break;
-            case 51: // Alt + 3 Suspend Current Sale
-                $("#suspend_sale_button").click();
-                break;
-            case 52: // Alt + 4 Check Suspended
-                $("#show_suspended_sales_button").click();
-                break;
-            case 53: // Alt + 5 Edit Amount Tendered Value
-                $("#amount_tendered").focus();
-                $("#amount_tendered").select();
-                break;
-            case 54: // Alt + 6 Add Payment
-                $("#add_payment_button").click();
-                break;
-            case 55: // Alt + 7 Add Payment and Complete Sales/Invoice
-                $("#add_payment_button").click();
-                window.location.href = "<?= 'sales/complete' ?>";
-                break;
-            case 56: // Alt + 8 Finish Quote/Invoice without payment
-                $("#finish_invoice_quote_button").click();
-                break;
-            case 57: // Alt + 9 Open Shortcuts Help Modal
-                $("#show_keyboard_help").click();
-                break;
+        if (e.altKey) {
+            switch (e.keyCode) {
+                case 49: // Alt + 1 Items Seach
+                    $("#item").focus();
+                    $("#item").select();
+                    break;
+                case 50: // Alt + 2 Customers Search
+                    $("#customer").focus();
+                    $("#customer").select();
+                    break;
+                case 51: // Alt + 3 Suspend Current Sale
+                    $("#suspend_sale_button").click();
+                    break;
+                case 52: // Alt + 4 Check Suspended
+                    $("#show_suspended_sales_button").click();
+                    break;
+                case 53: // Alt + 5 Edit Amount Tendered Value
+                    $("#amount_tendered").focus();
+                    $("#amount_tendered").select();
+                    break;
+                case 54: // Alt + 6 Add Payment
+                    $("#add_payment_button").click();
+                    break;
+                case 55: // Alt + 7 Add Payment and Complete Sales/Invoice
+                    $("#add_payment_button").click();
+                    window.location.href = "<?= 'sales/complete' ?>";
+                    break;
+                case 56: // Alt + 8 Finish Quote/Invoice without payment
+                    $("#finish_invoice_quote_button").click();
+                    break;
+                case 57: // Alt + 9 Open Shortcuts Help Modal
+                    $("#show_keyboard_help").click();
+                    break;
+            }
         }
 
-        switch (event.keyCode) {
-            case 27: // ESC Cancel Current Sale
-                $("#cancel_sale_button").click();
-                break;
+        if (e.keyCode === 27 && !escUsed && !$('.modal.show').length) { // ESC Cancel Current Sale
+            $("#cancel_sale_button").click();
         }
+        escUsed = false;
+    }
+
+    // Cart count survives the page reload so the change can be announced to screen readers
+    function registerResetCount() {
+        try {
+            sessionStorage.setItem('register_cart_count', '0');
+            sessionStorage.removeItem('register_sale_channel');
+        } catch (err) { /* storage blocked */ }
     }
 
     // ─── Discount Authorization ────────────────────────────────────────────────
@@ -1352,6 +1356,7 @@ helper('url');
         }
         var finalPrice = subtotal - discAmount;
 
+        $('#da_cashier').text(window.registerCashierName || '');
         $('#da_item_name').text(itemName || '—');
         $('#da_unit_price').text(discountFmtMoney(itemPrice));
         $('#da_qty').text(itemQty % 1 === 0 ? itemQty : itemQty.toFixed(2));
@@ -1379,8 +1384,8 @@ helper('url');
         $('#da_status_text').html('<span class="bi bi-hourglass-split"></span> Esperando respuesta del administrador...');
         $('#da_status_text').css('color', '#888');
         $('.da_digit').val('').prop('disabled', true);
-        $('#da_apply_btn').prop('disabled', true).html('<span class="bi bi-check-lg"></span>&nbsp;Aplicar Código');
-        $('#da_request_btn').prop('disabled', false).html('<span class="bi bi-send"></span>&nbsp;Solicitar Autorización');
+        $('#da_apply_btn').prop('disabled', true).html('<span class="bi bi-check-lg"></span>&nbsp;Aplicar código');
+        $('#da_request_btn').prop('disabled', false).html('<span class="bi bi-send"></span>&nbsp;Solicitar autorización');
         $('#da_elapsed').text('0s');
 
         $('#da_modal').modal('show');
@@ -1450,12 +1455,12 @@ helper('url');
                         discountAuthStartPolling();
                     } else {
                         $('#da_error').text(res.message || 'Error al enviar solicitud');
-                        $('#da_request_btn').prop('disabled', false).html('<span class="bi bi-send"></span>&nbsp;Solicitar Autorización');
+                        $('#da_request_btn').prop('disabled', false).html('<span class="bi bi-send"></span>&nbsp;Solicitar autorización');
                     }
                 },
                 error: function() {
                     $('#da_error').text('Error de conexión');
-                    $('#da_request_btn').prop('disabled', false).html('<span class="bi bi-send"></span>&nbsp;Solicitar Autorización');
+                    $('#da_request_btn').prop('disabled', false).html('<span class="bi bi-send"></span>&nbsp;Solicitar autorización');
                 }
             });
         });
@@ -1524,12 +1529,12 @@ helper('url');
                     } else {
                         $('#da_code_error').text(res.message || 'Código incorrecto');
                         $('.da_digit').val('').first().focus();
-                        $('#da_apply_btn').prop('disabled', false).html('<span class="bi bi-check-lg"></span>&nbsp;Aplicar Código');
+                        $('#da_apply_btn').prop('disabled', false).html('<span class="bi bi-check-lg"></span>&nbsp;Aplicar código');
                     }
                 },
                 error: function() {
                     $('#da_code_error').text('Error de conexión');
-                    $('#da_apply_btn').prop('disabled', false).html('<span class="bi bi-check-lg"></span>&nbsp;Aplicar Código');
+                    $('#da_apply_btn').prop('disabled', false).html('<span class="bi bi-check-lg"></span>&nbsp;Aplicar código');
                 }
             });
         });
@@ -1537,37 +1542,106 @@ helper('url');
     // ─── End Discount Authorization ────────────────────────────────────────────
 
     // ─── Price Type Authorization ───────────────────────────────────────────────
-    var _paApprovalId  = null;
-    var _paPendingForm = null;
+    // UI only: the request / poll / verify endpoints and their order are unchanged.
+    var _paApprovalId    = null;
+    var _paPendingForm   = null;
     var _paPendingSelect = null;
-    var _paPollTimer   = null;
-    var _paElapsedTimer = null;
-    var _paElapsed     = 0;
+    var _paPollTimer     = null;
+    var _paElapsedTimer  = null;
+    var _paElapsed       = 0;
+    var _paApproved      = false;
+    var _paOriginal      = null; // {type, price} of the line before the change was requested
+
+    var PA = <?= json_encode([
+        'sending'    => lang('Sales.price_auth_sending'),
+        'verifying'  => lang('Sales.price_auth_verifying'),
+        'connection' => lang('Sales.price_auth_connection_error'),
+        'sendError'  => lang('Sales.price_auth_send_error'),
+        'approved'   => lang('Sales.price_auth_approved'),
+        'expired'    => lang('Sales.price_auth_expired'),
+        'slow'       => lang('Sales.price_auth_slow'),
+        'wrong'      => lang('Sales.price_auth_wrong_code'),
+        'authorized' => lang('Sales.price_auth_authorized'),
+        'kept'       => lang('Sales.price_auth_kept'),
+        'difference' => lang('Sales.price_auth_difference'),
+        'request'    => lang('Sales.price_auth_request'),
+        'apply'      => lang('Sales.price_auth_apply'),
+    ], JSON_UNESCAPED_UNICODE) ?>;
 
     var PRICE_TYPE_LABELS = {
-        1: '<?= esc(lang('Sales.price_type_wholesale')) ?>',
-        2: '<?= esc(lang('Sales.price_type_reseller')) ?>'
+        0: <?= json_encode(lang('Sales.price_type_sale_short')) ?>,
+        1: <?= json_encode(lang('Sales.price_type_wholesale')) ?>,
+        2: <?= json_encode(lang('Sales.price_type_reseller')) ?>
     };
+
+    var PA_ICONS = {ok: 'check-circle', error: 'x-circle', info: 'info-circle'};
+
+    function paRequestLabel() {
+        return '<span class="bi bi-send" aria-hidden="true"></span> ' + PA.request;
+    }
+
+    function paApplyLabel() {
+        return '<span class="bi bi-check-lg" aria-hidden="true"></span> ' + PA.apply;
+    }
+
+    // Status line (also the polite live region); icon + text, never colour alone
+    function paSay(text, kind) {
+        var $status = $('#pa_status').empty();
+        if (!text) {
+            return;
+        }
+        $('<span class="auth-status-' + kind + '"></span>')
+            .append('<span class="bi bi-' + PA_ICONS[kind] + '" aria-hidden="true"></span> ')
+            .append(document.createTextNode(text))
+            .appendTo($status);
+    }
+
+    function paCode() {
+        return $('.pa_digit').map(function() { return $(this).val(); }).get().join('');
+    }
+
+    // "Apply" stays disabled until the administrator approved and the 4 digits are in
+    function paUpdateApply() {
+        $('#pa_apply_btn').prop('disabled', !(_paApproved && paCode().length === 4));
+    }
+
+    function paLockDigits(locked) {
+        $('.pa_digit').prop('readonly', locked).attr('aria-readonly', locked ? 'true' : 'false');
+        $('#pa_code_hint').prop('hidden', !locked);
+    }
 
     function priceAuthOpen($form, $row, $select, priceType) {
         _paPendingForm   = $form;
         _paPendingSelect = $select;
         _paApprovalId    = null;
+        _paApproved      = false;
+        window.registerFocusReturn = document.activeElement;
+
+        var $price     = $row.find('[name="price"]');
+        var origType   = parseInt($select.data('original') || '0', 10);
+        _paOriginal    = {type: origType, price: $price.val()};
 
         var itemName   = $row.find('td:nth-child(3)').text().split('[')[0].trim().replace(/\s+/g, ' ');
         var itemQty    = discountParseFloat($row.find('[name="quantity"]').val()) || 1;
         var locationId = parseInt($row.find('[name="location"]').val(), 10) || 0;
+        var oldPrice   = discountParseFloat($price.val());
         var newPrice   = priceType === 1
             ? discountParseFloat($select.data('wholesale'))
             : discountParseFloat($select.data('reseller'));
-        var label      = PRICE_TYPE_LABELS[priceType] || '?';
+        var oldLabel   = PRICE_TYPE_LABELS[origType] || PRICE_TYPE_LABELS[0];
+        var newLabel   = PRICE_TYPE_LABELS[priceType] || '?';
+        var diff       = newPrice - oldPrice;
 
-        $('#pa_item_name').text(itemName || '—');
-        $('#pa_price_type_label').text(label);
+        $('#pa_cashier').text(window.registerCashierName || '');
+        $('#pa_cashier_row').prop('hidden', !window.registerCashierName);
+        $('#pa_item_name, #pa_item_name2').text(itemName || '—');
+        $('#pa_old_label').text(oldLabel);
+        $('#pa_new_label').text(newLabel);
+        $('#pa_old_price').text(discountFmtMoney(oldPrice));
+        $('#pa_new_price_small').text(discountFmtMoney(newPrice));
         $('#pa_new_price').text(discountFmtMoney(newPrice));
-
-        $('#pa_item_name2').text(itemName || '—');
-        $('#pa_price_type_label2').text(label);
+        $('#pa_diff').text(diff === 0 ? '' : PA.difference + ': ' + (diff < 0 ? '−' : '+') + discountFmtMoney(Math.abs(diff)));
+        $('#pa_price_type_label2').text(newLabel);
 
         $('#pa_modal')
             .data('price_type', priceType)
@@ -1578,13 +1652,12 @@ helper('url');
 
         $('#pa_state_request').show();
         $('#pa_state_waiting').hide();
-        $('#pa_error').text('');
-        $('#pa_code_error').text('');
-        $('#pa_status_text').html('<span class="bi bi-hourglass-split"></span> Esperando respuesta del administrador...');
-        $('#pa_status_text').css('color', '#888');
-        $('.pa_digit').val('').prop('disabled', true);
-        $('#pa_apply_btn').prop('disabled', true).html('<span class="bi bi-check-lg"></span>&nbsp;Aplicar Código');
-        $('#pa_request_btn').prop('disabled', false).html('<span class="bi bi-send"></span>&nbsp;Solicitar Autorización');
+        $('#pa_error, #pa_code_error').text('');
+        paSay('', 'info');
+        $('.pa_digit').val('');
+        paLockDigits(true);
+        paUpdateApply();
+        $('#pa_request_btn').prop('disabled', false).html(paRequestLabel());
         $('#pa_elapsed').text('0s');
 
         $('#pa_modal').modal('show');
@@ -1596,12 +1669,41 @@ helper('url');
         _paElapsed = 0;
     }
 
+    // Back to the price the line had before: type, segmented control and price field, plus a short notice
+    function priceAuthRestore() {
+        if (_paPendingSelect && _paOriginal) {
+            _paPendingSelect.val(_paPendingSelect.data('original'));
+            _paPendingSelect.closest('td').find('.price-type .segmented-option').each(function() {
+                var on = String($(this).data('value')) === String(_paOriginal.type);
+                $(this).toggleClass('active', on).attr('aria-pressed', on ? 'true' : 'false');
+            });
+            _paPendingSelect.closest('td').find('[name="price"]').val(_paOriginal.price);
+
+            var kept = PA.kept.replace('{0}', PRICE_TYPE_LABELS[_paOriginal.type] || PRICE_TYPE_LABELS[0]);
+            $.notify(kept, {type: 'info'});
+            window.registerAnnounce && window.registerAnnounce(kept);
+        }
+    }
+
+    function priceAuthCancel() {
+        priceAuthStopTimers();
+        priceAuthRestore();
+        _paApprovalId    = null;
+        _paApproved      = false;
+        _paPendingForm   = null;
+        _paPendingSelect = null;
+        $('#pa_modal').modal('hide');
+    }
+
     function priceAuthStartPolling() {
         priceAuthStopTimers();
         _paElapsedTimer = setInterval(function() {
             _paElapsed++;
-            var m = Math.floor(_paElapsed / 60), s = _paElapsed % 60;
-            $('#pa_elapsed').text((m > 0 ? m + 'm ' : '') + s + 's');
+            var m = Math.floor(_paElapsed / 60), sec = _paElapsed % 60;
+            $('#pa_elapsed').text((m > 0 ? m + 'm ' : '') + sec + 's');
+            if (_paElapsed === 120 && !_paApproved) {
+                paSay(PA.slow, 'info');
+            }
         }, 1000);
         _paPollTimer = setInterval(function() {
             if (!_paApprovalId) return;
@@ -1614,16 +1716,15 @@ helper('url');
                     if (!res.success) return;
                     if (res.status === 'approved') {
                         clearInterval(_paPollTimer);
-                        $('#pa_status_text').html('<span style="color:#27ae60;"><span class="bi bi-check-circle"></span>&nbsp;¡Aprobado! Ingrese el código:</span>');
-                        $('#pa_status_text').css('color', '#27ae60');
-                        $('.pa_digit').prop('disabled', false);
-                        $('.pa_digit:first').focus();
-                        $('#pa_apply_btn').prop('disabled', false);
+                        _paApproved = true;
+                        paSay(PA.approved, 'ok');
+                        paLockDigits(false);
+                        $('.pa_digit:first').trigger('focus');
+                        paUpdateApply();
                     } else if (res.status === 'expired') {
                         clearInterval(_paPollTimer);
-                        $('#pa_status_text').text('Solicitud rechazada o expirada.');
-                        $('#pa_status_text').css('color', '#c0392b');
-                        setTimeout(function() { $('#pa_modal').modal('hide'); }, 2500);
+                        paSay(PA.expired, 'error');
+                        setTimeout(priceAuthCancel, 2500);
                     }
                 }
             });
@@ -1633,7 +1734,7 @@ helper('url');
     $(document).ready(function() {
         $('#pa_request_btn').on('click', function() {
             var $m = $('#pa_modal');
-            $(this).prop('disabled', true).html('<span class="bi bi-hourglass-split"></span> Enviando...');
+            $(this).prop('disabled', true).html('<span class="bi bi-hourglass-split" aria-hidden="true"></span> ' + PA.sending);
             $.ajax({
                 url: '<?= site_url('sales/priceRequest') ?>',
                 type: 'POST',
@@ -1650,51 +1751,61 @@ helper('url');
                         _paApprovalId = res.approval_id;
                         $('#pa_state_request').hide();
                         $('#pa_state_waiting').show();
+                        $('.pa_digit:first').trigger('focus');
                         priceAuthStartPolling();
                     } else {
-                        $('#pa_error').text(res.message || 'Error al enviar solicitud');
-                        $('#pa_request_btn').prop('disabled', false).html('<span class="bi bi-send"></span>&nbsp;Solicitar Autorización');
+                        $('#pa_error').text(res.message || PA.sendError);
+                        $('#pa_request_btn').prop('disabled', false).html(paRequestLabel());
                     }
                 },
                 error: function() {
-                    $('#pa_error').text('Error de conexión');
-                    $('#pa_request_btn').prop('disabled', false).html('<span class="bi bi-send"></span>&nbsp;Solicitar Autorización');
+                    $('#pa_error').text(PA.connection);
+                    $('#pa_request_btn').prop('disabled', false).html(paRequestLabel());
                 }
             });
         });
 
-        $('#pa_cancel_btn, #pa_cancel_wait_btn').on('click', function() {
-            priceAuthStopTimers();
-            if (_paPendingSelect) {
-                _paPendingSelect.val(_paPendingSelect.data('original'));
-                _paPendingSelect.closest('td').find('.price-type .segmented-option').each(function() {
-                    $(this).toggleClass('active', String($(this).data('value')) === String(_paPendingSelect.data('original')));
-                });
-            }
-            _paApprovalId    = null;
-            _paPendingForm   = null;
-            _paPendingSelect = null;
-            $('#pa_modal').modal('hide');
-        });
+        $('#pa_cancel_btn, #pa_cancel_wait_btn').on('click', priceAuthCancel);
 
-        // 4-digit inputs: auto-advance + backspace
+        // Code boxes: digits only, auto-advance, Backspace goes back, paste fills all four
         $(document).on('input', '.pa_digit', function() {
             var val = $(this).val().replace(/\D/g, '').slice(0, 1);
             $(this).val(val);
             if (val.length === 1) {
                 var $next = $(this).next('.pa_digit');
-                if ($next.length) $next.focus(); else $('#pa_apply_btn').focus();
+                $next.length && $next.trigger('focus');
+            }
+            paUpdateApply();
+            if (paCode().length === 4 && !$('#pa_apply_btn').prop('disabled')) {
+                $('#pa_apply_btn').trigger('click');
             }
         });
         $(document).on('keydown', '.pa_digit', function(e) {
-            if (e.which === 8 && $(this).val() === '') $(this).prev('.pa_digit').focus();
+            if (e.which === 8 && $(this).val() === '') {
+                $(this).prev('.pa_digit').val('').trigger('focus');
+                paUpdateApply();
+            }
+        });
+        $(document).on('paste', '.pa_digit', function(e) {
+            var data = (e.originalEvent.clipboardData || window.clipboardData).getData('text');
+            var digits = String(data).replace(/\D/g, '').slice(0, 4);
+            if (!digits) {
+                return;
+            }
+            e.preventDefault();
+            $('.pa_digit').each(function(index) { $(this).val(digits.charAt(index)); });
+            $('.pa_digit').eq(Math.min(digits.length, 4) - 1).trigger('focus');
+            paUpdateApply();
+            if (digits.length === 4 && !$('#pa_apply_btn').prop('disabled')) {
+                $('#pa_apply_btn').trigger('click');
+            }
         });
 
         $('#pa_apply_btn').on('click', function() {
-            var code = $('.pa_digit').map(function() { return $(this).val(); }).get().join('');
+            var code = paCode();
             if (code.length !== 4 || !_paApprovalId) return;
             var $m = $('#pa_modal');
-            $(this).prop('disabled', true).html('<span class="bi bi-hourglass-split"></span> Verificando...');
+            $(this).prop('disabled', true).html('<span class="bi bi-hourglass-split" aria-hidden="true"></span> ' + PA.verifying);
             $.ajax({
                 url: '<?= site_url('sales/priceVerify') ?>',
                 type: 'POST',
@@ -1707,6 +1818,7 @@ helper('url');
                 success: function(res) {
                     if (res.valid) {
                         priceAuthStopTimers();
+                        paSay(PA.authorized, 'ok');
                         var $f = _paPendingForm;
                         var savedId = _paApprovalId;
                         $f.find('[name="price_approval_id"]').remove();
@@ -1719,21 +1831,98 @@ helper('url');
                         $('#pa_modal').modal('hide');
                         $f.submit();
                     } else {
-                        $('#pa_code_error').text(res.message || 'Código incorrecto');
-                        $('.pa_digit').val('').first().focus();
-                        $('#pa_apply_btn').prop('disabled', false).html('<span class="bi bi-check-lg"></span>&nbsp;Aplicar Código');
+                        $('#pa_code_error').text(PA.wrong);
+                        $('.pa_digit').val('').first().trigger('focus');
+                        $('#pa_apply_btn').html(paApplyLabel());
+                        paUpdateApply();
                     }
                 },
                 error: function() {
-                    $('#pa_code_error').text('Error de conexión');
-                    $('#pa_apply_btn').prop('disabled', false).html('<span class="bi bi-check-lg"></span>&nbsp;Aplicar Código');
+                    $('#pa_code_error').text(PA.connection);
+                    $('#pa_apply_btn').html(paApplyLabel());
+                    paUpdateApply();
                 }
             });
         });
     });
     // ─── End Price Type Authorization ──────────────────────────────────────────
 
+    // Focus, announcements and Enter/Esc in dialogs
+    $(document).ready(function() {
+        var $live = $('#register_live');
+        var announce = function(message) {
+            $live.text('');
+            setTimeout(function() { $live.text(message); }, 60);
+        };
+        window.registerAnnounce = announce;
+
+        // Back to the search box whenever the last dialog closes
+        $(document).on('hidden.bs.modal', function() {
+            if (!$('.modal.show').length) {
+                var target = window.registerFocusReturn;
+                window.registerFocusReturn = null;
+                setTimeout(function() {
+                    var $target = target && document.contains(target) ? $(target) : $('#item');
+                    $target.trigger('focus');
+                }, 50);
+            }
+        });
+
+        // Added / removed item, announced after the reload
+        var count = $('#cart_contents form[id^="cart_"]').length;
+        var previous = null;
+        try { previous = sessionStorage.getItem('register_cart_count'); } catch (err) { /* storage blocked */ }
+        try { sessionStorage.setItem('register_cart_count', String(count)); } catch (err) { /* storage blocked */ }
+        if (previous !== null) {
+            previous = parseInt(previous, 10);
+            if (count > previous) {
+                var name = $.trim($('#cart_contents tr:first td:nth-child(3)').text().split('[')[0]).replace(/\s+/g, ' ');
+                announce(<?= json_encode(lang('Sales.register_item_added')) ?>.replace('{0}', name).replace('{1}', count));
+            } else if (count < previous) {
+                announce(<?= json_encode(lang('Sales.register_item_removed')) ?>.replace('{0}', count));
+            }
+        }
+
+        // Sale channel: adding a payment reloads the page, so the choice is kept for the sale
+        var $channels = $('input[name="sale_channel"]');
+        if ($channels.length) {
+            var savedChannel = null;
+            try { savedChannel = sessionStorage.getItem('register_sale_channel'); } catch (err) { /* storage blocked */ }
+            if (savedChannel) {
+                $channels.filter('[value="' + savedChannel + '"]').prop('checked', true);
+            }
+            $channels.on('change', function() {
+                try { sessionStorage.setItem('register_sale_channel', this.value); } catch (err) { /* storage blocked */ }
+            });
+        }
+
+        // Comment: folded until asked for (open already when the sale has one)
+        $('#comment_toggle').on('click', function() {
+            $(this).prop('hidden', true).attr('aria-expanded', 'true');
+            $('#comment_box').prop('hidden', false);
+            $('#comment').trigger('focus');
+        });
+
+        // Authorization dialogs: Enter confirms, Esc cancels; the primary action gets the focus
+        $('#da_modal, #pa_modal').on('shown.bs.modal', function() {
+            var prefix = this.id.slice(0, 2);
+            $('#' + prefix + '_state_request').is(':visible') && $('#' + prefix + '_request_btn').trigger('focus');
+        }).on('keydown', function(e) {
+            var prefix = this.id.slice(0, 2);
+            var requesting = $('#' + prefix + '_state_request').is(':visible');
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                $('#' + prefix + (requesting ? '_cancel_btn' : '_cancel_wait_btn')).trigger('click');
+            } else if (e.key === 'Enter' && !$(e.target).is('button, a')) {
+                e.preventDefault();
+                var $primary = $('#' + prefix + (requesting ? '_request_btn' : '_apply_btn'));
+                $primary.prop('disabled') || $primary.trigger('click');
+            }
+        });
+    });
+
     // PIN Modal logic
+    window.registerCashierName = <?= json_encode($current_cashier_name) ?>;
     $(document).ready(function() {
         var currentCashierId = <?= (int)$current_cashier_id ?>;
 
@@ -1741,8 +1930,19 @@ helper('url');
             $('#pin_input').val('');
             $('#pin_error').text('');
             $('#pin_modal').modal('show');
-            setTimeout(function() { $('#pin_input').focus(); }, 400);
         }
+
+        $('#pin_modal').on('shown.bs.modal', function() {
+            $('#pin_input').trigger('focus');
+        }).on('keydown', function(e) {
+            if (e.key === 'Escape') { // same exit as the close button
+                e.preventDefault();
+                window.location.href = '<?= site_url('home') ?>';
+            } else if (e.key === 'Enter' && !$(e.target).is('button, a')) {
+                e.preventDefault();
+                submitPin($('#pin_input').val());
+            }
+        });
 
         if (currentCashierId <= 0) {
             showPinModal();
@@ -1761,12 +1961,6 @@ helper('url');
             submitPin($('#pin_input').val());
         });
 
-        $('#pin_input').on('keypress', function(e) {
-            if (e.which === 13) {
-                submitPin($(this).val());
-            }
-        });
-
         function submitPin(pin) {
             if (!pin || pin.length !== 4) {
                 showPinError('<?= lang('Sales.pin_invalid') ?>');
@@ -1782,19 +1976,20 @@ helper('url');
                 dataType: 'json',
                 success: function(response) {
                     if (response.success) {
-                        // Update badge
+                        // Update the cashier label (plain text: the name comes from the server)
                         $('#current_cashier_badge')
-                            .removeClass('text-bg-secondary')
-                            .addClass('text-bg-success')
-                            .html('<span class="bi bi-person"></span>&nbsp;<?= lang('Sales.cashier') ?>: ' + response.name);
+                            .empty()
+                            .append('<span class="bi bi-person" aria-hidden="true"></span>')
+                            .append(document.createTextNode(' <?= esc(lang('Sales.cashier'), 'js') ?>: ' + response.name));
+                        window.registerCashierName = response.name;
+                        window.registerAnnounce && window.registerAnnounce('<?= esc(lang('Sales.cashier'), 'js') ?>: ' + response.name);
                         $('#pin_modal').modal('hide');
-                        setTimeout(function() { $('#item').focus(); }, 300);
                     } else {
                         showPinError(response.message);
                     }
                 },
                 error: function() {
-                    showPinError('<?= lang('Sales.pin_incorrect') ?>');
+                    showPinError('<?= esc(lang('Sales.pin_incorrect'), 'js') ?>');
                 },
                 complete: function() {
                     $('#pin_submit_btn').prop('disabled', false);
@@ -1804,7 +1999,7 @@ helper('url');
 
         function showPinError(msg) {
             $('#pin_error').text(msg);
-            $('#pin_input').val('').focus();
+            $('#pin_input').val('').trigger('focus');
             // Shake animation
             $('#pin_input').addClass('is-invalid');
             setTimeout(function() { $('#pin_input').removeClass('is-invalid'); }, 600);

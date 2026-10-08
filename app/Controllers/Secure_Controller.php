@@ -65,13 +65,11 @@ class Secure_Controller extends BaseController
             ? $this->module->get_allowed_home_modules($logged_in_employee_info->person_id)
             : $this->module->get_allowed_office_modules($logged_in_employee_info->person_id);
 
-        $this->global_view_data = ['allowed_modules' => []];
-        foreach ($allowed_modules->getResult() as $module) {
-            $this->global_view_data['allowed_modules'][] = $module;
-        }
+        $this->global_view_data = ['allowed_modules' => Module::sortForDisplay($allowed_modules->getResult())];
 
         $this->global_view_data += [
             'user_info'       => $logged_in_employee_info,
+            'menu_group'      => $menu_group,
             'controller_name' => $module_id,
             'config'          => $config
         ];

@@ -123,7 +123,8 @@
     border-top: 1px solid #dce4ec;
 }
 
-input#amount_tendered:disabled {
+input#amount_tendered:disabled,
+input.giftcard-input:disabled {
     display: none;
 }
 
@@ -198,6 +199,488 @@ input#amount_tendered:disabled {
 
 .segmented.discount-type .segmented-option {
     min-width: 2.25rem;
+}
+
+/*
+ * Sales screen: legibility and accessibility. Scoped to .sales-screen (the register card and the
+ * checkout card) so receivings, which shares this file, keeps its look.
+ */
+.btn-neutral {
+    color: #212529;
+    background: #fff;
+    border: 1px solid #6c757d;
+}
+
+.btn-neutral:hover,
+.btn-neutral:focus-visible,
+.btn-neutral:active {
+    color: #212529;
+    background: #eef1f4;
+    border-color: #495057;
+}
+
+.sales-screen .btn,
+.sales-screen .form-control,
+.sales-screen .form-select {
+    min-height: 40px;
+}
+
+.sales-screen .btn-sm {
+    padding: .375rem .75rem;
+    font-size: .875rem;
+}
+
+.sales-screen .form-control-sm,
+.sales-screen .form-select-sm {
+    font-size: .875rem;
+}
+
+/* search box: 44px / 16px, same width as before */
+#add_item_form #item {
+    width: 385px;
+    max-width: 100%;
+    height: 44px;
+    min-height: 44px;
+    font-size: 16px;
+}
+
+/* cashier: a plain label, not a status badge */
+.cashier-item {
+    margin-right: 8px;
+    line-height: 40px;
+}
+
+.cashier-label {
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+    padding: .375rem .75rem;
+    font-size: .875rem;
+    line-height: 1.4;
+    color: #212529;
+    background: #f1f3f5;
+    border: 1px solid #ced4da;
+    border-radius: .375rem;
+}
+
+.sales-screen .sale-total {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.cart-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    padding: 1.25rem 1rem;
+    font-size: .9375rem;
+    color: #495057;
+    background: #f8f9fa;
+    border: 1px dashed #ced4da;
+    border-radius: .375rem;
+}
+
+.cart-empty .bi {
+    font-size: 1.25rem;
+}
+
+.sales-screen .segmented-option {
+    min-height: 38px;
+    padding: .25rem .625rem;
+    font-size: .8125rem;
+}
+
+/* the active option is also marked with a check, not only a fill */
+.sales-screen .segmented-option.active::before {
+    content: "\2713\00a0";
+}
+
+.segmented-option:focus-visible {
+    outline-color: #0b5ed7;
+}
+
+/* PIN dialog */
+.pin-body {
+    text-align: center;
+}
+
+.pin-input {
+    max-width: 200px;
+    height: 56px;
+    margin: 0 auto;
+    padding-left: .5em;
+    font-size: 2rem;
+    letter-spacing: .5em;
+    text-align: center;
+}
+
+.pin-input::placeholder {
+    letter-spacing: .3em;
+    color: #adb5bd;
+}
+
+.pin-error {
+    min-height: 24px;
+    margin-top: .75rem;
+    font-size: .9375rem;
+    font-weight: 600;
+}
+
+.pin-footer {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.pin-footer #pin_submit_btn {
+    min-height: 44px;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    font-size: 1rem;
+}
+
+.pin-footer .btn-link {
+    color: #0a58ca;
+    align-self: center;
+}
+
+/*
+ * Checkout panel (right card of the sales screen). Left-aligned labels, one field per row,
+ * channel as a radio group, folded comment, a single primary action.
+ */
+#overall_sale.sales-screen {
+    text-align: left;
+}
+
+#overall_sale.sales-screen #payment_details {
+    float: none;
+    clear: none;
+    margin-top: .25rem;
+    padding: .5rem 0;
+}
+
+.channel-field {
+    min-width: 0;
+    margin: .75rem 0;
+    padding: 0;
+    border: 0;
+}
+
+.channel-legend {
+    float: none;
+    width: auto;
+    margin: 0 0 .25rem;
+    padding: 0;
+    font-size: .875rem;
+    font-weight: 600;
+}
+
+.segmented-block {
+    display: flex;
+    width: 100%;
+}
+
+.segmented-radio .segmented-option {
+    position: relative;
+    display: flex;
+    flex: 1 1 0;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    margin: 0;
+    font-size: .875rem;
+    cursor: pointer;
+}
+
+/* the radio stays in the page (arrow keys, focus, form value) but is not drawn */
+.segmented-radio .segmented-option input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.segmented-radio .segmented-option:has(input:checked) {
+    background: #2c3e50;
+    color: #fff;
+    font-weight: 700;
+}
+
+.segmented-radio .segmented-option:has(input:checked)::before {
+    content: "\2713\00a0";
+}
+
+.segmented-radio:has(input:focus-visible) {
+    outline: 2px solid #0b5ed7;
+    outline-offset: 2px;
+}
+
+.payment-form td {
+    padding: .25rem 0;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.payment-form td:first-child {
+    width: 42%;
+    padding-right: .5rem;
+}
+
+.payment-form label {
+    margin: 0;
+    font-weight: 600;
+}
+
+.payment-form .form-control {
+    width: 100%;
+}
+
+.payment-actions {
+    margin: .25rem 0 .5rem;
+    text-align: right;
+}
+
+.payments-table {
+    margin-top: .5rem;
+    border-top: 1px solid #dce4ec;
+}
+
+.payments-table th,
+.payments-table td {
+    padding: .375rem .25rem;
+    border-bottom: 1px solid #eef1f4;
+    text-align: left;
+}
+
+.payments-table .payment-amount {
+    text-align: right;
+}
+
+.payments-table .payment-remove-cell {
+    width: 1%;
+    white-space: nowrap;
+    text-align: right;
+}
+
+.payment-remove {
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+    min-height: 40px;
+    font-weight: 600;
+    color: #b02a37;
+    text-decoration: none;
+}
+
+.payment-remove:hover {
+    text-decoration: underline;
+}
+
+.payment-remove .bi {
+    font-size: 1.25rem;
+}
+
+.comment-field {
+    margin: .5rem 0;
+    text-align: left;
+}
+
+.comment-toggle {
+    padding: .25rem 0;
+    font-size: .875rem;
+    color: #0a58ca;
+}
+
+.comment-field label {
+    display: block;
+    margin-bottom: .25rem;
+    font-weight: 600;
+    text-align: left;
+}
+
+.comment-field textarea {
+    width: 100%;
+}
+
+.print-field {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin: .5rem 0;
+}
+
+.print-field input[type="checkbox"] {
+    flex: 0 0 24px;
+    width: 24px;
+    height: 24px;
+    margin: 0;
+    accent-color: #2c3e50;
+}
+
+.print-field label {
+    margin: 0;
+    font-size: .875rem;
+    white-space: nowrap;
+}
+
+.invoice-field {
+    margin: .5rem 0;
+}
+
+.invoice-field label {
+    display: block;
+    margin-bottom: .25rem;
+    font-weight: 600;
+}
+
+/* Complete: the one primary action of the panel */
+#overall_sale.sales-screen .panel-primary {
+    display: block;
+    float: none;
+    width: 100%;
+    min-height: 48px;
+    margin: .75rem 0 .5rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.panel-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-top: .5rem;
+}
+
+/*
+ * Price authorization dialog: neutral header (red is only for rejection or errors), the new price large,
+ * big code boxes, one clear primary action per step.
+ */
+.auth-header {
+    color: #fff;
+    background: #2c3e50;
+}
+
+.auth-header .modal-title {
+    font-size: 1.125rem;
+}
+
+.auth-summary th {
+    width: 38%;
+    font-weight: 400;
+    color: #495057;
+}
+
+.auth-change {
+    margin: .5rem 0 1rem;
+    padding: .75rem 1rem;
+    text-align: center;
+    background: #f1f3f5;
+    border: 1px solid #ced4da;
+    border-radius: .375rem;
+}
+
+.auth-change-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    font-size: .9375rem;
+}
+
+.auth-change-new {
+    margin-top: .25rem;
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #212529;
+}
+
+.auth-change-diff {
+    min-height: 1.25rem;
+    font-size: .875rem;
+    color: #212529;
+}
+
+.auth-help {
+    margin: 0 0 .5rem;
+    font-size: .875rem;
+    color: #495057;
+}
+
+.auth-elapsed {
+    margin: 0 0 .5rem;
+    font-size: .875rem;
+    color: #212529;
+}
+
+.auth-status {
+    min-height: 1.5rem;
+    margin-bottom: .5rem;
+    font-size: .9375rem;
+    font-weight: 600;
+    color: #212529;
+}
+
+.auth-status-error {
+    color: #b02a37;
+}
+
+.auth-code-prompt {
+    margin: .5rem 0 .25rem;
+    font-size: .875rem;
+    font-weight: 600;
+    text-align: center;
+    color: #212529;
+}
+
+.auth-code-hint {
+    margin: 0 0 .5rem;
+    font-size: .8125rem;
+    text-align: center;
+    color: #495057;
+}
+
+.auth-code {
+    display: flex;
+    justify-content: center;
+    gap: .5rem;
+    margin-bottom: .5rem;
+}
+
+.auth-digit {
+    width: 56px;
+    height: 56px;
+    padding: 0;
+    font-size: 28px;
+    font-weight: 700;
+    text-align: center;
+    border: 2px solid #6c757d;
+}
+
+.auth-digit[readonly] {
+    background: #e9ecef;
+    cursor: not-allowed;
+}
+
+.auth-footer {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.auth-footer .btn-lg {
+    min-height: 44px;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.auth-footer .btn:disabled {
+    opacity: .45;
+    cursor: not-allowed;
 }
 
 /*

@@ -41,10 +41,10 @@ $request = Services::request();
         <link rel="stylesheet" href="resources/css/bootstrap-292fc0ad3b.autocomplete.css">
         <link rel="stylesheet" href="resources/css/invoice-1eae5e39b9.css">
         <link rel="stylesheet" href="resources/css/ospos_print-2ba645b044.css">
-        <link rel="stylesheet" href="resources/css/ospos-66d8156c40.css">
+        <link rel="stylesheet" href="resources/css/ospos-45ec29b8ab.css">
         <link rel="stylesheet" href="resources/css/popupbox-7b616030b0.css">
         <link rel="stylesheet" href="resources/css/receipt-a171207d8e.css">
-        <link rel="stylesheet" href="resources/css/register-3e32dacb14.css">
+        <link rel="stylesheet" href="resources/css/register-0bfae959a1.css">
         <link rel="stylesheet" href="resources/css/reports-407b727797.css">
         <!-- endinject -->
         <!-- inject:debug:js -->
@@ -78,12 +78,12 @@ $request = Services::request();
         <script src="resources/js/chartist-plugin-barlabels-4165273742.js"></script>
         <script src="resources/js/clipboard-908af414ab.js"></script>
         <script src="resources/js/imgpreview-62e42c15a0.full.jquery.js"></script>
-        <script src="resources/js/manage_tables-8279a34ebb.js"></script>
+        <script src="resources/js/manage_tables-028d138e3a.js"></script>
         <script src="resources/js/nominatim-599d9d6f9c.autocomplete.js"></script>
         <!-- endinject -->
     <?php else : ?>
         <!--inject:prod:css -->
-        <link rel="stylesheet" href="resources/opensourcepos-d60a18a8ac.min.css">
+        <link rel="stylesheet" href="resources/opensourcepos-0f41f96cc2.min.css">
         <!-- endinject -->
 
         <!-- Tweaks to the UI for a particular theme should drop here  -->
@@ -158,7 +158,10 @@ $request = Services::request();
                 opacity: .5;
             }
             .topbar .container { padding: 0 8px; }
+        }
 
+        /* Navbar collapses below xl (1200px) into a vertical list: icon-top items + brand + crumb need ~1200px */
+        @media (max-width: 1199.98px) {
             /* Module menu: proper touch list instead of the desktop icon grid */
             .navbar .navbar-collapse.show,
             .navbar .navbar-collapse.collapsing {
@@ -178,52 +181,33 @@ $request = Services::request();
             }
 
             .navbar .navbar-nav > .nav-item > a.menu-icon {
-                display: flex;
-                align-items: center;
-                gap: 14px;
-                text-align: left;
-                padding: 12px 16px;
                 font-size: 14px;
             }
 
             .navbar .navbar-nav > .nav-item > a.menu-icon.active {
                 border-bottom-color: transparent;
-                box-shadow: inset 3px 0 0 #18bc9c;
-                background-color: rgba(255, 255, 255, .06);
+                box-shadow: inset 3px 0 0 var(--mc-light);
             }
-
         }
     </style>
 </head>
 
 <?php
-$module_icons = [
-    'home'                => 'house-door',
-    'office'              => 'building',
-    'customers'           => 'people',
-    'employees'           => 'person-badge',
-    'service_tickets'     => 'phone',
-    'assistances'         => 'shield-check',
-    'items'               => 'box-seam',
-    'item_kits'           => 'boxes',
-    'suppliers'           => 'truck',
-    'reports'             => 'bar-chart-line',
-    'receivings'          => 'box-arrow-in-down',
-    'sales'               => 'cart3',
-    'giftcards'           => 'gift',
-    'logs'                => 'journal-text',
-    'messages'            => 'chat-dots',
-    'attributes'          => 'sliders',
-    'expenses'            => 'receipt',
-    'expenses_categories' => 'tags',
-    'cashups'             => 'cash-stack',
-    'admin_panel'         => 'gear',
-    'discount_approvals'  => 'patch-check',
-    'inventory_output'    => 'box-arrow-up',
-    'config'              => 'gear-wide-connected',
-    'taxes'               => 'receipt-cutoff',
-];
-?>
+$module_icons  = include APPPATH . 'Views/partial/module_icons.php';
+$module_colors = include APPPATH . 'Views/partial/module_colors.php';
+
+// Context indicator next to the brand ("Sistema de Gestión › Ventas"). Modules reached from the Office menu
+// show "Oficina". Nothing on /home or on pages that are not modules.
+$current_module = $request->getUri()->getSegment(1);
+$crumb          = null;
+if ($current_module !== '' && $current_module !== 'home') {
+    $in_office = ($menu_group ?? '') === 'office'
+        && ($current_module === 'office' || in_array($current_module, array_column($allowed_modules, 'module_id'), true));
+    $crumb_id  = $in_office ? 'office' : $current_module;
+    if (isset($module_icons[$crumb_id])) {
+        $crumb = ['icon' => $module_icons[$crumb_id], 'label' => lang("Module.$crumb_id")];
+    }
+}?>
 <body>
     <div class="wrapper">
         <div class="topbar">
@@ -244,20 +228,46 @@ $module_icons = [
             </div>
         </div>
 
-        <nav class="navbar navbar-expand-md navbar-dark navbar-ospos">
+        <nav class="navbar navbar-expand-xl navbar-dark navbar-ospos">
             <div class="container">
-                <a class="navbar-brand d-md-none d-lg-inline" href="<?= site_url() ?>">Sistema de Gestión</a>
+                <div class="navbar-context">
+                    <a class="navbar-brand" href="<?= site_url() ?>">Sistema de Gestión</a>
+                    <?php if ($crumb): ?>
+                        <span class="navbar-crumb">
+                            <span class="bi bi-chevron-right navbar-crumb-sep" aria-hidden="true"></span>
+                            <span class="bi bi-<?= $crumb['icon'] ?>" aria-hidden="true"></span>
+                            <?= $crumb['label'] ?>
+                        </span>
+                    <?php endif; ?>
+                </div>
 
-                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-modules" aria-controls="navbar-modules" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-modules" aria-controls="navbar-modules" aria-expanded="false" aria-label="<?= lang('Common.menu') ?>">
+                    <span class="bi bi-list" aria-hidden="true"></span> <?= lang('Common.menu') ?>
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbar-modules">
                     <ul class="navbar-nav ms-auto">
+                        <?php $prev_zone = null; ?>
                         <?php foreach ($allowed_modules as $module): ?>
+                            <?php
+                            $is_exit = $module->module_id === 'home' && $current_module !== 'home';
+                            $zone    = $module->module_id === 'home' ? 'home' : 'other';
+                            foreach (\App\Models\Module::HOME_GROUPS as $zone_key => $zone_ids) {
+                                if (in_array($module->module_id, $zone_ids, true)) {
+                                    $zone = $zone_key;
+                                }
+                            }
+                            ?>
+                            <?php if ($prev_zone !== null && $zone !== $prev_zone): ?>
+                                <li class="nav-sep" role="separator" aria-hidden="true"></li>
+                            <?php endif; ?>
+                            <?php $prev_zone = $zone; ?>
                             <li class="nav-item">
-                                <a href="<?= base_url($module->module_id) ?>" title="<?= lang("Module.$module->module_id") ?>" class="nav-link menu-icon <?= $module->module_id == $request->getUri()->getSegment(1) ? 'active' : '' ?>">
-                                    <span class="bi bi-<?= $module_icons[$module->module_id] ?? 'app' ?>" aria-hidden="true"></span>
+                                <a href="<?= base_url($module->module_id) ?>" title="<?= lang("Module.$module->module_id") ?>"
+                                   data-module="<?= $module->module_id ?>"
+                                   style="--mc: <?= $module_colors[$module->module_id] ?? '#94a3b8' ?>"
+                                   class="nav-link menu-icon<?= $module->module_id == $current_module ? ' active' : '' ?><?= $is_exit ? ' nav-link-exit' : '' ?>">
+                                    <span class="bi bi-<?= $is_exit ? 'arrow-left' : ($module_icons[$module->module_id] ?? 'app') ?>" aria-hidden="true"></span>
                                     <?= lang('Module.' . $module->module_id) ?>
                                 </a>
                             </li>
@@ -373,6 +383,44 @@ if ($_emp_model->has_grant('discount_approvals', $_person_id)):
         setTimeout(function() { $t.fadeOut(400, function() { $t.remove(); }); }, 8000);
     }
 
+    // Pending count on the Descuentos and Oficina items (visible from any screen) and an optional soft chime
+    window.daSetBadge = function(count) {
+        $('.navbar-ospos .nav-link[data-module="discount_approvals"], .navbar-ospos .nav-link[data-module="office"]').each(function() {
+            var $link = $(this);
+            $link.find('.nav-badge').remove();
+            if (count > 0) {
+                $('<span class="nav-badge"></span>')
+                    .attr('title', count + ' pendiente' + (count > 1 ? 's' : ''))
+                    .text(count)
+                    .append('<span class="visually-hidden"> pendiente' + (count > 1 ? 's' : '') + ' de aprobación</span>')
+                    .appendTo($link);
+            }
+        });
+    };
+
+    var _audioCtx = null;
+    window.daPlayChime = function(force) {
+        var enabled = false;
+        try { enabled = localStorage.getItem('da_sound') === '1'; } catch (e) {}
+        if (!enabled && !force) { return; }
+        try {
+            _audioCtx = _audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+            if (_audioCtx.state === 'suspended') { _audioCtx.resume(); }
+            var t = _audioCtx.currentTime;
+            [[880, 0], [660, 0.18]].forEach(function(n) {
+                var osc = _audioCtx.createOscillator(), gain = _audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = n[0];
+                gain.gain.setValueAtTime(0.0001, t + n[1]);
+                gain.gain.exponentialRampToValueAtTime(0.06, t + n[1] + 0.03);
+                gain.gain.exponentialRampToValueAtTime(0.0001, t + n[1] + 0.35);
+                osc.connect(gain).connect(_audioCtx.destination);
+                osc.start(t + n[1]);
+                osc.stop(t + n[1] + 0.4);
+            });
+        } catch (e) { /* audio not available */ }
+    };
+
     function pollDiscountApprovals() {
         $.ajax({
             url: '<?= base_url('discount_approvals/pendingCount') ?>',
@@ -392,8 +440,9 @@ if ($_emp_model->has_grant('discount_approvals', $_person_id)):
 
                 var newIds = ids.filter(function(id) { return _knownIds.indexOf(id) === -1; });
                 newIds.forEach(function(id) {
-                    notify('info', 'Nueva solicitud de descuento pendiente', approvalUrl);
+                    notify('info', 'Nueva solicitud pendiente de aprobación', approvalUrl);
                 });
+                if (newIds.length) { window.daPlayChime(); }
                 _knownIds = ids;
 
                 if (count >= 3 && !_warnedThreshold) {
@@ -402,26 +451,16 @@ if ($_emp_model->has_grant('discount_approvals', $_person_id)):
                 }
                 if (count < 3) _warnedThreshold = false;
 
-                // Update menubar badge
-                var $badge = $('#discount_pending_badge');
-                if (count > 0) {
-                    if ($badge.length === 0) {
-                        $badge = $('<span id="discount_pending_badge" class="badge" style="background:#d9534f; position:absolute; top:2px; right:2px; font-size:9px; min-width:16px; padding:2px 4px;">' + count + '</span>');
-                        $('a[href*="discount_approvals"]').first().css('position', 'relative').append($badge);
-                    } else {
-                        $badge.text(count);
-                    }
-                } else {
-                    $badge.remove();
-                }
+                // Update the navbar badges (Descuentos and Oficina)
+                window.daSetBadge(count);
             }
         });
     }
 
     $(document).ready(function() {
-        // Run immediately, then every 10s (faster on the approvals page)
+        // Run immediately, then every 10s (5s on the approvals page)
         pollDiscountApprovals();
-        var interval = window.location.href.indexOf('discount_approvals') !== -1 ? 3000 : 10000;
+        var interval = window.location.href.indexOf('discount_approvals') !== -1 ? 5000 : 10000;
         setInterval(pollDiscountApprovals, interval);
     });
 })();

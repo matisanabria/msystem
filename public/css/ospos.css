@@ -14,7 +14,7 @@ a.none {
 
 .topbar {
     color: #eee;
-    font-size: 12px;
+    font-size: 13px;
     background: #182735;
     padding: 0.2em;
 }
@@ -42,6 +42,16 @@ a.none {
     order: 3;
     flex: 1 1 0;
     text-align: right;
+}
+
+.topbar .navbar-right a {
+    color: #e9ecef;
+}
+
+.topbar .navbar-right a[href$="logout"] {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
 }
 
 .navbar {
@@ -83,21 +93,147 @@ a.none {
     text-align: center;
 }
 
-#home_module_list,
-#office_module_list {
-    position: relative;
-    padding: 2em 0;
+.home-intro {
+    padding: 1.5rem calc(var(--bs-gutter-x, 1.5rem) * .5) 1rem;
     text-align: center;
 }
 
-.module_item {
-    min-width: 7em;
-    display: inline-block;
-    text-align: center;
+.home-intro-section {
+    text-align: left;
 }
 
-.module_item a {
-    display: block;
+.home-intro-section h1 .bi {
+    margin-right: .25rem;
+    color: #475569;
+}
+
+.home-intro h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.home-intro p {
+    margin: .25rem 0 0;
+    font-size: 14px;
+    color: #6c757d;
+}
+
+/* Zones: stacked, one per row, in a centered column */
+.home-intro,
+.module-zones {
+    width: 100%;
+    max-width: 1100px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.module-zones {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    padding-bottom: 2rem;
+}
+
+.module-zones-home {
+    padding-top: 8px; /* + .container's 16px = 24px under the navbar */
+}
+
+.module-zone-title {
+    margin: 0 0 12px;
+    padding-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #212529;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.module-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    justify-items: stretch;
+}
+
+.module-card {
+    --mc: #64748b;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 104px;
+    padding: 14px 8px;
+    color: inherit;
+    text-align: center;
+    text-decoration: none;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    transition: border-color .15s, box-shadow .15s;
+}
+
+.module-card:hover {
+    color: inherit;
+    border-color: var(--mc);
+    box-shadow: 0 2px 8px rgba(24, 39, 53, .1);
+}
+
+.module-card:focus-visible {
+    outline: 2px solid var(--mc);
+    outline-offset: 2px;
+}
+
+.module-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+    color: var(--mc);
+    background: color-mix(in srgb, var(--mc) 13%, #fff);
+    border-radius: 10px;
+}
+
+.module-card-name {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+/* Sales is the till: the one card that stands out */
+.module-card-featured {
+    grid-column: span 2;
+    color: #fff;
+    background: var(--mc);
+    border-color: var(--mc);
+}
+
+.module-card-featured:hover {
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(15, 143, 118, .4);
+}
+
+.module-card-featured .module-card-icon {
+    color: #fff;
+    background: rgba(255, 255, 255, .22);
+}
+
+@media (max-width: 991.98px) {
+    .module-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 575.98px) {
+    .module-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .module-card-featured {
+        grid-column: auto;
+    }
 }
 
 #config_wrapper {
@@ -121,7 +257,7 @@ a.none {
 }
 
 #footer {
-    margin-top: 5em;
+    margin-top: auto;
     position: relative;
     text-align: center;
     font-size: 11px;
@@ -263,7 +399,9 @@ label.required {
 }
 
 /*
- * Navbar: one row, icon + label inline, active module marked with the accent underline.
+ * Navbar: icon above label, one color per module (the same --mc the home cards use, set inline),
+ * thin separators between the home groups. Only the active item gets a fill. Below 1200px it collapses into a vertical list.
+ * --mc is tuned for white cards, so on the dark bar it is mixed toward white (--mc-light).
  */
 .navbar.navbar-ospos {
     padding-top: 0;
@@ -277,37 +415,140 @@ label.required {
 }
 
 .navbar-ospos .nav-link.menu-icon {
+    --mc-light: color-mix(in srgb, var(--mc, #94a3b8) 55%, #fff);
     display: flex;
     align-items: center;
-    gap: .4rem;
-    padding: 1rem .75rem calc(1rem - 3px);
+    gap: .75rem;
+    min-height: 44px;
+    padding: .5rem 1rem;
     border-bottom: 3px solid transparent;
     font-size: .8125rem;
-    color: rgba(255, 255, 255, .72);
+    line-height: 1.15;
+    color: rgba(255, 255, 255, .85);
     text-align: left;
-    transition: color .15s ease, border-color .15s ease;
+    transition: color .15s ease, background-color .15s ease, border-color .15s ease;
 }
 
 .navbar-ospos .nav-link.menu-icon .bi {
-    font-size: 1.05rem;
+    font-size: 1.5rem;
     line-height: 1;
+    color: var(--mc-light);
 }
 
 .navbar-ospos .nav-link.menu-icon:hover,
 .navbar-ospos .nav-link.menu-icon:focus-visible {
     color: #fff;
-    border-bottom-color: rgba(255, 255, 255, .25);
+    background-color: rgba(255, 255, 255, .06);
 }
 
 .navbar-ospos .nav-link.menu-icon.active {
+    font-weight: 600;
     color: #fff;
-    border-bottom-color: #18bc9c;
+    background-color: rgba(255, 255, 255, .12);
+    border-bottom-color: var(--mc-light);
+}
+
+/* "← Inicio": the way out of a module */
+.navbar-ospos .nav-link-exit {
+    color: #fff;
+}
+
+.navbar-ospos .nav-link-exit .bi {
+    color: #fff;
+}
+
+.navbar-ospos .nav-sep {
+    height: 1px;
+    margin: .25rem 1rem;
+    list-style: none;
+    background: rgba(255, 255, 255, .15);
+}
+
+.navbar-toggler {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    min-height: 44px;
+    padding: .25rem .75rem;
+    font-size: .875rem;
+    color: #fff;
+    border-color: rgba(255, 255, 255, .35);
+}
+
+.navbar-toggler .bi {
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+@media (min-width: 1200px) {
+    .navbar-ospos .navbar-nav {
+        align-items: stretch;
+    }
+
+    .navbar-ospos .nav-link.menu-icon {
+        flex-direction: column;
+        justify-content: center;
+        gap: 2px;
+        min-width: 4.5rem;
+        height: 100%;
+        padding: .5rem .6rem calc(.5rem - 3px);
+        text-align: center;
+    }
+
+    .navbar-ospos .nav-sep {
+        width: 1px;
+        height: auto;
+        margin: .625rem .375rem;
+        background: rgba(255, 255, 255, .18);
+    }
+}
+
+/* 1200-1365px: no room for brand text + crumb + 11 icon-top items, so the crumb carries the context */
+@media (min-width: 1200px) and (max-width: 1365.98px) {
+    .navbar-ospos .navbar-brand,
+    .navbar-ospos .navbar-crumb-sep {
+        display: none;
+    }
+}
+
+/* Brand + current module ("Sistema de Gestión › Ventas") */
+.navbar-context {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    min-width: 0;
+}
+
+.navbar-ospos .navbar-brand {
+    margin-right: 0;
+}
+
+.navbar-crumb {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    font-size: .9375rem;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+}
+
+.navbar-crumb .bi {
+    color: #18bc9c;
+}
+
+.navbar-crumb .navbar-crumb-sep {
+    font-size: .75rem;
+    color: rgba(255, 255, 255, .5);
 }
 
 /*
  * Type and spacing scale (4px grid). Type: 12 / 13 / 14 / 16 / 18 / 24. Controls share one height.
  */
 .wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     font-size: .875rem;
     line-height: 1.45;
     color: #212b36;
@@ -415,4 +656,363 @@ input[type="radio"] {
 .modal-title {
     font-size: 1.0625rem;
     font-weight: 700;
+}
+
+/* Visible keyboard focus everywhere (2px, clear of the element); white on the dark bars */
+:focus-visible {
+    outline: 2px solid #0b5ed7;
+    outline-offset: 2px;
+}
+
+/* Bootstrap switches the outline off on its own components and relies on a faint shadow */
+.btn:focus-visible,
+.form-control:focus-visible,
+.form-select:focus-visible,
+.nav-link:focus-visible,
+.page-link:focus-visible,
+.dropdown-item:focus-visible,
+.navbar-toggler:focus-visible,
+.btn-close:focus-visible {
+    outline: 2px solid #0b5ed7;
+    outline-offset: 2px;
+}
+
+.topbar :focus-visible,
+.navbar-ospos :focus-visible {
+    outline-color: #fff;
+}
+
+/* Pending-approval count on the navbar items (Descuentos, Oficina) */
+.navbar-ospos .nav-link.menu-icon {
+    position: relative;
+}
+
+.nav-badge {
+    position: absolute;
+    top: 3px;
+    right: 6px;
+    min-width: 18px;
+    padding: 1px 5px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 16px;
+    color: #fff;
+    text-align: center;
+    background: #b02a37;
+    border-radius: 9px;
+}
+
+@media (max-width: 1199.98px) {
+    .nav-badge {
+        position: static;
+        margin-left: auto;
+    }
+}
+
+/* Oficina > Descuentos */
+.approvals-page {
+    width: 100%;
+    max-width: 1100px;
+    margin-right: auto;
+    margin-left: auto;
+    padding: 0 calc(var(--bs-gutter-x, 1.5rem) * .5) 2rem;
+}
+
+.page-head {
+    padding: .5rem 0 1rem;
+}
+
+.page-head h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.page-head-icon {
+    color: var(--mc);
+}
+
+.page-head p {
+    margin: .25rem 0 0;
+    font-size: 14px;
+    color: #495057;
+}
+
+.approvals-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: .5rem 1rem;
+    margin-bottom: 1rem;
+}
+
+.approvals-toolbar .nav-tabs {
+    flex: 1 1 auto;
+}
+
+.approvals-sound {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding-bottom: .5rem;
+    font-size: .875rem;
+}
+
+.approvals-sound input {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    accent-color: #2c3e50;
+}
+
+.approvals-empty {
+    padding: 2rem 1rem;
+    font-size: 1rem;
+    text-align: center;
+    color: #495057;
+    background: #f8f9fa;
+    border: 1px dashed #ced4da;
+    border-radius: .375rem;
+}
+
+.approvals-empty .bi {
+    margin-right: .25rem;
+    font-size: 1.25rem;
+}
+
+.approvals-note {
+    margin-top: .75rem;
+    font-size: .8125rem;
+    color: #495057;
+}
+
+.approvals-table {
+    margin: 0;
+    font-size: .875rem;
+    vertical-align: middle;
+}
+
+.approvals-table th {
+    font-size: .8125rem;
+    font-weight: 600;
+    white-space: nowrap;
+    color: #495057;
+}
+
+.approvals-table td,
+.approvals-table th {
+    padding: .625rem .5rem;
+}
+
+.approvals-table .num {
+    text-align: right;
+}
+
+.approvals-table small {
+    display: block;
+    font-size: .75rem;
+    font-weight: 400;
+    color: #495057;
+}
+
+.wait-time {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.wait-ok {
+    color: #212529;
+}
+
+.wait-warn {
+    color: #8a5300;
+}
+
+.wait-late {
+    color: #b02a37;
+}
+
+.diff-down {
+    color: #146c43;
+    font-weight: 600;
+}
+
+.diff-up {
+    color: #b02a37;
+    font-weight: 600;
+}
+
+.diff-none {
+    color: #495057;
+}
+
+.approvals-table .actions {
+    display: flex;
+    gap: .5rem;
+    white-space: nowrap;
+}
+
+.approval-btn {
+    min-height: 40px;
+}
+
+.result {
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+.res-approved {
+    color: #146c43;
+}
+
+.res-rejected {
+    color: #b02a37;
+}
+
+.res-expired {
+    color: #495057;
+}
+
+.approval-code-body {
+    text-align: center;
+}
+
+.approval-code-who {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: .25rem .75rem;
+    margin: 0 0 1rem;
+    text-align: left;
+}
+
+.approval-code-who dt {
+    font-weight: 400;
+    color: #495057;
+}
+
+.approval-code-who dd {
+    margin: 0;
+    font-weight: 600;
+}
+
+.approval-code-prompt {
+    margin: 0 0 .5rem;
+    color: #212529;
+}
+
+.approval-code {
+    display: flex;
+    justify-content: center;
+    gap: .75rem;
+    margin: .5rem 0 1rem;
+}
+
+.approval-digit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 76px;
+    height: 96px;
+    font-family: monospace;
+    font-size: 64px;
+    font-weight: 700;
+    color: #212529;
+    background: #f1f3f5;
+    border: 2px solid #6c757d;
+    border-radius: .5rem;
+}
+
+.approval-code-expiry {
+    margin: 0 0 .25rem;
+    font-size: .875rem;
+    font-weight: 600;
+    color: #212529;
+}
+
+.approval-code-note {
+    margin: 0;
+    font-size: .8125rem;
+    color: #495057;
+}
+
+.approvals-toolbar .nav-link {
+    color: #0a58ca;
+}
+
+.approvals-toolbar .nav-link.active {
+    font-weight: 600;
+    color: #212529;
+}
+
+/* Phones: each request becomes a small card so Aprobar / Rechazar are never off screen */
+@media (max-width: 767.98px) {
+    .approvals-table,
+    .approvals-table tbody,
+    .approvals-table tr,
+    .approvals-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .approvals-table thead {
+        display: none;
+    }
+
+    .approvals-table tr {
+        padding: .75rem 0;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .approvals-table td {
+        padding: .125rem 0;
+        text-align: left;
+        border: 0;
+    }
+
+    .approvals-table td[data-label]:not([data-label=""])::before {
+        content: attr(data-label) ": ";
+        font-size: .75rem;
+        color: #495057;
+    }
+
+    .approvals-table .num {
+        text-align: left;
+    }
+
+    .approvals-table .wait-cell {
+        font-size: 1rem;
+    }
+
+    .approvals-table .wait-clock {
+        display: inline;
+        margin-left: .5rem;
+    }
+
+    .approvals-table .actions {
+        margin-top: .5rem;
+    }
+
+    .approvals-table .actions .btn {
+        flex: 1 1 0;
+        min-height: 44px;
+    }
+
+    .approval-digit {
+        width: 56px;
+        height: 76px;
+        font-size: 48px;
+    }
+}
+
+/* Phones: when a module name follows the brand, show only the module so the Menu button stays on the same row */
+@media (max-width: 575.98px) {
+    .navbar-context:has(.navbar-crumb) .navbar-brand,
+    .navbar-context:has(.navbar-crumb) .navbar-crumb-sep {
+        display: none;
+    }
+
+    .navbar-crumb {
+        font-size: 1.0625rem;
+    }
 }

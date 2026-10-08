@@ -17,7 +17,11 @@
                 <tbody>
                     <tr>
                         <td><code>ESC</code></td>
-                        <td><?= lang('Sales.key_cancel'); ?></td>
+                        <td><?= lang('Sales.key_escape_dialog'); ?></td>
+                    </tr>
+                    <tr>
+                        <td><code>ENTER</code></td>
+                        <td><?= lang('Sales.key_enter'); ?></td>
                     </tr>
                     <tr>
                         <td><code>ALT + 1</code></td>

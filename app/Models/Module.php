@@ -21,6 +21,46 @@ class Module extends Model
     ];
 
     /**
+     * Display order shared by the navbar and the home grid. Modules not listed keep their DB `sort`
+     * and go after these (the `home` link always stays first in the navbar).
+     */
+    public const DISPLAY_ORDER = [
+        'sales', 'customers', 'service_tickets', 'assistances', 'items',
+        'receivings', 'suppliers', 'expenses', 'reports', 'office',
+    ];
+
+    /**
+     * Home grid zones: lang key (Module.php) => module_ids. Empty zones are not rendered.
+     */
+    public const HOME_GROUPS = [
+        'group_sell'    => ['sales', 'customers'],
+        'group_service' => ['service_tickets', 'assistances'],
+        'group_stock'   => ['items', 'receivings', 'suppliers'],
+        'group_admin'   => ['expenses', 'reports', 'office'],
+    ];
+
+    /**
+     * @param array $modules Rows from get_allowed_*_modules(), already in DB `sort` order.
+     * @return array Same rows in display order.
+     */
+    public static function sortForDisplay(array $modules): array
+    {
+        $rank = array_flip(self::DISPLAY_ORDER);
+        $pos  = 0;
+        $keyed = [];
+        foreach ($modules as $module) {
+            $keyed[] = [
+                $module->module_id === 'home' ? -1 : ($rank[$module->module_id] ?? count($rank)),
+                $pos++,
+                $module
+            ];
+        }
+        usort($keyed, static fn ($a, $b) => [$a[0], $a[1]] <=> [$b[0], $b[1]]);
+
+        return array_column($keyed, 2);
+    }
+
+    /**
      * @param string $module_id
      * @return string
      */

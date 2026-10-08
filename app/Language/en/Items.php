@@ -126,4 +126,6 @@ return [
     "upc_database"                       => "Barcode Database",
     "update"                             => "Update Item",
     "use_inventory_menu"                 => "Use Inventory Menu",
+    "receive_stock" => "Receive stock",
+    "receive_stock_hint" => "Did stock arrive? Record it from Receive stock.",
 ];

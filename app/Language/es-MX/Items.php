@@ -126,4 +126,6 @@ return [
     "upc_database"                       => "",
     "update"                             => "Actualizar Artículo",
     "use_inventory_menu"                 => "Usar Menú de Inventario",
+    "receive_stock" => "Ingreso de mercadería",
+    "receive_stock_hint" => "¿Llegó mercadería? Registrala desde Ingreso de mercadería.",
 ];
