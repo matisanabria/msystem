@@ -10,6 +10,7 @@ return [
     "categories_trend"                        => "Categories Trend",
     "category"                                => "Category",
     "category_item_count"                     => "Item Count",
+    "category_stock_units"                    => "Units in Stock",
     "code_canceled"                           => "CNL",
     "code_invoice"                            => "INV",
     "code_pos"                                => "POS",
