@@ -2412,8 +2412,8 @@ class Reports extends Secure_Controller
         foreach ($report_data as $row) {
             $tabular_data[] = [
                 'category'         => $row['category'],
-                'item_count'       => (int) $row['item_count'],
                 'total_quantity'   => to_quantity_decimals($row['total_quantity']),
+                'total_cost'       => to_currency($row['total_cost']),
                 'total_unit_price' => to_currency($row['total_unit_price']),
                 'total_wholesale'  => to_currency($row['total_wholesale']),
                 'total_reseller'   => to_currency($row['total_reseller'])
@@ -2451,8 +2451,8 @@ class Reports extends Secure_Controller
 
         $col_headers = [
             lang('Reports.category'),
-            lang('Reports.category_item_count'),
             lang('Reports.category_stock_units'),
+            lang('Reports.cost_price'),
             lang('Reports.unit_price'),
             lang('Items.price_wholesale'),
             lang('Items.price_reseller'),
@@ -2472,8 +2472,8 @@ class Reports extends Secure_Controller
         foreach ($report_data as $row) {
             echo '<tr>';
             echo '<td>' . esc($row['category'])         . '</td>';
-            echo '<td>' . (int) $row['item_count']      . '</td>';
             echo '<td>' . (float) $row['total_quantity'] . '</td>';
+            echo '<td>' . (float) $row['total_cost']     . '</td>';
             echo '<td>' . (float) $row['total_unit_price'] . '</td>';
             echo '<td>' . (float) $row['total_wholesale']  . '</td>';
             echo '<td>' . (float) $row['total_reseller']   . '</td>';

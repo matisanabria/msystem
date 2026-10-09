@@ -15,8 +15,8 @@ class Inventory_by_category extends Report
     {
         return [
             ['category'         => lang('Reports.category')],
-            ['item_count'       => lang('Reports.category_item_count')],
             ['total_quantity'   => lang('Reports.category_stock_units'), 'sorter' => 'number_sorter'],
+            ['total_cost'       => lang('Reports.cost_price'), 'sorter' => 'number_sorter'],
             ['total_unit_price' => lang('Reports.unit_price'), 'sorter' => 'number_sorter'],
             ['total_wholesale'  => lang('Items.price_wholesale'), 'sorter' => 'number_sorter'],
             ['total_reseller'   => lang('Items.price_reseller'), 'sorter' => 'number_sorter']
@@ -34,6 +34,7 @@ class Inventory_by_category extends Report
             "COALESCE(NULLIF(items.category, ''), '" . $this->db->escapeString(lang('Reports.no_category')) . "') AS category,
             COUNT(items.item_id) AS item_count,
             SUM(item_quantities.quantity) AS total_quantity,
+            SUM(items.cost_price * item_quantities.quantity) AS total_cost,
             SUM(items.unit_price * item_quantities.quantity) AS total_unit_price,
             SUM(items.price_wholesale * item_quantities.quantity) AS total_wholesale,
             SUM(items.price_reseller * item_quantities.quantity) AS total_reseller"
@@ -66,16 +67,16 @@ class Inventory_by_category extends Report
     public function getSummaryData(array $inputs): array
     {
         $return = [
-            'total_items'      => 0,
             'total_quantity'   => 0,
+            'total_cost'       => 0,
             'total_unit_price' => 0,
             'total_wholesale'  => 0,
             'total_reseller'   => 0
         ];
 
         foreach ($inputs as $input) {
-            $return['total_items'] += $input['item_count'];
             $return['total_quantity'] += $input['total_quantity'];
+            $return['total_cost'] += $input['total_cost'];
             $return['total_unit_price'] += $input['total_unit_price'];
             $return['total_wholesale'] += $input['total_wholesale'];
             $return['total_reseller'] += $input['total_reseller'];
