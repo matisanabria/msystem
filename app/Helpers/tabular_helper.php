@@ -469,9 +469,9 @@ function get_items_manage_table_headers(): string
 
     $headers = item_headers();
 
-    // Id and cost price start hidden; they stay available in the column selector
+    // Id starts hidden; it stays available in the column selector
     foreach ($headers as &$header) {
-        if (isset($header['items.item_id']) || isset($header['cost_price'])) {
+        if (isset($header['items.item_id'])) {
             $header['visible'] = false;
         }
     }
