@@ -62,11 +62,11 @@ class Module extends Model
      * 'cashier' ticks the module-level grants listed; 'admin' ticks everything offered in the form.
      */
     public const PERMISSION_PROFILES = [
-        'cashier' => ['home', 'sales', 'customers', 'items', 'service_tickets'],
+        'cashier' => ['home', 'sales', 'customers', 'service_tickets'],
         'admin'   => '*',
     ];
 
-    /** Modules that live under "Oficina" (their grant uses menu_group 'office' when newly granted). */
+    /** Modules that always live under "Oficina" (queries force it; new grants also use menu_group 'office'). */
     public const OFFICE_MODULES = ['admin_panel', 'discount_approvals', 'logs', 'inventory_output'];
 
     /** Permissions an employee cannot remove from their own account (they open this panel). */
@@ -176,7 +176,8 @@ class Module extends Model
         $builder->join('grants', 'permissions.permission_id = grants.permission_id');
         $builder->where('person_id', $person_id);
         $builder->whereIn('menu_group', $menus);
-        $builder->whereNotIn('modules.module_id', ['expenses_categories', 'cashups', 'giftcards', 'messages', 'item_kits', 'config', 'attributes']);
+        // Registros, Administración, Descuentos and Salidas always live under Oficina, whatever the grant says
+        $builder->whereNotIn('modules.module_id', array_merge(['expenses_categories', 'cashups', 'giftcards', 'messages', 'item_kits', 'config', 'attributes'], self::OFFICE_MODULES));
         $builder->where('sort !=', 0);
         $builder->orderBy('sort', 'asc');
 
@@ -194,7 +195,10 @@ class Module extends Model
         $builder->join('permissions', 'permissions.permission_id = modules.module_id');
         $builder->join('grants', 'permissions.permission_id = grants.permission_id');
         $builder->where('person_id', $person_id);
+        $builder->groupStart();
         $builder->whereIn('menu_group', $menus);
+        $builder->orWhereIn('modules.module_id', self::OFFICE_MODULES);    // always under Oficina, whatever the grant says
+        $builder->groupEnd();
         $builder->whereNotIn('modules.module_id', ['expenses_categories', 'cashups', 'giftcards', 'messages', 'item_kits', 'config', 'attributes']);
         $builder->where('sort !=', 0);
         $builder->orderBy('sort', 'asc');
