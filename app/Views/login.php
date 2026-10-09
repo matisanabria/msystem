@@ -26,8 +26,8 @@
         ? 'flatly'
         : $config['theme']);
     ?>
-    <link rel="stylesheet" href="resources/bootswatch/<?= "$theme" ?>/bootstrap.min.css">
-    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="<?= esc(asset_v("resources/bootswatch/$theme/bootstrap.min.css")) ?>">
+    <link rel="stylesheet" href="<?= esc(asset_v('css/login.css')) ?>">
     <meta name="theme-color" content="#182735">
 </head>
 

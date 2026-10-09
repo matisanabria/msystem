@@ -15,6 +15,7 @@ import tar from 'gulp-tar'
 import gzip from 'gulp-gzip'
 import zip from 'gulp-zip'
 import run from 'gulp-run'
+import { unminifiedCss, ownCssBefore } from './build/css-sources.js'
 
 import { Stream } from 'readable-stream'
 const {finished, pipeline} = Stream.promises
@@ -188,18 +189,12 @@ gulp.task('prod-css', function() {
 
     var opensourcepos4css = gulp.src('./node_modules/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.css').pipe(cleanCSS({compatibility: 'ie8'}));
 
-    var opensourcepos5css = gulp.src(['./node_modules/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.css',
-        './public/css/bootstrap.autocomplete.css',
-        './public/css/invoice.css',
-        './public/css/ospos.css',
-        './public/css/ospos_print.css',
-        './public/css/popupbox.css',
-        './public/css/receipt.css',
-        './public/css/register.css',
-        './public/css/reports.css'
-    ]).pipe(cleanCSS({compatibility: 'ie8'}));
+    // Own CSS. register.css and reports.css are NOT passed through cleanCSS: clean-css 4 breaks the @container
+    // block and drops the SVG "r" property (see build/css-sources.js). They keep their original place at the end.
+    var opensourcepos5css = gulp.src(ownCssBefore).pipe(cleanCSS({compatibility: 'ie8'}));
+    var opensourcepos6css = gulp.src(unminifiedCss);
 
-    var prodcss = series(opensourcepos1css, opensourcepos2css, opensourcepos3css, opensourcepos4css, opensourcepos5css)
+    var prodcss = series(opensourcepos1css, opensourcepos2css, opensourcepos3css, opensourcepos4css, opensourcepos5css, opensourcepos6css)
         .pipe(concat('opensourcepos.min.css')).pipe(rev()).pipe(gulp.dest('public/resources'));
 
 

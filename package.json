@@ -26,6 +26,7 @@
     },
     "scripts": {
         "build": "gulp default",
+        "check:css": "node build/check-css-bundle.js",
         "gulp": "gulp"
     },
     "type": "module",

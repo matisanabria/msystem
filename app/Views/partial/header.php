@@ -24,8 +24,8 @@ $request = Services::request();
     // paper and readable are not available in Bootswatch 5
     $theme = (empty($config['theme']) || in_array($config['theme'], ['paper', 'readable'], true)) ? 'flatly' : $config['theme'];
     ?>
-    <link rel="stylesheet" href="<?= 'resources/bootswatch/' . esc($theme) . '/bootstrap.min.css' ?>">
-    <link rel="stylesheet" href="resources/bootstrap-icons/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="<?= esc(asset_v('resources/bootswatch/' . $theme . '/bootstrap.min.css')) ?>">
+    <link rel="stylesheet" href="<?= esc(asset_v('resources/bootstrap-icons/bootstrap-icons.min.css')) ?>">
 
     <?php if (ENVIRONMENT == 'development' || get_cookie('debug') == 'true' || $request->getGet('debug') == 'true') : ?>
         <!-- inject:debug:css -->
@@ -41,10 +41,10 @@ $request = Services::request();
         <link rel="stylesheet" href="resources/css/bootstrap-292fc0ad3b.autocomplete.css">
         <link rel="stylesheet" href="resources/css/invoice-1eae5e39b9.css">
         <link rel="stylesheet" href="resources/css/ospos_print-2ba645b044.css">
-        <link rel="stylesheet" href="resources/css/ospos-78a7998ab2.css">
+        <link rel="stylesheet" href="resources/css/ospos-74e2214633.css">
         <link rel="stylesheet" href="resources/css/popupbox-7b616030b0.css">
         <link rel="stylesheet" href="resources/css/receipt-a171207d8e.css">
-        <link rel="stylesheet" href="resources/css/register-0bfae959a1.css">
+        <link rel="stylesheet" href="resources/css/register-f6a6fed73c.css">
         <link rel="stylesheet" href="resources/css/reports-407b727797.css">
         <!-- endinject -->
         <!-- inject:debug:js -->
@@ -54,7 +54,7 @@ $request = Services::request();
         <script src="resources/js/jquery-ui-cbc65ff85e.js"></script>
         <script src="resources/js/popper-063a0fe0ef.js"></script>
         <script src="resources/js/bootstrap-52de67605c.js"></script>
-        <script src="resources/js/bootstrap5_jquery_bridge-fba1c7bdd5.js"></script>
+        <script src="resources/js/bootstrap5_jquery_bridge-1a462f63e6.js"></script>
         <script src="resources/js/bootstrap-dialog-ea1d8d45a8.js"></script>
         <script src="resources/js/tempus-dominus-610b31b9fd.js"></script>
         <script src="resources/js/bootstrap-select-146babba2b.js"></script>
@@ -78,12 +78,12 @@ $request = Services::request();
         <script src="resources/js/chartist-plugin-barlabels-4165273742.js"></script>
         <script src="resources/js/clipboard-908af414ab.js"></script>
         <script src="resources/js/imgpreview-62e42c15a0.full.jquery.js"></script>
-        <script src="resources/js/manage_tables-2f72b6aeec.js"></script>
+        <script src="resources/js/manage_tables-4a4c07c84f.js"></script>
         <script src="resources/js/nominatim-599d9d6f9c.autocomplete.js"></script>
         <!-- endinject -->
     <?php else : ?>
         <!--inject:prod:css -->
-        <link rel="stylesheet" href="resources/opensourcepos-c1b2de17dc.min.css">
+        <link rel="stylesheet" href="resources/opensourcepos-178044f414.min.css">
         <!-- endinject -->
 
         <!-- Tweaks to the UI for a particular theme should drop here  -->
@@ -92,7 +92,7 @@ $request = Services::request();
         <?php } ?>
         <!-- inject:prod:js -->
         <script src="resources/jquery-2c872dbe60.min.js"></script>
-        <script src="resources/opensourcepos-af2b711d50.min.js"></script>
+        <script src="resources/opensourcepos-255c394482.min.js"></script>
         <!-- endinject -->
     <?php endif; ?>
 
