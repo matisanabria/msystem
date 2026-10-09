@@ -175,7 +175,7 @@
     var enable_actions = function(callback) {
         return function() {
             var selection_empty = selected_rows().length == 0;
-            $("#toolbar button:not(.dropdown-toggle)").attr('disabled', selection_empty);
+            $("#toolbar button:not(.dropdown-toggle):not([data-always-enabled])").attr('disabled', selection_empty);
             typeof callback == 'function' && callback();
         }
     };
@@ -211,14 +211,20 @@
         $(rows_selector(id)).each(function(index, element) {
             var original = $(element).css('backgroundColor');
             $(element).find("td").animate({backgroundColor: color || '#e1ffdd'}, "slow", "linear")
-                .animate({backgroundColor: color || '#e1ffdd'}, 5000)
-                .animate({backgroundColor: original}, "slow", "linear");
+                .animate({backgroundColor: color || '#e1ffdd'}, (options && options.highlightHold) || 5000)
+                .animate({backgroundColor: original}, "slow", "linear", function() {
+                    // Hand the cell background back to the stylesheet (sticky cells need their own)
+                    $(this).css('background-color', '');
+                });
         });
     };
 
     var do_action = function(action) {
         return function (url, ids) {
-            if (confirm($.fn.bootstrapTable.defaults.formatConfirmAction(action))) {
+            var confirm_message = typeof options.confirmMessage == 'function'
+                    ? options.confirmMessage(action, ids || selected_ids())
+                    : $.fn.bootstrapTable.defaults.formatConfirmAction(action);
+                if (confirm(confirm_message)) {
                 $.post((url || options.resource) + '/' + action, {'ids[]': ids || selected_ids()}, function (response) {
                     // Delete was successful, remove checkbox rows
                     if (response.success) {

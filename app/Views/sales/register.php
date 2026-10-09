@@ -114,9 +114,10 @@ helper('url');
                 <?php } ?>
 
                 <li class="float-end">
-                    <button type="button" class="btn btn-neutral btn-sm modal-dlg" id="show_suspended_sales_button" data-href="<?= esc("$controller_name/suspended") ?>"
+                    <?php $suspended_count = (int) ($suspended_count ?? 0); ?>
+                    <button type="button" class="btn btn-neutral btn-sm" id="show_suspended_sales_button" data-href="<?= esc(site_url("$controller_name/suspended")) ?>"
                         title="<?= lang(ucfirst($controller_name) . '.suspended_sales') ?>">
-                        <span class="bi bi-justify" aria-hidden="true"></span> <?= lang(ucfirst($controller_name) . '.suspended_sales') ?>
+                        <span class="bi bi-justify" aria-hidden="true"></span> <?= lang(ucfirst($controller_name) . '.suspended_sales') ?><?= $suspended_count > 0 ? " ($suspended_count)" : '' ?>
                     </button>
                 </li>
 
@@ -1108,6 +1109,44 @@ helper('url');
         });
 
         dialog_support.init('a.modal-dlg, button.modal-dlg');
+
+        // Suspended sales modal: own opener so focus starts on the first "Resume" and returns to this button
+        $('#show_suspended_sales_button').on('click', function() {
+            var trigger = this;
+            var $content = $('<div></div>');
+            var loaded = false;
+            var shown = false;
+            var focusInitial = function(dialog) {
+                if (!loaded || !shown) {
+                    return;
+                }
+                var $first = $content.find('.suspended-resume').first();
+                ($first.length ? $first : dialog.getModalFooter().find('button').first()).trigger('focus');
+            };
+
+            window.registerFocusReturn = trigger;
+            var dialog = BootstrapDialog.show({
+                title: <?= json_encode(lang('Sales.suspended_sales_title')) ?>,
+                cssClass: 'suspended-dlg',
+                message: $content,
+                buttons: [{
+                    id: 'suspended_close',
+                    label: lang.line('common_close'),
+                    cssClass: 'btn-outline-secondary',
+                    action: function(dlg) { dlg.close(); }
+                }],
+                onshown: function(dlg) {
+                    shown = true;
+                    focusInitial(dlg);
+                }
+            });
+            $.get($(trigger).data('href'), function(html) {
+                $content.html(html);
+                loaded = true;
+                focusInitial(dialog);
+            });
+            return false;
+        });
 
         table_support.handle_submit = function(resource, response, stay_open) {
             $.notify({

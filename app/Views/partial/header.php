@@ -78,7 +78,7 @@ $request = Services::request();
         <script src="resources/js/chartist-plugin-barlabels-4165273742.js"></script>
         <script src="resources/js/clipboard-908af414ab.js"></script>
         <script src="resources/js/imgpreview-62e42c15a0.full.jquery.js"></script>
-        <script src="resources/js/manage_tables-08b6834ed0.js"></script>
+        <script src="resources/js/manage_tables-2f72b6aeec.js"></script>
         <script src="resources/js/nominatim-599d9d6f9c.autocomplete.js"></script>
         <!-- endinject -->
     <?php else : ?>
@@ -92,7 +92,7 @@ $request = Services::request();
         <?php } ?>
         <!-- inject:prod:js -->
         <script src="resources/jquery-2c872dbe60.min.js"></script>
-        <script src="resources/opensourcepos-f12911514c.min.js"></script>
+        <script src="resources/opensourcepos-af2b711d50.min.js"></script>
         <!-- endinject -->
     <?php endif; ?>
 
@@ -238,6 +238,13 @@ if ($current_module !== '' && $current_module !== 'home') {
                             <span class="bi bi-<?= $crumb['icon'] ?>" aria-hidden="true"></span>
                             <?= $crumb['label'] ?>
                         </span>
+                        <?php if (!empty($crumb_sub)): ?>
+                            <span class="navbar-crumb">
+                                <span class="bi bi-chevron-right navbar-crumb-sep" aria-hidden="true"></span>
+                                <span class="bi bi-<?= esc($crumb_sub['icon'], 'attr') ?>" aria-hidden="true"></span>
+                                <?= esc($crumb_sub['label']) ?>
+                            </span>
+                        <?php endif; ?>
                     <?php endif; ?>
                 </div>
 

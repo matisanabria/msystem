@@ -63,16 +63,16 @@ function sales_headers(): array
 {
     return [
         ['sale_id'         => lang('Common.id')],
-        ['sale_time'       => lang('Sales.sale_time')],
+        ['sale_time'       => lang('Sales.manage_date_time')],
         ['customer_name'   => lang('Customers.customer')],
         ['items_sold'      => lang('Sales.items_sold'), 'sortable' => false],
         ['barcodes'        => lang('Sales.barcodes'), 'sortable' => false],
         ['supplier_name'   => lang('Suppliers.supplier'), 'sortable' => false],
-        ['amount_due'      => lang('Sales.amount_due')],
-        ['amount_tendered' => lang('Sales.amount_tendered')],
-        ['change_due'      => lang('Sales.change_due')],
+        ['amount_due'      => lang('Sales.manage_sale_total'), 'class' => 'text-end'],
+        ['amount_tendered' => lang('Sales.amount_tendered'), 'class' => 'text-end'],
+        ['change_due'      => lang('Sales.change_due'), 'class' => 'text-end'],
         ['payment_type'    => lang('Sales.payment_type')],
-        ['sale_channel'    => lang('Sales.sale_channel')],
+        ['sale_channel'    => lang('Sales.sale_channel'), 'escape' => false],
         ['location_name'   => lang('Common.location')]
     ];
 }
@@ -89,7 +89,8 @@ function get_sales_manage_table_headers(): string
         $headers[] = ['invoice_number' => lang('Sales.invoice_number')];
     }
 
-    $headers[] = ['receipt' => '', 'sortable' => false, 'escape' => false];
+    // Receipt + edit buttons share one fixed "Actions" column (the edit cell); the receipt field stays in the data, hidden
+    $headers[] = ['receipt' => '', 'sortable' => false, 'escape' => false, 'switchable' => false, 'visible' => false];
 
     return transform_headers($headers);
 }
@@ -102,15 +103,21 @@ function get_sale_data_row(object $sale): array
     $uri = current_url(true);
     $controller = $uri->getSegment(1);
 
+    $customer_name = trim((string) $sale->customer_name);
+    $channel = $sale->sale_channel ?? 'store';
+
     $row = [
         'sale_id'         => $sale->sale_id,
         'sale_time'       => to_datetime(strtotime($sale->sale_time)),
-        'customer_name'   => $sale->customer_name,
+        'customer_name'   => $customer_name !== ''
+            ? esc($customer_name)
+            : '<span class="text-body-secondary">' . lang('Sales.manage_no_customer') . '</span>',
         'amount_due'      => to_currency($sale->amount_due),
         'amount_tendered' => to_currency($sale->amount_tendered),
         'change_due'      => to_currency($sale->change_due),
-        'payment_type'    => $sale->payment_type,
-        'sale_channel'    => lang('Sales.sale_channel_' . ($sale->sale_channel ?? 'store')),
+        'payment_type'    => format_sale_payment_types((string) $sale->payment_type),
+        'sale_channel'    => '<span class="badge sale-channel sale-channel-' . esc($channel, 'attr') . '">'
+            . lang('Sales.sale_channel_' . $channel) . '</span>',
         'items_sold'      => $sale->items_sold ?? '',
         'barcodes'        => $sale->barcodes ?? '',
         'supplier_name'   => $sale->supplier_name ?? '',
@@ -123,23 +130,51 @@ function get_sale_data_row(object $sale): array
         $row['invoice_number'] = $sale->invoice_number;
     }
 
-    $row['receipt'] = anchor(
+    $receipt_label = str_replace('{0}', (string) $sale->sale_id, lang('Sales.manage_view_receipt'));
+    $edit_label = str_replace('{0}', (string) $sale->sale_id, lang('Sales.manage_edit_sale'));
+
+    $receipt_button = anchor(
         "$controller/receipt/$sale->sale_id",
-        '<span class="bi bi-currency-dollar"></span>',
-        ['title' => lang('Sales.show_receipt')]
+        '<span class="bi bi-receipt" aria-hidden="true"></span>',
+        ['class' => 'btn btn-outline-secondary sale-action print_hide', 'title' => $receipt_label, 'aria-label' => $receipt_label]
     );
-    $row['edit'] = anchor(
+    $edit_button = anchor(
         "$controller/edit/$sale->sale_id",
-        '<span class="bi bi-pencil-square"></span>',
+        '<span class="bi bi-pencil" aria-hidden="true"></span>',
         [
-            'class'           => 'modal-dlg print_hide',
+            'class'           => 'btn btn-outline-secondary sale-action modal-dlg print_hide',
             'data-btn-delete' => lang('Common.delete'),
             'data-btn-submit' => lang('Common.submit'),
-            'title'           => lang(ucfirst($controller) . ".update")
+            'title'           => $edit_label,
+            'aria-label'      => $edit_label
         ]
     );
 
+    $row['receipt'] = $receipt_button;
+    $row['edit'] = '<div class="sale-actions">' . $receipt_button . $edit_button . '</div>';
+
     return $row;
+}
+
+/**
+ * "Cash 7800000.00, Card 100000.00" (raw GROUP_CONCAT from the sales search) -> "Cash Gs. 7.800.000, Card Gs. 100.000"
+ */
+function format_sale_payment_types(string $payment_types): string
+{
+    if ($payment_types === '') {
+        return '';
+    }
+
+    $formatted = [];
+    foreach (explode(', ', $payment_types) as $payment) {
+        if (preg_match('/^(.*) (-?\d+(?:\.\d+)?)$/', $payment, $matches)) {
+            $formatted[] = $matches[1] . ' ' . to_currency($matches[2]);
+        } else {
+            $formatted[] = $payment;
+        }
+    }
+
+    return implode(', ', $formatted);
 }
 
 /**
@@ -167,23 +202,19 @@ function get_sale_data_last_row(ResultInterface $sales): array
 }
 
 /**
- * Get the sales payments summary
+ * Summary cards data for the sales manage view: sales count, amount sold and a breakdown by payment type.
  */
-function get_sales_manage_payments_summary(array $payments): string
+function get_sales_manage_summary(int $count, array $payments): array
 {
-    $table = '<div id="report_summary">';
     $total = 0;
+    $by_type = [];
 
-    foreach ($payments as $key => $payment) {
-        $amount = $payment['payment_amount'];
-        $total = bcadd($total, $amount);
-        $table .= '<div class="summary_row">' . $payment['payment_type'] . ': ' . to_currency($amount) . '</div>';
+    foreach ($payments as $payment) {
+        $total = bcadd((string) $total, (string) $payment['payment_amount']);
+        $by_type[] = ['type' => $payment['payment_type'], 'amount' => to_currency($payment['payment_amount'])];
     }
 
-    $table .= '<div class="summary_row">' . lang('Sales.total') . ': ' . to_currency($total) . '</div>';
-    $table .= '</div>';
-
-    return $table;
+    return ['count' => $count, 'total' => to_currency($total), 'payments' => $by_type];
 }
 
 function person_headers(): array
@@ -762,8 +793,8 @@ function expense_headers(): array
     $headers = [
         ['expense_id'   => lang('Expenses.expense_id')],
         ['date'         => lang('Expenses.date')],
-        ['amount'       => lang('Expenses.amount')],
-        ['tax_amount'   => lang('Expenses.tax_amount')],
+        ['amount'       => lang('Expenses.amount'), 'class' => 'text-end'],
+        ['tax_amount'   => lang('Expenses.tax_amount'), 'class' => 'text-end'],
         ['payment_type' => lang('Expenses.payment')],
         ['description'  => lang('Expenses.description')],
         ['created_by'   => lang('Expenses.employee')]
@@ -808,11 +839,12 @@ function get_expenses_data_row(object $expense): array
 
     $row['edit'] = anchor(
         "$controller/view/$expense->expense_id",
-        '<span class="bi bi-pencil-square"></span>',
+        '<span class="bi bi-pencil-square" aria-hidden="true"></span> ' . lang('Expenses.edit'),
         [
-            'class'           => 'modal-dlg',
-            'data-btn-submit' => lang('Common.submit'),
-            'title'           => lang(ucfirst($controller) . ".update")
+            'class'           => 'btn btn-outline-secondary btn-sm expense-edit modal-dlg modal-dlg-expenses print_hide',
+            'data-btn-submit' => lang('Expenses.save'),
+            'title'           => str_replace('{0}', (string) $expense->expense_id, lang('Expenses.edit_title')),
+            'aria-label'      => str_replace('{0}', (string) $expense->expense_id, lang('Expenses.edit_aria'))
         ]
     );
 
@@ -842,20 +874,21 @@ function get_expenses_data_last_row(object $expense): array
 }
 
 /**
- * Get the expenses payments summary
+ * Summary cards data for the expenses manage view: count, amount spent and a breakdown by payment type.
  */
-function get_expenses_manage_payments_summary(array $payments, ResultInterface $expenses): string    // TODO: $expenses is passed but never used.
+function get_expenses_manage_summary(array $payments): array
 {
-    $table = '<div id="report_summary">';
+    $count = 0;
+    $total = 0;
+    $by_type = [];
 
-    foreach ($payments as $key => $payment) {
-        $amount = $payment['amount'];
-        $table .= '<div class="summary_row">' . $payment['payment_type'] . ': ' . to_currency($amount) . '</div>';
+    foreach ($payments as $payment) {
+        $count += (int) $payment['count'];
+        $total = bcadd((string) $total, (string) $payment['amount']);
+        $by_type[] = ['type' => $payment['payment_type'], 'amount' => to_currency($payment['amount'])];
     }
 
-    $table .= '</div>';
-
-    return $table;
+    return ['count' => $count, 'total' => to_currency($total), 'payments' => $by_type];
 }
 
 function inventory_output_headers(): array

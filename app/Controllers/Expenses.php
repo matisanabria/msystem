@@ -85,7 +85,7 @@ class Expenses extends Secure_Controller
         $expenses = $this->expense->search($search, $filters, $limit, $offset, $sort, $order);
         $total_rows = $this->expense->get_found_rows($search, $filters);
         $payments = $this->expense->get_payments_summary($search, $filters);
-        $payment_summary = get_expenses_manage_payments_summary($payments, $expenses);
+        $summary = get_expenses_manage_summary($payments);
         $data_rows = [];
 
         foreach ($expenses->getResult() as $expense) {
@@ -96,7 +96,7 @@ class Expenses extends Secure_Controller
             $data_rows[] = get_expenses_data_last_row($expenses);
         }
 
-        echo json_encode(['total' => $total_rows, 'rows' => $data_rows, 'payment_summary' => $payment_summary]);
+        echo json_encode(['total' => $total_rows, 'rows' => $data_rows, 'summary' => $summary]);
     }
 
     /**
@@ -117,6 +117,8 @@ class Expenses extends Secure_Controller
         }
 
         $data['expenses_info'] = $this->expense->get_info($expense_id);
+        // Only administrators (admin_panel grant) may change who created the expense
+        $data['can_change_employee'] = $this->employee->has_grant('admin_panel', $this->employee->get_logged_in_employee_info()->person_id);
 
         $expense_categories = [];
         foreach ($this->expense_category->get_all(0, 0, true)->getResultArray() as $row) {

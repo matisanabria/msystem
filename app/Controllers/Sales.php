@@ -126,7 +126,7 @@ class Sales extends Secure_Controller
                 'only_shipping' => lang('Sales.sale_channel_shipping')
             ];
 
-            $data['payment_filter_options'] = array_merge(['' => lang('Sales.payment_type')], get_payment_options());
+            $data['payment_filter_options'] = array_merge(['' => lang('Sales.manage_all')], get_payment_options());
 
             $data['selected_filters'] = [];
 
@@ -192,7 +192,7 @@ class Sales extends Secure_Controller
         $sales = $this->sale->search($search, $filters, $limit, $offset, $sort, $order);
         $total_rows = $this->sale->get_found_rows($search, $filters);
         $payments = $this->sale->get_payments_summary($search, $filters);
-        $payment_summary = get_sales_manage_payments_summary($payments);
+        $summary = get_sales_manage_summary((int) $total_rows, $payments);
 
         $data_rows = [];
         foreach ($sales->getResult() as $sale) {
@@ -203,7 +203,7 @@ class Sales extends Secure_Controller
             $data_rows[] = get_sale_data_last_row($sales);
         }
 
-        echo json_encode(['total' => $total_rows, 'rows' => $data_rows, 'payment_summary' => $payment_summary]);
+        echo json_encode(['total' => $total_rows, 'rows' => $data_rows, 'summary' => $summary]);
     }
 
     /**
@@ -1225,6 +1225,7 @@ class Sales extends Secure_Controller
         $data['empty_tables'] = $this->sale_lib->get_empty_tables($data['selected_table']);
         $data['stock_locations'] = $this->stock_location->get_allowed_locations('sales');
         $data['stock_location'] = $this->sale_lib->get_sale_location();
+        $data['suspended_count'] = count($this->sale->get_all_suspended($this->sale_lib->get_customer()));    // same filter as the Suspended modal
         $data['tax_exclusive_subtotal'] = $this->sale_lib->get_subtotal(true, true);
         $tax_details = $this->tax_lib->get_taxes($data['cart']);    // TODO: Duplicated code.
         $data['taxes'] = $tax_details[0];
@@ -1650,7 +1651,10 @@ class Sales extends Secure_Controller
     {
         $data = [];
         $customer_id = $this->sale_lib->get_customer();
-        $data['suspended_sales'] = $this->sale->get_all_suspended($customer_id);
+        $suspended_sales = $this->sale->get_all_suspended($customer_id);
+        usort($suspended_sales, static fn(array $a, array $b): int => strcmp($b['sale_time'], $a['sale_time']));
+        $data['suspended_sales'] = $suspended_sales;
+        $data['cart_has_items'] = !empty($this->sale_lib->get_cart());
         echo view('sales/suspended', $data);
     }
 
