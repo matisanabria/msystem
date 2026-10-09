@@ -200,8 +200,7 @@ class Stock_location extends Model
         $original_location_name = $this->get_location_name($location_id);
 
         if ($original_location_name != $location_name) {
-            $builder = $this->db->table('permissions');
-            $builder->delete(['location_id' => $location_id]);
+            $this->_delete_location_permissions($location_id);
 
             $this->_insert_new_permission('items', $location_id, $location_name);
             $this->_insert_new_permission('sales', $location_id, $location_name);
@@ -230,6 +229,9 @@ class Stock_location extends Model
 
         $builder = $this->db->table('permissions');
         $builder->insert($permission_data);
+
+        // Grants left behind by a deleted branch with the same name would collide with the ones inserted below
+        $this->db->table('grants')->where('permission_id', $permission_id)->delete();
 
         // Insert grants for new permission
         $employee = model(Employee::class);
@@ -263,11 +265,28 @@ class Stock_location extends Model
         $builder->where('location_id', $location_id);
         $builder->update(['deleted' => 1]);
 
-        $builder = $this->db->table('permissions');
-        $builder->delete(['location_id' => $location_id]);
+        $this->_delete_location_permissions((int) $location_id);
 
         $this->db->transComplete();
 
         return $this->db->transStatus();
+    }
+
+    /**
+     * Removes the branch permissions together with the grants given to employees (grants are not deleted by a
+     * foreign key; leaving them made re-creating a branch with the same name fail with "Duplicate entry").
+     */
+    private function _delete_location_permissions(int $location_id): void
+    {
+        $permission_ids = array_column(
+            $this->db->table('permissions')->select('permission_id')->where('location_id', $location_id)->get()->getResultArray(),
+            'permission_id'
+        );
+
+        if (!empty($permission_ids)) {
+            $this->db->table('grants')->whereIn('permission_id', $permission_ids)->delete();
+        }
+
+        $this->db->table('permissions')->where('location_id', $location_id)->delete();
     }
 }

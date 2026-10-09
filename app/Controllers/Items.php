@@ -661,59 +661,88 @@ class Items extends Secure_Controller
 
         $employee_id = $this->employee->get_logged_in_employee_info()->person_id;
 
-        if ($this->item->save_value($item_data, $item_id)) {
-            $success = true;
-            $new_item = false;
+        // Item, stock, inventory and attributes are saved together: a failure leaves nothing half created
+        $db = db_connect();
+        $db->transBegin();
 
-            if ($item_id === NEW_ENTRY) {
-                $item_id = $item_data['item_id'];
-                $new_item = true;
-            }
+        try {
+            if ($this->item->save_value($item_data, $item_id)) {
+                $success = true;
+                $new_item = false;
 
-            // Save item quantity only for the item's own location
-            $updated_quantity = parse_quantity($this->request->getPost('quantity_' . $location_id));
+                if ($item_id === NEW_ENTRY) {
+                    $item_id = $item_data['item_id'];
+                    $new_item = true;
+                }
 
-            if ($item_data['item_type'] == ITEM_TEMP) {
-                $updated_quantity = 0;
-            }
+                // Save item quantity only for the item's own location. The form sends one quantity field; if its name
+                // does not match the chosen location (stale form, branch picked after the page loaded) take the one that came.
+                $posted_quantity = $this->request->getPost('quantity_' . $location_id);
+                if ($posted_quantity === null) {
+                    foreach ($this->request->getPost() as $field => $value) {
+                        if (is_string($field) && str_starts_with($field, 'quantity_')) {
+                            $posted_quantity = $value;
+                            break;
+                        }
+                    }
+                }
+                $updated_quantity = parse_quantity((string) ($posted_quantity ?? '0'));
 
-            $location_detail = [
-                'item_id'     => $item_id,
-                'location_id' => $location_id,
-                'quantity'    => $updated_quantity
-            ];
+                if ($item_data['item_type'] == ITEM_TEMP) {
+                    $updated_quantity = 0;
+                }
 
-            $item_quantity = $this->item_quantity->get_item_quantity($item_id, $location_id);
-
-            if ($item_quantity->quantity != $updated_quantity || $new_item) {
-                $success &= $this->item_quantity->save_value($location_detail, $item_id, $location_id);
-
-                $inv_data = [
-                    'trans_date'      => date('Y-m-d H:i:s'),
-                    'trans_items'     => $item_id,
-                    'trans_user'      => $employee_id,
-                    'trans_location'  => $location_id,
-                    'trans_comment'   => lang('Items.manually_editing_of_quantity'),
-                    'trans_inventory' => $updated_quantity - $item_quantity->quantity
+                $location_detail = [
+                    'item_id'     => $item_id,
+                    'location_id' => $location_id,
+                    'quantity'    => $updated_quantity
                 ];
 
-                $success &= $this->inventory->insert($inv_data, false);
-            }
-            $this->saveItemAttributes($item_id);
+                $item_quantity = $this->item_quantity->get_item_quantity($item_id, $location_id);
 
-            if ($success && $upload_success) {
-                $message = lang('Items.successful_' . ($new_item ? 'adding' : 'updating')) . ' ' . $item_data['name'];
+                if ($item_quantity->quantity != $updated_quantity || $new_item) {
+                    $success &= $this->item_quantity->save_value($location_detail, $item_id, $location_id);
 
-                echo json_encode(['success' => true, 'message' => $message, 'id' => $item_id]);
+                    $inv_data = [
+                        'trans_date'      => date('Y-m-d H:i:s'),
+                        'trans_items'     => $item_id,
+                        'trans_user'      => $employee_id,
+                        'trans_location'  => $location_id,
+                        'trans_comment'   => lang('Items.manually_editing_of_quantity'),
+                        'trans_inventory' => $updated_quantity - $item_quantity->quantity
+                    ];
+
+                    $success &= $this->inventory->insert($inv_data, false);
+                }
+                $this->saveItemAttributes($item_id);
+
+                // A failed step undoes the whole save; a failed image upload does not (the item itself is fine)
+                if ($success) {
+                    $db->transCommit();
+                } else {
+                    $db->transRollback();
+                }
+
+                if ($success && $upload_success) {
+                    $message = lang('Items.successful_' . ($new_item ? 'adding' : 'updating')) . ' ' . $item_data['name'];
+
+                    echo json_encode(['success' => true, 'message' => $message, 'id' => $item_id]);
+                } else {
+                    $message = $upload_success ? lang('Items.error_adding_updating') . ' ' . $item_data['name'] : strip_tags($upload_data['error']);
+
+                    echo json_encode(['success' => false, 'message' => $message, 'id' => $item_id]);
+                }
             } else {
-                $message = $upload_success ? lang('Items.error_adding_updating') . ' ' . $item_data['name'] : strip_tags($upload_data['error']);
+                $db->transRollback();
+                $message = lang('Items.error_adding_updating') . ' ' . $item_data['name'];
 
-                echo json_encode(['success' => false, 'message' => $message, 'id' => $item_id]);
+                echo json_encode(['success' => false, 'message' => $message, 'id' => NEW_ENTRY]);
             }
-        } else {
-            $message = lang('Items.error_adding_updating') . ' ' . $item_data['name'];
+        } catch (\Throwable $e) {
+            $db->transRollback();
+            log_message('error', 'Items::postSave failed: ' . $e->getMessage());
 
-            echo json_encode(['success' => false, 'message' => $message, 'id' => NEW_ENTRY]);
+            echo json_encode(['success' => false, 'message' => lang('Items.error_adding_updating') . ' ' . $item_data['name'], 'id' => NEW_ENTRY]);
         }
     }
 

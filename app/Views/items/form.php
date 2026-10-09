@@ -568,7 +568,7 @@ $price_field = static function (string $name, string $label, $value) use ($confi
                         required: true,
                         remote: "<?= esc("$controller_name/checkNumeric") ?>"
                     },
-                    <?php foreach ($stock_locations as $key => $location_detail) { ?>
+                    <?php foreach (array_unique(array_merge(array_keys($stock_locations), array_keys($allowed_locations ?? []))) as $key) { ?>
                         <?= 'quantity_' . $key ?>: {
                             required: true,
                             remote: "<?= esc("$controller_name/checkNumeric") ?>"
@@ -612,7 +612,7 @@ $price_field = static function (string $name, string $label, $value) use ($confi
                         number: "<?= lang('Items.price_reseller_number') ?>",
                         remote: "<?= lang('Items.price_reseller_number') ?>"
                     },
-                    <?php foreach ($stock_locations as $key => $location_detail) { ?>
+                    <?php foreach (array_unique(array_merge(array_keys($stock_locations), array_keys($allowed_locations ?? []))) as $key) { ?>
                         <?= esc("quantity_$key", 'js') ?>: {
                             required: "<?= lang('Items.quantity_required') ?>",
                             number: "<?= lang('Items.quantity_number') ?>",
@@ -637,6 +637,19 @@ $price_field = static function (string $name, string $label, $value) use ($confi
         };
 
         init_validation();
+
+        // New item: the stock field is named after the chosen branch (quantity_<location_id>), which is what
+        // Items::postSave reads. Validation rules exist for every allowed branch, so they follow the rename.
+        $('#location_id').on('change', function() {
+            var $quantity = $form.find('input.qty-input[name^="quantity_"]').first();
+            if (!$quantity.length) {
+                return;
+            }
+            var field_name = 'quantity_' + $(this).val();
+            $quantity.prop('name', field_name).prop('id', field_name);
+            $form.find('label[for^="quantity_"]').attr('for', field_name);
+            $quantity.removeClass('is-invalid').removeAttr('aria-invalid').valid();
+        });
 
         // --- Unsaved changes: closing the dialog (X, Escape, click outside) asks before discarding
         snapshot = form_state();
