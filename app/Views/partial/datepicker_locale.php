@@ -15,7 +15,8 @@ $meridian     = str_contains($config['timeformat'], 'a') || str_contains($config
 
 var pickerconfig = function(config) {
     return $.extend(true, {
-        allowInputToggle: true,
+        // Must stay false: hide() refocuses the input, which with allowInputToggle re-opens the picker (it could never be closed)
+        allowInputToggle: false,
         useCurrent: false,
         stepping: 1,
         localization: {
