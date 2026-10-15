@@ -149,7 +149,7 @@ $price_field = static function (string $name, string $label, $value) use ($confi
                     'inputmode'     => 'decimal',
                     'autocomplete'  => 'off',
                     'aria-required' => 'true',
-                    'value'         => !$is_new ? to_quantity_decimals($location_detail['quantity']) : to_quantity_decimals(0)
+                    'value'         => !$is_new ? to_quantity_decimals($location_detail['quantity']) : to_quantity_decimals(1)
                 ]) ?>
             </div>
         <?php endforeach; ?>
