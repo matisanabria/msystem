@@ -334,9 +334,12 @@ class Config extends Secure_Controller
         $filename = $file->getClientName();
         $info = pathinfo($filename);
 
+        // The name comes from the client: drop path separators/control chars so it can never leave the target folder
+        $raw_name = trim(preg_replace('/[\x00-\x1f\\\\\/:*?"<>|]+/', '_', $info['filename']), '. ');
+
         $file_info = [
             'orig_name' => $filename,
-            'raw_name'  => $info['filename'],
+            'raw_name'  => $raw_name !== '' ? $raw_name : pathinfo($file->getRandomName(), PATHINFO_FILENAME),
             'file_ext'  => $file->guessExtension()
         ];
 

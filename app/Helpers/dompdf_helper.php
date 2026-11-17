@@ -5,8 +5,8 @@
  */
 function create_pdf(string $html, string $filename = ''): string
 {
-    // Need to enable magic quotes for the
-    $dompdf = new Dompdf\Dompdf(['isRemoteEnabled' => true, 'isPhpEnabled' => true]);
+    // isPhpEnabled stays off: it would run PHP embedded in the HTML. No view uses <script type="text/php">.
+    $dompdf = new Dompdf\Dompdf(['isRemoteEnabled' => true, 'isPhpEnabled' => false]);
     $dompdf->loadHtml(str_replace(['\n', '\r'], '', $html));
     $dompdf->render();
 
