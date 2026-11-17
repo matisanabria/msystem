@@ -302,34 +302,56 @@ class Item extends Model
         return $builder->get();
     }
 
-    public function get_stock_consult(string $search, array $location_ids, string $category, int $rows, int $offset): array
+    /**
+     * Applies shared filters for the stock consultation (single branch).
+     */
+    private function stock_consult_filters($builder, string $search, int $location_id, string $category, bool $include_zero): void
     {
-        $prefix = $this->db->getPrefix();
-        $builder = $this->db->table('items AS items');
-        $builder->select('items.item_id, items.name, items.item_number, items.category, items.unit_price, items.price_wholesale, items.price_reseller');
-        $builder->select("COALESCE(item_quantities.quantity, 0) AS quantity");
-        $builder->select("(SELECT MIN(trans_date) FROM `{$prefix}inventory` WHERE trans_items = items.item_id) AS item_add_date");
         $builder->join('item_quantities AS item_quantities', 'item_quantities.item_id = items.item_id AND item_quantities.location_id = items.location_id', 'left');
         $builder->where('items.deleted', 0);
         $builder->where('items.item_type !=', ITEM_TEMP);
-        $builder->where('item_quantities.quantity >=', 1);
+        $builder->where('items.location_id', $location_id);
 
-        if (!empty($location_ids)) {
-            $builder->whereIn('items.location_id', $location_ids);
+        if (!$include_zero) {
+            $builder->where('item_quantities.quantity >=', 1);
         }
 
-        if (!empty($search)) {
+        if ($search !== '') {
             $builder->groupStart();
             $builder->like('items.name', $search);
             $builder->orLike('items.item_number', $search);
+            $builder->orLike('items.category', $search);
             $builder->groupEnd();
         }
 
-        if (!empty($category) && $category !== 'all') {
+        if ($category !== '' && $category !== 'all') {
             $builder->where('items.category', $category);
         }
+    }
 
-        $builder->orderBy('items.name', 'asc');
+    public function get_stock_consult(string $search, int $location_id, string $category, bool $include_zero, string $sort, string $dir, int $rows, int $offset): array
+    {
+        $sortable = [
+            'name'            => 'items.name',
+            'item_number'     => 'items.item_number',
+            'category'        => 'items.category',
+            'unit_price'      => 'items.unit_price',
+            'price_wholesale' => 'items.price_wholesale',
+            'price_reseller'  => 'items.price_reseller',
+            'quantity'        => 'quantity',
+        ];
+        $order_col = $sortable[$sort] ?? 'items.name';
+        $order_dir = strtolower($dir) === 'desc' ? 'desc' : 'asc';
+
+        $builder = $this->db->table('items AS items');
+        $builder->select('items.item_id, items.name, items.item_number, items.category, items.unit_price, items.price_wholesale, items.price_reseller, items.pic_filename');
+        $builder->select('COALESCE(item_quantities.quantity, 0) AS quantity');
+        $this->stock_consult_filters($builder, $search, $location_id, $category, $include_zero);
+
+        $builder->orderBy($order_col, $order_dir);
+        if ($order_col !== 'items.name') {
+            $builder->orderBy('items.name', 'asc');
+        }
 
         if ($rows > 0) {
             $builder->limit($rows, $offset);
@@ -338,28 +360,10 @@ class Item extends Model
         return $builder->get()->getResultArray();
     }
 
-    public function get_stock_consult_total(string $search, array $location_ids, string $category): int
+    public function get_stock_consult_total(string $search, int $location_id, string $category, bool $include_zero): int
     {
         $builder = $this->db->table('items AS items');
-        $builder->join('item_quantities AS item_quantities', 'item_quantities.item_id = items.item_id AND item_quantities.location_id = items.location_id', 'left');
-        $builder->where('items.deleted', 0);
-        $builder->where('items.item_type !=', ITEM_TEMP);
-        $builder->where('item_quantities.quantity >=', 1);
-
-        if (!empty($location_ids)) {
-            $builder->whereIn('items.location_id', $location_ids);
-        }
-
-        if (!empty($search)) {
-            $builder->groupStart();
-            $builder->like('items.name', $search);
-            $builder->orLike('items.item_number', $search);
-            $builder->groupEnd();
-        }
-
-        if (!empty($category) && $category !== 'all') {
-            $builder->where('items.category', $category);
-        }
+        $this->stock_consult_filters($builder, $search, $location_id, $category, $include_zero);
 
         return $builder->countAllResults();
     }

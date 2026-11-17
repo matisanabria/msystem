@@ -1816,12 +1816,17 @@ class Sales extends Secure_Controller
             exit();
         }
 
-        $allowed_location_ids = array_keys($this->stock_location->get_allowed_locations('items'));
+        $locations = $this->stock_location->get_allowed_locations('items');
+        $sale_location = $this->sale_lib->get_sale_location();
+        $selected_location = isset($locations[$sale_location]) ? $sale_location : (array_key_first($locations) ?? 0);
+
         $categories_result = $this->item->get_categories();
         $categories_raw    = $categories_result ? $categories_result->getResultArray() : [];
         $category_list = array_filter(array_column($categories_raw, 'category'), fn($c) => $c !== '' && $c !== null);
 
-        $data['allowed_location_ids'] = $allowed_location_ids;
+        $data['locations'] = $locations;
+        $data['selected_location'] = $selected_location;
+        $data['sale_location'] = $sale_location;
         $data['categories'] = array_merge(['all' => lang('Sales.stock_consult_all_categories')], array_combine($category_list, $category_list));
 
         echo view('sales/stock_consult', $data);
@@ -1836,28 +1841,53 @@ class Sales extends Secure_Controller
             return;
         }
 
-        $search      = $this->request->getGet('search') ?? '';
-        $category    = $this->request->getGet('category', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? 'all';
-        $limit       = (int)($this->request->getGet('limit', FILTER_SANITIZE_NUMBER_INT) ?? 25);
-        $offset      = (int)($this->request->getGet('offset', FILTER_SANITIZE_NUMBER_INT) ?? 0);
+        $search       = trim((string)($this->request->getGet('search') ?? ''));
+        $category     = (string)($this->request->getGet('category') ?? 'all');
+        $location_id  = (int)$this->request->getGet('location_id');
+        $include_zero = $this->request->getGet('include_zero') === '1';
+        $sort         = (string)($this->request->getGet('sort') ?? 'name');
+        $dir          = (string)($this->request->getGet('dir') ?? 'asc');
+        $limit        = max(1, min(200, (int)($this->request->getGet('limit') ?? 25)));
+        $offset       = max(0, (int)($this->request->getGet('offset') ?? 0));
 
-        $allowed_location_ids = array_keys($this->stock_location->get_allowed_locations('items'));
+        // Never trust the client: branch must be one the user is allowed to see.
+        $allowed = $this->stock_location->get_allowed_locations('items');
+        if (!isset($allowed[$location_id])) {
+            echo json_encode(['total' => 0, 'rows' => []]);
+            return;
+        }
 
-        $items = $this->item->get_stock_consult($search, $allowed_location_ids, $category, $limit, $offset);
-        $total = $this->item->get_stock_consult_total($search, $allowed_location_ids, $category);
+        $items = $this->item->get_stock_consult($search, $location_id, $category, $include_zero, $sort, $dir, $limit, $offset);
+        $total = $this->item->get_stock_consult_total($search, $location_id, $category, $include_zero);
 
         $rows = [];
 
         foreach ($items as $item) {
+            $photo = '<span class="bi bi-image item-photo-none" role="img" aria-label="' . esc(lang('Items.no_photo'), 'attr') . '"></span>';
+            if (!empty($item['pic_filename'])) {
+                $pic = $item['pic_filename'];
+                $images = pathinfo($pic, PATHINFO_EXTENSION) == ''
+                    ? glob("./uploads/item_pics/$pic.*")
+                    : glob("./uploads/item_pics/$pic");
+                if (!empty($images)) {
+                    $photo = '<button type="button" class="item-photo-btn" data-photo-src="' . esc(base_url($images[0]), 'attr')
+                        . '" data-photo-name="' . esc($item['name'], 'attr')
+                        . '" aria-label="' . esc(lang('Items.view_photo', [$item['name']]), 'attr') . '">'
+                        . '<img alt="" src="' . site_url('items/PicThumb/' . rawurlencode(pathinfo($images[0], PATHINFO_BASENAME))) . '"></button>';
+                }
+            }
+
             $rows[] = [
-                'name'          => esc($item['name']),
-                'item_number'   => esc($item['item_number'] ?? ''),
-                'category'      => esc($item['category']),
-                'unit_price'    => to_currency($item['unit_price']),
+                'item_id'         => (int)$item['item_id'],
+                'photo'           => $photo,
+                'name'            => esc($item['name']),
+                'item_number'     => esc($item['item_number'] ?? ''),
+                'category'        => esc($item['category']),
+                'unit_price'      => to_currency($item['unit_price']),
                 'price_wholesale' => to_currency($item['price_wholesale'] ?? $item['unit_price']),
                 'price_reseller'  => to_currency($item['price_reseller'] ?? $item['unit_price']),
-                'item_add_date' => $item['item_add_date'] ? to_datetime(strtotime($item['item_add_date'])) : '',
-                'quantity'      => (float)$item['quantity'],
+                'quantity'        => (float)$item['quantity'],
+                'quantity_text'   => to_quantity_decimals((string)$item['quantity']),
             ];
         }
 
