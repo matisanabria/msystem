@@ -15,6 +15,8 @@ $badge = ['nuevo' => 'text-bg-success', 'mejora' => 'text-bg-primary', 'arreglo'
     #changelog .cl-date { color: var(--bs-secondary-color, #6c757d); font-size: .875rem; }
     #changelog .cl-title { font-weight: 600; }
     #changelog .cl-text { margin: 4px 0 0; }
+    #changelog .cl-items { margin: 6px 0 0; padding-left: 1.25rem; }
+    #changelog .cl-items li { margin-bottom: 2px; }
 </style>
 
 <div id="changelog">
@@ -42,6 +44,13 @@ $badge = ['nuevo' => 'text-bg-success', 'mejora' => 'text-bg-primary', 'arreglo'
                     <span class="cl-title"><?= esc($entry['title']) ?></span>
                 </div>
                 <p class="cl-text"><?= esc($entry['text']) ?></p>
+                <?php if (!empty($entry['items'])): ?>
+                    <ul class="cl-items">
+                        <?php foreach ($entry['items'] as $item): ?>
+                            <li><?= esc($item) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
             </div>
         <?php endforeach; ?>
     <?php endforeach; ?>
