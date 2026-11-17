@@ -29,7 +29,7 @@ $request = Services::request();
 
     <?php if (ENVIRONMENT == 'development' || get_cookie('debug') == 'true' || $request->getGet('debug') == 'true') : ?>
         <!-- inject:debug:css -->
-        <link rel="stylesheet" href="resources/css/jquery-ui-fe010342cb.css">
+        <link rel="stylesheet" href="resources/css/jquery-ui-49d1c743e3.css">
         <link rel="stylesheet" href="resources/css/bootstrap-dialog-535f55a401.css">
         <link rel="stylesheet" href="resources/css/tempus-dominus-ccd380cd8e.css">
         <link rel="stylesheet" href="resources/css/bootstrap-select-e0658d7d20.css">
@@ -48,12 +48,12 @@ $request = Services::request();
         <link rel="stylesheet" href="resources/css/reports-407b727797.css">
         <!-- endinject -->
         <!-- inject:debug:js -->
-        <script src="resources/js/jquery-12e87d2f3a.js"></script>
+        <script src="resources/js/jquery-737a46898b.js"></script>
         <script src="resources/js/jquery-4fa896f615.form.js"></script>
-        <script src="resources/js/jquery-a0350e8820.validate.js"></script>
-        <script src="resources/js/jquery-ui-cbc65ff85e.js"></script>
+        <script src="resources/js/jquery-8416e49527.validate.js"></script>
+        <script src="resources/js/jquery-ui-c0267985b7.js"></script>
         <script src="resources/js/popper-063a0fe0ef.js"></script>
-        <script src="resources/js/bootstrap-52de67605c.js"></script>
+        <script src="resources/js/bootstrap-30bd2a776d.js"></script>
         <script src="resources/js/bootstrap5_jquery_bridge-1a462f63e6.js"></script>
         <script src="resources/js/bootstrap-dialog-ea1d8d45a8.js"></script>
         <script src="resources/js/tempus-dominus-610b31b9fd.js"></script>
@@ -62,14 +62,14 @@ $request = Services::request();
         <script src="resources/js/bootstrap-table-export-6389dc2aa5.js"></script>
         <script src="resources/js/bootstrap-table-mobile-fc655b68ab.js"></script>
         <script src="resources/js/bootstrap-table-sticky-header-cb4d83d172.js"></script>
-        <script src="resources/js/moment-d65dc6d2e6.min.js"></script>
+        <script src="resources/js/moment-ad3346f890.min.js"></script>
         <script src="resources/js/daterangepicker-048c56a690.js"></script>
         <script src="resources/js/es6-promise-855125e6f5.js"></script>
         <script src="resources/js/FileSaver-e73b1946e8.js"></script>
         <script src="resources/js/html2canvas-e1d3a8d7cd.js"></script>
-        <script src="resources/js/jspdf-81c4900447.umd.js"></script>
-        <script src="resources/js/purify-f71b63cae1.js"></script>
-        <script src="resources/js/jspdf-92d87e47e8.plugin.autotable.js"></script>
+        <script src="resources/js/jspdf-bbbebb610c.umd.js"></script>
+        <script src="resources/js/purify-8d353a63e9.js"></script>
+        <script src="resources/js/jspdf-6221cbe80a.plugin.autotable.js"></script>
         <script src="resources/js/tableExport-3d506dfa61.min.js"></script>
         <script src="resources/js/chartist-8a7ecb4445.js"></script>
         <script src="resources/js/chartist-plugin-pointlabels-0a1ab6aa4e.js"></script>
@@ -83,7 +83,7 @@ $request = Services::request();
         <!-- endinject -->
     <?php else : ?>
         <!--inject:prod:css -->
-        <link rel="stylesheet" href="resources/opensourcepos-178044f414.min.css">
+        <link rel="stylesheet" href="resources/opensourcepos-c5619bc5ba.min.css">
         <!-- endinject -->
 
         <!-- Tweaks to the UI for a particular theme should drop here  -->
@@ -91,8 +91,8 @@ $request = Services::request();
             <link rel="stylesheet" href="<?= 'css/' . esc($config['theme']) . '.css' ?>">
         <?php } ?>
         <!-- inject:prod:js -->
-        <script src="resources/jquery-2c872dbe60.min.js"></script>
-        <script src="resources/opensourcepos-255c394482.min.js"></script>
+        <script src="resources/jquery-2ad83083df.min.js"></script>
+        <script src="resources/opensourcepos-d68bd59b3b.min.js"></script>
         <!-- endinject -->
     <?php endif; ?>
 
