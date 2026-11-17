@@ -60,6 +60,8 @@ return [
     "inventory_output_desc"       => "Registrar salidas de stock que no son venta (uso interno, dañado, pérdida, etc).",
     "logs"                       => "Registros",
     "logs_desc"                  => "Ver registros de actividad del sistema.",
+    "changelog"                  => "Changelog",
+    "changelog_desc"             => "Ver los cambios que se hicieron en el sistema.",
     "group_sell" => "Vender",
     "group_service" => "Servicio técnico",
     "group_stock" => "Mercadería",

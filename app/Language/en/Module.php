@@ -60,6 +60,8 @@ return [
     "inventory_output_desc"      => "Register non-sale stock outputs (internal use, damaged, loss, etc).",
     "logs"                       => "Logs",
     "logs_desc"                  => "View system activity logs.",
+    "changelog"                  => "Changelog",
+    "changelog_desc"             => "See the changes made to the system.",
     "group_sell" => "Sell",
     "group_service" => "Technical service",
     "group_stock" => "Inventory",

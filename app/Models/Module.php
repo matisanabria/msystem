@@ -48,7 +48,7 @@ class Module extends Model
         'group_sell'    => ['sales', 'customers'],
         'group_service' => ['service_tickets', 'assistances'],
         'group_stock'   => ['items', 'receivings', 'suppliers'],
-        'group_admin'   => ['expenses', 'expenses_categories', 'reports', 'office', 'admin_panel', 'discount_approvals', 'inventory_output', 'logs', 'config', 'employees'],
+        'group_admin'   => ['expenses', 'expenses_categories', 'reports', 'office', 'admin_panel', 'discount_approvals', 'inventory_output', 'logs', 'changelog', 'config', 'employees'],
     ];
 
     /** Modules never offered in the employee form (disabled features). */
@@ -67,7 +67,7 @@ class Module extends Model
     ];
 
     /** Modules that always live under "Oficina" (queries force it; new grants also use menu_group 'office'). */
-    public const OFFICE_MODULES = ['admin_panel', 'discount_approvals', 'logs', 'inventory_output'];
+    public const OFFICE_MODULES = ['admin_panel', 'discount_approvals', 'logs', 'inventory_output', 'changelog'];
 
     /** Permissions an employee cannot remove from their own account (they open this panel). */
     public const SELF_PROTECTED_PERMISSIONS = ['config', 'admin_panel', 'office'];

@@ -16,6 +16,7 @@ return [
     'sales'               => '#0f8f76',
     'giftcards'           => '#c026d3',
     'logs'                => '#0284c7',
+    'changelog'           => '#0d9488',
     'messages'            => '#0284c7',
     'attributes'          => '#65a30d',
     'expenses'            => '#dc2626',

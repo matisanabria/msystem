@@ -19,6 +19,7 @@ return [
     'sales'               => 'cart3',
     'giftcards'           => 'gift',
     'logs'                => 'journal-text',
+    'changelog'           => 'stars',
     'messages'            => 'chat-dots',
     'attributes'          => 'sliders',
     'expenses'            => 'cash-coin',
