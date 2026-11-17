@@ -11,6 +11,12 @@ return [
     [
         'date'  => '2026-11-17',
         'type'  => 'mejora',
+        'title' => 'Mejoras de seguridad y estabilidad',
+        'text'  => 'Se actualizó la base del sistema a su última versión para mantenerlo seguro y funcionando bien.',
+    ],
+    [
+        'date'  => '2026-11-17',
+        'type'  => 'mejora',
         'title' => 'Consulta de stock renovada',
         'text'  => 'Ahora se ve el stock por sucursal, con fotos de los productos, búsqueda más rápida y un botón para agregar el producto directo a la venta.',
     ],
