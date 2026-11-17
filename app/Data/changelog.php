@@ -33,6 +33,7 @@ return [
         'items' => [
             'Se actualizó el motor del sistema a su versión más reciente, que corrige fallas de seguridad conocidas.',
             'Se actualizó el generador de PDF (recibos y facturas) y se le quitó una función que no se usa y podía ser un riesgo.',
+            'Se actualizaron las herramientas que usan las pantallas (tablas, calendarios, formularios y PDF) a sus últimas versiones estables.',
             'Se reforzó la subida de fotos de productos y del logo del negocio.',
             'Se quitó un registro interno innecesario que llenaba los archivos de registro del sistema.',
             'No hay cambios en la forma de trabajar: todo se ve y funciona igual.',
