@@ -15,6 +15,19 @@
  */
 return [
     [
+        'date'  => '2026-11-19',
+        'type'  => 'mejora',
+        'title' => 'Actualización del motor de programación del servidor',
+        'text'  => 'Se actualizó el programa base sobre el que corre el sistema (PHP) a una versión más nueva, que corrige fallas de seguridad y tiene soporte por más tiempo.',
+        'items' => [
+            'Se pasó de la versión 8.2 a la 8.3.36 de PHP, que incluye las correcciones de seguridad más recientes.',
+            'La versión anterior dejaba de recibir actualizaciones de seguridad a fin de año; con este cambio el sistema queda protegido por más tiempo.',
+            'Se revisó todo el código del sistema con la versión nueva y no hizo falta cambiar nada en las pantallas.',
+            'No hay cambios en la forma de trabajar: todo se ve y funciona igual.',
+            'Este cambio se aplica en el servidor y se hace fuera del horario de atención, con respaldo previo de la información.',
+        ],
+    ],
+    [
         'date'  => '2026-11-17',
         'type'  => 'nuevo',
         'title' => 'Nueva sección Changelog en Oficina',
